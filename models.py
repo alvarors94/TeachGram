@@ -2,12 +2,11 @@
 # Como está en otro archivo, necesitamos importarlo.
 # Para ello importamos el nombre del archivo donde se encuentre la clase en este caso db.py
 import db
-from sqlalchemy import Column, Integer, String, Date, Boolean, func, ForeignKey, relationship
-# from django.db import models
-# from django.conf import settings
-# from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, \
-#     PermissionsMixin
-# import django   
+from sqlalchemy import Column, Integer, String, Date, func, ForeignKey, relationship
+from django.db import models
+from django.conf import settings
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+ 
 # Con esto quiere decir que cuando se instancie un objeto, se cree en la base de datos
 class Usuario(db.Base):
     __tablename__ = "usuario"
@@ -16,9 +15,9 @@ class Usuario(db.Base):
     nombre_usuario = Column(String(200), nullable=False)  # Creamos las columnas de los campos definidos
     nombre_completo = Column(String(200), nullable=False)
     password = Column(String(200), nullable=False)
-    # profile_pic = models.ImageField(
-    #     upload_to=image_file_path,
-        # default='avatar.png')
+    profile_pic = models.ImageField(
+        upload_to="static\profile_pics",
+        default='avatar.png')
     publicaciones = relationship("Publicacion", back_populates="usuario")  # Definimos la relación inversa
 
     def __init__(self, id_usuario, nombre_usuario, nombre_completo, password, publicaciones):
