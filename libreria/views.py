@@ -1,11 +1,12 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from .models import Usuario, Publicacion, Comentario #Importamos las clases
 
 def inicio(request):
     return render(request, "paginas/inicio.html")
 
 def perfil(request):
-    return render(request, "perfil/index.html")
+    usuarios = Usuario.objects.all()
+    return render(request, "perfil/index.html", {"usuarios": usuarios})
 
 def crear_publicacion(request):
     return render(request, "perfil/crear_publicacion.html")

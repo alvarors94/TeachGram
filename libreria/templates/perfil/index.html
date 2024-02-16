@@ -6,12 +6,39 @@
     <div class="card-header">Aquí irán las publicaciones de cada usuario</div>
     <div class="card-body">
         <h4 class="card-title">Publicaciones</h4>
+        <h4 class="card-title">Por aquí pondré la lista de usuarios para ver cuáles están</h4>
     </div>
-    <a class="btn btn-success" href="{% url 'publicar'%}" role="button">Crear Publicación</a>
-    <a class="btn btn-warning" href="{% url 'editar_publicacion'%}" role="button">Editar Publicación</a>
-    <a class="btn btn-danger" href="{% url 'eliminar_publicacion'%}" role="button">Eliminar Publicación</a>
-
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">ID Usuario</th>
+                <th scope="col">Nombre Usuario</th>
+                <th scope="col">Nombre Completo</th>
+                <th scope="col">Contraseña</th>
+                <th scope="col">Foto de Perfil</th>
+                <th scope="col">¿Está Bloqueado?</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for usuario in usuarios %}
+            <tr>
+                <td>{{ usuario.id_usuario }}</td>
+                <td>{{ usuario.nombre_usuario }}</td>
+                <td>{{ usuario.nombre_completo }}</td>
+                <td>{{ usuario.password }}</td>
+                <td>
+                <img src="{{ usuario.foto_perfil.url }}"/>
+                </td>
+                
+                <td>{{ usuario.esta_bloqueado }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 
+<a class="btn btn-success" href="{% url 'publicar'%}" role="button">Crear Publicación</a>
+<a class="btn btn-warning" href="{% url 'editar_publicacion'%}" role="button">Editar Publicación</a>
+<a class="btn btn-danger" href="{% url 'eliminar_publicacion'%}" role="button">Eliminar Publicación</a>
 
 {% endblock %}

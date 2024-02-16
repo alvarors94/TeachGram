@@ -11,10 +11,12 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+from Teachgram import db
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+#BASE_DIR = C:\Users\alvar\OneDrive\Escritorio\Teachgram
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
@@ -74,15 +76,7 @@ WSGI_APPLICATION = 'Teachgram.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'teachgram',
-        'USER': 'root',
-        'PASSWORD': '',
-        'HOST': 'localhost',
-    }    
-}
+DATABASES = db.sqlite3
 
 
 # Password validation
@@ -123,5 +117,9 @@ STATIC_URL = 'static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
+
+
+MEDIA_ROOT = os.path.join(BASE_DIR,'')
+MEDIA_URL = "/media/"
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
