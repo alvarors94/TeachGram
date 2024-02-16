@@ -1,0 +1,20 @@
+{% extends "base.html"%}
+{% block titulo %} Crear publicaciones {% endblock %}
+{% block contenido %} 
+
+Añadir una publicacion
+
+<div class="card">
+    <div class="card-header">Crear una publicacón</div>
+    <div class="card-body">
+        <h4 class="card-title">Imagen</h4>
+        
+        <h4 class="card-title">Descripción</h4>
+        {% include 'perfil/form.html' %}
+        
+    </div>
+</div>
+
+
+
+{% endblock %}

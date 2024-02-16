@@ -1,0 +1,17 @@
+{% extends "base.html"%}
+{% block titulo %} Perfil {% endblock %}
+{% block contenido %} 
+
+<div class="card">
+    <div class="card-header">Aquí irán las publicaciones de cada usuario</div>
+    <div class="card-body">
+        <h4 class="card-title">Publicaciones</h4>
+    </div>
+    <a class="btn btn-success" href="{% url 'publicar'%}" role="button">Crear Publicación</a>
+    <a class="btn btn-warning" href="{% url 'editar_publicacion'%}" role="button">Editar Publicación</a>
+    <a class="btn btn-danger" href="{% url 'eliminar_publicacion'%}" role="button">Eliminar Publicación</a>
+
+</div>
+
+
+{% endblock %}

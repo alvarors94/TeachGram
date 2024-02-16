@@ -5,10 +5,13 @@ def inicio(request):
     return render(request, "paginas/inicio.html")
 
 def perfil(request):
-    return render(request, "paginas/perfil.html")
+    return render(request, "perfil/index.html")
 
-def publicaciones(request):
-    return render(request, "publicaciones/index.html")
+def crear_publicacion(request):
+    return render(request, "perfil/crear_publicacion.html")
 
-def comentarios(request):
-    return render(request, "comentarios/index.html")
+def editar_publicacion(request):
+    return render(request, "perfil/editar_publicacion.html")
+
+def eliminar_publicacion(request):
+    return render(request, "perfil/eliminar_publicacion.html")
