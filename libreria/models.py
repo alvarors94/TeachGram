@@ -18,7 +18,7 @@ class Usuario(models.Model):
 class Publicacion(models.Model):
     id_publicacion=models.AutoField(primary_key=True) #Autoincremental
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='publicaciones')
-    foto_publicacion = models.ImageField(upload_to="media/imgs", verbose_name="Imagen")
+    foto_publicacion = models.ImageField(upload_to="static/publicaciones", verbose_name="Imagen")
     descripcion = models.CharField(max_length=200, null=False, verbose_name="Descripción")
     fecha_publicacion = models.DateField(auto_now_add=True, verbose_name="Fecha de publicación")
 

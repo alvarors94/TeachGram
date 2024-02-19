@@ -6,19 +6,17 @@ Incluyendo el token de CSRF en el formulario, se garantiza que las solicitudes d
 
     {% for campo in form_publicacion %}
     <div class="mb-3">
-        <label for="" class="form-label">{{campo.label}}</label>
-        <!-- type="{{campo.field.widget.input_type}}" es para que cambie el tipo de input en función de si es texto, imagen...-->
+        <label for="" class="form-label">{{campo.label}}:</label>
         
         {% if campo.field.widget.input_type == 'file' and campo.value %}
         <!-- ESTO DE ARRIBA SIGNIFICA SI HAY UNA IMAGEN, ...-->
-        <!-- <img
-            src="{{MEDIA_URL}}/imgs/{{campo.value}}"
-            class="img-fluid rounded-top"
-            alt=""
-        /> -->
+        <br/>
+        <img src="/{{campo.value}}" height="200" width="200" />
+
         
         {% endif %}
 
+        <!-- type="{{campo.field.widget.input_type}}" es para que cambie el tipo de input en función de si es texto, imagen...-->
         <input
             type="{{campo.field.widget.input_type}}" 
             class="form-control"
@@ -35,9 +33,9 @@ Incluyendo el token de CSRF en el formulario, se garantiza que las solicitudes d
     <input
         name=""
         id=""
-        class="btn btn-secondary"
+        class="btn btn-success"
         type="submit"
-        value="Button"
+        value="Enviar información"
     />
     
     
