@@ -1,8 +1,7 @@
 from django.db import models
 from django.conf import settings
 
-#TODO: Lo ultimo que he hecho ha sido intentar que los usuarios tengan una imagen de perfil por defecto, pero alomejor ahora lo tengo que borrar toodos para que me coja la nueva imagen por defecto
-#TODO: Redimensionr la nueva imagen
+
 class Usuario(models.Model):
     id_usuario=models.AutoField(primary_key=True) #Autoincremental
     nombre_usuario = models.CharField(max_length=200, unique=True, verbose_name="Nombre de usuario")
@@ -13,15 +12,14 @@ class Usuario(models.Model):
     def __str__(self):
         return f"Usuario {self.nombre_usuario}, Nombre completo: {self.nombre_completo}"
 
-    def delete(self, using=None, keep_parents=False): # Con esta función, cuando se borra el usuario también se boora la foto de perfil del almacenamiento
-        self.foto_perfil.storage.delete(self.foto_perfil.name)
+    def delete(self): # Con esta función, cuando se borra el usuario también se boora la foto de perfil del almacenamiento
         super().delete()
 
 class Publicacion(models.Model):
     id_publicacion=models.AutoField(primary_key=True) #Autoincremental
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='publicaciones')
-    foto_publicacion = models.ImageField(upload_to="static/imgs")
-    descripcion = models.CharField(max_length=200, null=False, blank=True, verbose_name="Descripción")
+    foto_publicacion = models.ImageField(upload_to="media/imgs", verbose_name="Imagen")
+    descripcion = models.CharField(max_length=200, null=False, verbose_name="Descripción")
     fecha_publicacion = models.DateField(auto_now_add=True, verbose_name="Fecha de publicación")
 
     def __str__(self):
@@ -37,4 +35,3 @@ class Comentario(models.Model):
 
     def __str__(self):
         return f"{self.usuario}'s comment ({self.comentario}) Fecha: {self.fecha_publicacion_comentario}"
-

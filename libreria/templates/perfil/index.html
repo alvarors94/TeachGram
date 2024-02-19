@@ -26,19 +26,18 @@
                 <td>{{ usuario.nombre_usuario }}</td>
                 <td>{{ usuario.nombre_completo }}</td>
                 <td>{{ usuario.password }}</td>
-                <td>
-                <img src="{{ usuario.foto_perfil.url }}"/>
-                </td>
-                
+                <td><img src="{{ usuario.foto_perfil.url }}" height="40" width="40"/></td>
                 <td>{{ usuario.esta_bloqueado }}</td>
             </tr>
             {% endfor %}
         </tbody>
+        
     </table>
 </div>
 
-<a class="btn btn-success" href="{% url 'publicar'%}" role="button">Crear Publicación</a>
-<a class="btn btn-warning" href="{% url 'editar_publicacion'%}" role="button">Editar Publicación</a>
-<a class="btn btn-danger" href="{% url 'eliminar_publicacion'%}" role="button">Eliminar Publicación</a>
+<a class="btn btn-success" href="{% url 'crear_publicacion'%}" role="button">Crear Publicación</a>
+<a class="btn btn-primary" href="{% url 'crear_publicacion'%}" role="button">Ver publicaciones</a>
+
+
 
 {% endblock %}

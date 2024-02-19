@@ -4,17 +4,45 @@
 
 Añadir una publicacion
 
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">ID Publicación</th>
+            <th scope="col">Nombre Usuario</th>
+            <th scope="col">ID Usuario</th>
+            <th scope="col">Foto</th>
+            <th scope="col">Descripción</th>
+            <th scope="col">Fecha de publicación</th>
+            <th scope="col">Editar publicación</th>
+            <th scope="col">Eliminar publicación</th>
+        </tr>
+    </thead>
+    <tbody> 
+        {% for publicacion in publicaciones %}
+        <tr>
+            <td>{{ publicacion.id_publicacion }}</td>
+            <td>{{ publicacion.usuario.nombre_usuario }}</td>
+            <td>{{ publicacion.usuario.id_usuario }}</td>
+            <td><img src="{{ publicacion.foto_publicacion.url }}" height="40" width="40"/></td>
+            <td>{{ publicacion.descripcion }}</td>
+            <td>{{ publicacion.fecha_publicacion }}</td>
+            <td><a class="btn btn-warning" href="{% url 'editar_publicacion' publicacion.id_publicacion%}" role="button">Editar Publicación</a></td>
+            <td><a class="btn btn-danger" href="{% url 'eliminar_publicacion' publicacion.id_publicacion%}" role="button">Eliminar Publicación</a></td>
+
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
 <div class="card">
     <div class="card-header">Crear una publicacón</div>
     <div class="card-body">
-        <h4 class="card-title">Imagen</h4>
-        
+       
         <h4 class="card-title">Descripción</h4>
         {% include 'perfil/form.html' %}
         
+
+        
     </div>
 </div>
-
-
-
 {% endblock %}
