@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from .models import Usuario, Publicacion, Comentario #Importamos las clases
-from .forms import PublicacionForm
+from .forms import PublicacionForm, ComentarioForm
 def inicio(request):
     return render(request, "paginas/inicio.html")
 
@@ -15,16 +15,52 @@ def crear_publicacion(request):
     
     if form_publicacion.is_valid():
         form_publicacion.save()
-        return redirect("crear_publicacion")
+        return redirect("publicaciones")
     
     return render(request, "perfil/crear_publicacion.html", {"form_publicacion": form_publicacion, "publicaciones": publicaciones})
 
 def editar_publicacion(request,id):
     publicacion = Publicacion.objects.get(id_publicacion = id)
     form_publicacion = PublicacionForm(request.POST or None, request.FILES or None, instance = publicacion)
+    if form_publicacion.is_valid() and request.POST:
+        form_publicacion.save()
+        return redirect("crear_publicacion")
     return render(request, "perfil/editar_publicacion.html", {"form_publicacion": form_publicacion})
 
 def eliminar_publicacion(request,id):
     publicacion = Publicacion.objects.get(id_publicacion = id)
     publicacion.delete()
     return redirect("crear_publicacion")
+
+def ver_publicaciones(request):
+    publicaciones = Publicacion.objects.all()
+    return render(request, "perfil/publicaciones.html", {"publicaciones": publicaciones})
+
+def ver_comentarios(request, id):
+    publicacion = Publicacion.objects.get(id_publicacion=id)
+    comentarios = publicacion.comentarios.all()  # Obtener todos los comentarios de la publicación específica
+    return render(request, "perfil/ver_comentarios.html", {"publicacion": publicacion, "comentarios": comentarios})
+
+
+def agregar_comentario(request, id):
+    publicacion = Publicacion.objects.get(id_publicacion = id)
+    form_comentario = ComentarioForm(request.POST)
+    if form_comentario.is_valid() and request.POST:
+        form_comentario.save()
+        return redirect("publicaciones")
+
+    return render(request, "perfil/agregar_comentario.html", {"form_comentario": form_comentario})
+    # publicacion = Publicacion.objects.get(id_publicacion=id)
+    # if request.method == 'POST':
+    #     form_comentario = ComentarioForm(request.POST)
+    #     if form_comentario.is_valid():
+    #         comentario = form_comentario.save(commit=False)
+    #         comentario.publicacion = publicacion
+    #         comentario.save()
+    #         return redirect('ver_comentarios', id=id)  # Redirigir a la página de visualización de comentarios
+    # else:
+    #     form_comentario = ComentarioForm()
+    # return render(request, 'perfil/agregar_comentario.html', {'form_comentario': form_comentario, 'publicacion': publicacion})
+
+
+

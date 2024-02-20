@@ -9,6 +9,11 @@ urlpatterns = [
     path("crear_publicacion", views.crear_publicacion, name="crear_publicacion"), 
     path("editar_publicacion/<int:id>", views.editar_publicacion, name="editar_publicacion"), 
     path("eliminar_publicacion/<int:id>", views.eliminar_publicacion, name="eliminar_publicacion"), 
+    path("publicaciones", views.ver_publicaciones, name="publicaciones"), 
+    path("ver_comentarios/<int:id>", views.ver_comentarios, name="ver_comentarios"), 
+    path("agregar_comentario/<int:id>", views.agregar_comentario, name="agregar_comentario"), 
+    
+
 
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) # así concatenamos el path de la carpeta media y la ruta de la carpeta static

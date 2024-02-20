@@ -1,0 +1,66 @@
+{% extends "base.html"%}
+{% block titulo %} Agregar Comentario {% endblock %}
+{% block contenido %} 
+
+
+
+<div class="card">
+    <div class="card-header"></div>
+        <div class="card-body">
+            <img src="{{ comentario.publicacion.foto_publicacion.url }}" height="80" width="80"/>
+            <h4 class="card-title">Descripción</h4>
+            <form enctype="multipart/form-data" method="post">
+                {% csrf_token %} 
+            <!-- El código dentro de la etiqueta {% csrf_token %} es un código generado por Django que incluye un token de seguridad conocido como CSRF (Cross-Site Request Forgery). Este token se utiliza para proteger las solicitudes de formularios contra ataques de falsificación de solicitudes entre sitios (CSRF).
+            El token de CSRF se genera aleatoriamente y se incluye en la respuesta del servidor a una solicitud de formulario. Luego, el token se envía junto con el formulario y se verifica en el servidor para asegurarse de que la solicitud proviene del usuario esperado y no de un tercero malintencionado.
+            Incluyendo el token de CSRF en el formulario, se garantiza que las solicitudes de formulario sean seguras y que los usuarios no puedan realizar acciones no deseadas en el sitio web. -->
+            
+                {% for campo in form_comentario %}
+                {% if campo.field.widget.input_type == 'file' and campo.value %}
+                <!-- ESTO DE ARRIBA SIGNIFICA SI HAY UNA IMAGEN, ...-->
+                <br/>
+                <img src="/{{campo.value}}" height="200" width="200" />
+
+                
+                {% endif %}
+                <div class="mb-3">
+                    <label for="" class="form-label">{{campo.label}}:</label>
+                </div>
+                <input
+                type="{{campo.field.widget.input_type}}" 
+                class="form-control"
+                name="{{campo.name}}"
+                id=""
+                aria-describedby="helpId"
+                placeholder="{{campo.label}}"
+                value="{{ campo.value | default_if_none:'' }}"/>
+                <!-- Muestra el valor del campo para editarlo o por defecto ''-->            
+        
+    <div class="col-12 help-text">{{campo.errors}}</div>
+    {% endfor %}
+
+    <input
+        name=""
+        id=""
+        class="btn btn-success"
+        type="submit"
+        value="Enviar comentario"
+    />
+
+    <a
+        name=""
+        id=""
+        class="btn btn-danger"
+        href="{% url 'publicaciones'%}" 
+        role="button"
+        >Cancelar</a
+    >
+            
+           
+               
+        </form>
+    
+        
+    </div>
+</div>
+{% endblock %}

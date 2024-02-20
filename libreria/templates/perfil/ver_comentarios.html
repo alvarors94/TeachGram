@@ -1,0 +1,36 @@
+{% extends "base.html"%}
+{% block titulo %} Ver Comentarios {% endblock %}
+{% block contenido %} 
+
+Editar información
+
+        <div class="table-container">
+            <table class="table mt-3000">
+                <thead>
+                    <tr>
+                        <th scope="col">ID Comentario</th>
+                        <th scope="col">Nombre Usuario</th>
+                        <th scope="col">Publicación</th>
+                        <th scope="col">Comentario</th>
+                        <th scope="col">Fecha de publicación</th>
+                    </tr>
+                </thead>
+                <tbody> 
+                    {% for comentario in comentarios %}
+                    <tr>
+                        <td>{{comentario.id_comentario}}</td>
+                        <td>{{comentario.usuario.nombre_usuario}}</td>
+                        <td><img src="{{ publicacion.foto_publicacion.url }}" height="80" width="80"/></td>
+                        <td>{{comentario.comentario}}</td>
+                        <td>{{comentario.fecha_publicacion_comentario}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+        {% include 'perfil/form.html' %}
+    
+        
+    </div>
+</div>
+{% endblock %}

@@ -32,6 +32,8 @@ class Comentario(models.Model):
     publicacion = models.ForeignKey(Publicacion, on_delete=models.CASCADE, related_name='comentarios')
     comentario = models.CharField(max_length=400, verbose_name="Comentario")
     fecha_publicacion_comentario = models.DateField(auto_now_add=True)
+    
 
     def __str__(self):
         return f"{self.usuario}'s comment ({self.comentario}) Fecha: {self.fecha_publicacion_comentario}"
+

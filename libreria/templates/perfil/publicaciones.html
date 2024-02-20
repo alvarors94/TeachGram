@@ -1,0 +1,43 @@
+{% extends "base.html"%}
+{% block titulo %} Ver publicaciones {% endblock %}
+{% block contenido %} 
+
+
+<div class="table-container">
+    <table class="table mt-3000">
+        <thead>
+            <tr>
+                <th scope="col">ID Publicación</th>
+                <th scope="col">Foto de perfil</th>
+                <th scope="col">Nombre Usuario</th>
+                <th scope="col">ID Usuario</th>
+                <th scope="col">Foto</th>
+                <th scope="col">Descripción</th>
+                <th scope="col">Fecha de publicación</th>
+                <th scope="col">Agregar comentarios</th>
+                <th scope="col">Ver comentarios</th>
+                <th scope="col">Editar publicación</th>
+                <th scope="col">Eliminar publicación</th>
+            </tr>
+        </thead>
+        <tbody> 
+            {% for publicacion in publicaciones %}
+            <tr>
+                <td>{{ publicacion.id_publicacion }}</td>
+                <td><img src="{{ publicacion.usuario.foto_perfil.url }}" height="80" width="80"/></td>
+                <td>{{ publicacion.usuario.nombre_usuario }}</td>
+                <td>{{ publicacion.usuario.id_usuario }}</td>
+                <td><img src="{{ publicacion.foto_publicacion.url }}" height="80" width="80"/></td>
+                <td>{{ publicacion.descripcion }}</td>
+                <td>{{ publicacion.fecha_publicacion }}</td>
+                <td><a class="btn btn-secondary btn-sm" href="{% url 'agregar_comentario' publicacion.id_publicacion%}" role="button">Agregar Comentarios</a></td>
+                <td><a class="btn btn-primary btn-sm" href="{% url 'ver_comentarios' publicacion.id_publicacion%}" role="button">Ver Comentarios</a></td>
+                <td><a class="btn btn-warning btn-sm" href="{% url 'editar_publicacion' publicacion.id_publicacion%}" role="button">Editar Publicación</a></td>
+                <td><a class="btn btn-danger btn-sm" href="{% url 'eliminar_publicacion' publicacion.id_publicacion%}" role="button">Eliminar Publicación</a></td>
+
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
