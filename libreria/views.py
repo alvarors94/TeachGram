@@ -41,26 +41,16 @@ def ver_comentarios(request, id):
     comentarios = publicacion.comentarios.all()  # Obtener todos los comentarios de la publicación específica
     return render(request, "perfil/ver_comentarios.html", {"publicacion": publicacion, "comentarios": comentarios})
 
-
 def agregar_comentario(request, id):
-    publicacion = Publicacion.objects.get(id_publicacion = id)
-    form_comentario = ComentarioForm(request.POST)
-    if form_comentario.is_valid() and request.POST:
-        form_comentario.save()
-        return redirect("publicaciones")
-
-    return render(request, "perfil/agregar_comentario.html", {"form_comentario": form_comentario})
-    # publicacion = Publicacion.objects.get(id_publicacion=id)
-    # if request.method == 'POST':
-    #     form_comentario = ComentarioForm(request.POST)
-    #     if form_comentario.is_valid():
-    #         comentario = form_comentario.save(commit=False)
-    #         comentario.publicacion = publicacion
-    #         comentario.save()
-    #         return redirect('ver_comentarios', id=id)  # Redirigir a la página de visualización de comentarios
-    # else:
-    #     form_comentario = ComentarioForm()
-    # return render(request, 'perfil/agregar_comentario.html', {'form_comentario': form_comentario, 'publicacion': publicacion})
-
-
+    publicacion = Publicacion.objects.get(id_publicacion=id)
+    if request.method == 'POST':
+        form_comentario = ComentarioForm(request.POST)
+        if form_comentario.is_valid():
+            comentario = form_comentario.save(commit=False)
+            comentario.publicacion_id = publicacion.id_publicacion  # Asignar el ID de la publicación al comentario
+            comentario.save()
+            return redirect("publicaciones")
+    else:
+        form_comentario = ComentarioForm(initial={'publicacion': publicacion.id_publicacion})  # Inicializar el formulario con el ID de la publicación
+    return render(request, "perfil/agregar_comentario.html", {"form_comentario": form_comentario, "publicacion": publicacion})
 

@@ -2,7 +2,7 @@
 
 .mi-navbar {
     width: 100%;
-    border-bottom: solid #dbdbdb 1px;
+    border-bottom: solid #ff0000 1px;
     background: linear-gradient(to left, #dedbdb, #6FAF83); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
     margin-bottom: 200px; /* Agrega margen en la parte inferior del contenedor de perfil */
 }
@@ -18,3 +18,26 @@ body{
   .table-container {
     margin-top: 50px; /* Ajusta este valor según sea necesario */
 }
+
+.gradient-custom-2 {
+  /* fallback for old browsers */
+  background: #fccb90;
+  
+  /* Chrome 10-25, Safari 5.1-6 */
+  background: -webkit-linear-gradient(to right, #ee7724, #d8363a, #dd3675, #b44593);
+  
+  /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  background: linear-gradient(to right, #ee7724, #d8363a, #dd3675, #b44593);
+  }
+  
+  @media (min-width: 768px) {
+  .gradient-form {
+  height: 100vh !important;
+  }
+  }
+  @media (min-width: 769px) {
+  .gradient-custom-2 {
+  border-top-right-radius: .3rem;
+  border-bottom-right-radius: .3rem;
+  }
+  }

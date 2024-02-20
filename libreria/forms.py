@@ -9,5 +9,6 @@ class PublicacionForm(forms.ModelForm):
 class ComentarioForm(forms.ModelForm):
     class Meta:
         model = Comentario
-        fields = "__all__"
+        fields = ['usuario', 'comentario']  # Campos del formulario
+
        
