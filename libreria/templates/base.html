@@ -20,20 +20,38 @@
         <link rel="stylesheet" href="/static/main.css">
     </head>
 
-    
-
     <nav class="navbar navbar-expand-lg mi-navbar fixed-top mb-30">
         <div class="container-fluid mb-30">
             <a class="navbar-brand text-white mb-30" href="/">Inicio</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                  <a class="nav-link me-3" href="{% url 'perfil' %}">Perfil</a>
-                  <a class="nav-link" href="#">FAQ</a>
-            
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link me-3" href="{% url 'perfil' %}">Perfil</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">FAQ</a>
+                    </li>
+                </ul>
+                <a class="nav-link" href="#">
+                    <img src="{{user.}}" alt="Foto de Perfil" style="width: 30px; height: 30px; border-radius: 50%;">
+                </a>
+                <a class="nav-link" href="#">{{user.username}}</a>
+                <form method="post" action="{% url 'login' %}">
+                    {% csrf_token %}
+                    <button type="submit">Login</button>
+                </form>
+                <form method="post" action="{% url 'logout'%}?next={{LOGOUT_REDIRECT_URL}}">
+                    {% csrf_token %}
+                    <button type="submit">Logout</button>
+                </form>
+            </div>
         </div>
     </nav>
+    
+    
 
     
       

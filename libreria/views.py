@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from .models import Usuario, Publicacion, Comentario #Importamos las clases
 from .forms import PublicacionForm, ComentarioForm
+from django.contrib.auth import logout
 def inicio(request):
     return render(request, "paginas/inicio.html")
 
@@ -24,13 +25,13 @@ def editar_publicacion(request,id):
     form_publicacion = PublicacionForm(request.POST or None, request.FILES or None, instance = publicacion)
     if form_publicacion.is_valid() and request.POST:
         form_publicacion.save()
-        return redirect("crear_publicacion")
+        return redirect("publicaciones")
     return render(request, "perfil/editar_publicacion.html", {"form_publicacion": form_publicacion})
 
 def eliminar_publicacion(request,id):
     publicacion = Publicacion.objects.get(id_publicacion = id)
     publicacion.delete()
-    return redirect("crear_publicacion")
+    return redirect("publicaciones")
 
 def ver_publicaciones(request):
     publicaciones = Publicacion.objects.all()
@@ -54,3 +55,6 @@ def agregar_comentario(request, id):
         form_comentario = ComentarioForm(initial={'publicacion': publicacion.id_publicacion})  # Inicializar el formulario con el ID de la publicación
     return render(request, "perfil/agregar_comentario.html", {"form_comentario": form_comentario, "publicacion": publicacion})
 
+def logout(request):
+    logout(request)
+    return render(request, "registration/logged_out.html")

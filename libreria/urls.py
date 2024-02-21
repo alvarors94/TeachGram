@@ -2,7 +2,8 @@ from django.urls import path, include
 from . import views # el . indica que de esta misma carpeta, importe views.py
 from django.conf import settings # para usar estos archivos en la carpeta settings
 from django.contrib.staticfiles.urls import static # para usar estos archivos en la carpeta static
-from django.contrib.auth.views import LoginView
+
+
 
 
 urlpatterns = [
@@ -13,8 +14,7 @@ urlpatterns = [
     path("eliminar_publicacion/<int:id>", views.eliminar_publicacion, name="eliminar_publicacion"), 
     path("publicaciones", views.ver_publicaciones, name="publicaciones"), 
     path("ver_comentarios/<int:id>", views.ver_comentarios, name="ver_comentarios"), 
-    path("agregar_comentario/<int:id>", views.agregar_comentario, name="agregar_comentario"), 
-    path("login", LoginView.as_view(template_name="perfil/login.html"), name="login"),  
+    path("agregar_comentario/<int:id>", views.agregar_comentario, name="agregar_comentario"),  
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) # así concatenamos el path de la carpeta media y la ruta de la carpeta static
 
