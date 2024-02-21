@@ -48,13 +48,10 @@ def agregar_comentario(request, id):
         form_comentario = ComentarioForm(request.POST)
         if form_comentario.is_valid():
             comentario = form_comentario.save(commit=False)
-            comentario.publicacion_id = publicacion.id_publicacion  # Asignar el ID de la publicación al comentario
+            comentario.publicacion_id = publicacion.id_publicacion
+            comentario.usuario_id = request.user.id  # Asignar el ID del usuario autenticado al campo usuario_id del comentario
             comentario.save()
             return redirect("publicaciones")
     else:
-        form_comentario = ComentarioForm(initial={'publicacion': publicacion.id_publicacion})  # Inicializar el formulario con el ID de la publicación
+        form_comentario = ComentarioForm(initial={'publicacion': publicacion.id_publicacion})
     return render(request, "perfil/agregar_comentario.html", {"form_comentario": form_comentario, "publicacion": publicacion})
-
-def logout(request):
-    logout(request)
-    return render(request, "registration/logged_out.html")

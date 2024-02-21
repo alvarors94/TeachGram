@@ -35,10 +35,11 @@
                         <a class="nav-link" href="#">FAQ</a>
                     </li>
                 </ul>
-                <a class="nav-link" href="#">
-                    <img src="{{user.}}" alt="Foto de Perfil" style="width: 30px; height: 30px; border-radius: 50%;">
+                <a class="nav-link me-3" href="#">
+                    <img src="{{ user.password }}" alt="Foto de Perfil" style="width: 30px; height: 30px; border-radius: 50%;">
                 </a>
-                <a class="nav-link" href="#">{{user.username}}</a>
+                <a class="nav-link me-3" href="#"><strong>Id: {{ user.id }}</strong></a>
+                <a class="nav-link" href="#"><strong>{{ user.username }}</strong></a>
                 <form method="post" action="{% url 'login' %}">
                     {% csrf_token %}
                     <button type="submit">Login</button>
