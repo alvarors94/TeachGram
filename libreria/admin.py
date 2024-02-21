@@ -1,7 +1,7 @@
 from django.contrib import admin
-from .models import Usuario, Publicacion, Comentario #Importamos las clases
+from .models import User, Publicacion, Comentario #Importamos las clases
 
-admin.site.register(Usuario)
+admin.site.register(User)
 admin.site.register(Publicacion)
 admin.site.register(Comentario)
 

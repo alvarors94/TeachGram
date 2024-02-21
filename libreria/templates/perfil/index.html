@@ -6,27 +6,34 @@
 <div class="table-container">
     <div class="card-header">Listado de perfiles</div>
         <div class="card-body">
-    
             <table class="table">
                 <thead>
                     <tr>
                         <th scope="col">ID Usuario</th>
                         <th scope="col">Nombre Usuario</th>
-                        <th scope="col">Nombre Completo</th>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Apellido</th>
                         <th scope="col">Contraseña</th>
+                        <th scope="col">¿Es staff?</th>
+                        <th scope="col">¿Está activo?</th>
+                        <th scope="col">¿Es superusuario?</th>
                         <th scope="col">Foto de Perfil</th>
-                        <th scope="col">¿Está Bloqueado?</th>
+                        
                     </tr>
                 </thead>
                 <tbody>
-                    {% for usuario in usuarios %}
+                    {% for user in users %}
                     <tr>
-                        <td>{{ usuario.id_usuario }}</td>
-                        <td>{{ usuario.nombre_usuario }}</td>
-                        <td>{{ usuario.nombre_completo }}</td>
-                        <td>{{ usuario.password }}</td>
-                        <td><img src="{{ usuario.foto_perfil.url }}" height="40" width="40"/></td>
-                        <td>{{ usuario.esta_bloqueado }}</td>
+                        <td>{{ user.id }}</td>
+                        <td>{{ user.username }}</td>
+                        <td>{{ user.first_name }}</td>
+                        <td>{{ user.last_name }}</td>
+                        <td>{{ user.password }}</td>
+                        <td>{{ user.is_staff}}</td>
+                        <td>{{ user.is_active }}</td>
+                        <td>{{ user.is_superuser}}</td>
+                        <td><img src="{{ user.foto_perfil.url }}" height="40" width="40"/></td>
+
                     </tr>
                     {% endfor %}
                 </tbody>
