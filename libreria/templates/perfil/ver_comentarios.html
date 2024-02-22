@@ -18,12 +18,12 @@
                 <tbody> 
                     {% for comentario in comentarios %}
                     <tr>
-                        <td>{{comentario.id_comentario}}</td>
-                        <td>{{comentario.usuario.nombre_usuario}}</td>
-                        <td>{{comentario.usuario.id_usuario}}</td>
-                        <td><img src="{{ publicacion.foto_publicacion.url }}" height="80" width="80"/></td>
-                        <td>{{comentario.comentario}}</td>
-                        <td>{{comentario.fecha_publicacion_comentario}}</td>
+                        <td>{{ comentario.id }}</td>
+                        <td>{{ comentario.user }}</td>
+                        <td>{{ comentario.user_id }}</td>
+                        <td><img src="{{ publicacion.foto_publicacion.url }}" height="60" width="60"/></td>
+                        <td>{{ comentario.comentario }}</td>
+                        <td>{{ comentario.fecha_publicacion_comentario }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>

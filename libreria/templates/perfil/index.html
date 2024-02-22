@@ -3,39 +3,39 @@
 {% block contenido %} 
 
 
-<div class="table-container">
+<div class="">
     <div class="card-header">Listado de perfiles</div>
-        <div class="card-body">
-            <table class="table">
+    <div class="card-body">
+        <table class="table mt-5"> 
                 <thead>
                     <tr>
                         <th scope="col">ID Usuario</th>
                         <th scope="col">Nombre Usuario</th>
-                        <th scope="col">Nombre</th>
-                        <th scope="col">Apellido</th>
-                        <th scope="col">Contraseña</th>
-                        <th scope="col">¿Es staff?</th>
-                        <th scope="col">¿Está activo?</th>
-                        <th scope="col">¿Es superusuario?</th>
+                        <th scope="col">Nombre completo</th>
                         <th scope="col">Foto de Perfil</th>
+                        <th scope="col">Último Acceso</th>
+                        <th scope="col">¿Es superusuario?</th>
+                        <th scope="col">¿Está activo?</th>
                         
                     </tr>
                 </thead>
                 <tbody>
-                    {% for user in users %}
+                    
+                    {% for dato in datos_de_usuario %}
+                   
                     <tr>
-                        <td>{{ user.id }}</td>
-                        <td>{{ user.username }}</td>
-                        <td>{{ user.first_name }}</td>
-                        <td>{{ user.last_name }}</td>
-                        <td>{{ user.password }}</td>
-                        <td>{{ user.is_staff}}</td>
-                        <td>{{ user.is_active }}</td>
-                        <td>{{ user.is_superuser}}</td>
-                        <td><img src="{{ user.foto_perfil.url }}" height="40" width="40"/></td>
+                        <td>{{ dato.id }}</td>
+                        <td>{{ dato.username }}</td>
+                        <td>{{ dato.full_name }}</td>
+                        <td><img src="{{ dato.profile_pic }}" height="60" width="60"/></td>
+                        <td>{{ dato.last_login }}</td>
+                        <td>{{ dato.is_superuser}}</td>
+                        <td>{{ dato.is_active }}</td>
 
+                        
                     </tr>
                     {% endfor %}
+                    
                 </tbody>
                 
             </table>
