@@ -1,0 +1,45 @@
+{% extends "base.html"%}
+{% block titulo %} Tu perfil {% endblock %}
+{% block contenido %} 
+<body>
+    <header>
+        <div class="perfil-container mb-3">
+            <div class="contenedor-cabecera mt-3" >
+                <div class="cabecera1">
+                    
+                </div>
+                
+                <div>
+                    {% for perfil in perfiles %}
+                        {% if perfil.username_id == usuario.id %}
+                            <img src="{{ perfil.profile_pic.url }}" height="150" width="150" style="border-radius: 50%;"/>
+                        {% endif %}
+                    {% endfor %}
+                    
+                            <h2>{{ usuario.username}}</h2> 
+                            <h2>{{ usuario.first_name }} {{ usuario.last_name }}</h2> 
+                            <button>Editar perfil</button>
+                    
+                    
+                </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <main>
+        <div class="linea"></div>
+        <div class="main-nav">
+            <h3>PUBLICACIONES </h3>
+        </div>
+        <div class="grid-container">
+            {% for publicacion in publicaciones %}
+                
+                    <div class="grid-item">
+                        <img src="{{ publicacion.foto_publicacion.url }}" height="309" width="309"/>
+                    </div>
+                
+            {% endfor %}
+        </div>
+    </main>
+</body>
+{% endblock %}

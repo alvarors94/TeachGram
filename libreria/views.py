@@ -1,18 +1,17 @@
 from django.shortcuts import render, redirect
 from .models import  Publicacion, Comentario, Perfil #Importamos las clases
 from .forms import PublicacionForm, ComentarioForm
-from django.contrib.auth import logout
+from django.contrib.auth.models import User
+
+perfiles = Perfil.objects.all()
 
 def base(request):
-    perfiles = Perfil.objects.first()  # Aquí asumo que estás obteniendo el primer perfil de la base de datos
     return render(request, 'base.html', {'perfiles': perfiles})
 
 def inicio(request):
-    return render(request, "paginas/inicio.html")
+    return render(request, "paginas/inicio.html",{'perfiles': perfiles})
 
 def perfil(request):
-    # Obtener todos los perfiles
-    perfiles = Perfil.objects.all()
 
     # Crear una lista para almacenar los nombres de usuario y otros atributos
     datos_de_usuario = []
@@ -46,7 +45,7 @@ def crear_publicacion(request):
     else:
         form_publicacion = PublicacionForm()
     
-    return render(request, "perfil/crear_publicacion.html", {"form_publicacion": form_publicacion})
+    return render(request, "perfil/crear_publicacion.html", {"form_publicacion": form_publicacion,'perfiles': perfiles})
 
 def editar_publicacion(request,id):
     publicacion = Publicacion.objects.get(id = id)
@@ -54,7 +53,7 @@ def editar_publicacion(request,id):
     if form_publicacion.is_valid() and request.POST:
         form_publicacion.save()
         return redirect("publicaciones")
-    return render(request, "perfil/editar_publicacion.html", {"form_publicacion": form_publicacion})
+    return render(request, "perfil/editar_publicacion.html", {"form_publicacion": form_publicacion,'perfiles': perfiles})
 
 def eliminar_publicacion(request,id):
     publicacion = Publicacion.objects.get(id = id)
@@ -63,14 +62,30 @@ def eliminar_publicacion(request,id):
 
 def ver_publicaciones(request):
     publicaciones = Publicacion.objects.all()
-    perfiles = Perfil.objects.all()
     return render(request, "perfil/publicaciones.html", {"publicaciones": publicaciones, "perfiles": perfiles})
 
 
 def ver_comentarios(request, id):
     publicacion = Publicacion.objects.get(id=id)
     comentarios = publicacion.comentarios.all()  # Obtener todos los comentarios de la publicación específica
-    return render(request, "perfil/ver_comentarios.html", {"publicacion": publicacion, "comentarios": comentarios})
+    return render(request, "perfil/ver_comentarios.html", {"publicacion": publicacion, "comentarios": comentarios,'perfiles': perfiles})
+
+
+
+def ver_perfil(request, username):
+    # Obtener el usuario correspondiente al nombre de usuario
+    usuario = User.objects.get(username=username)
+    # Filtrar las publicaciones por el usuario
+    publicaciones = Publicacion.objects.filter(user_id=usuario.id)
+
+    return render(request, "perfil/ver_perfil.html", {"publicaciones": publicaciones, "perfiles": perfiles, "usuario": usuario})
+
+
+def editar_perfil(request, username):
+    publicaciones = Publicacion.objects.all()
+    # publicaciones = Publicacion.objects.filter(usuario__username=username)
+    # Obtener todos los comentarios de la publicación específica
+    return render(request, "perfil/ver_perfil.html", {"publicaciones": publicaciones, "perfiles": perfiles})
 
 def agregar_comentario(request, id):
     publicacion = Publicacion.objects.get(id=id)
@@ -82,4 +97,4 @@ def agregar_comentario(request, id):
             comentario.user_id = request.user.id
             comentario.save()
             return redirect("publicaciones")
-    return render(request, "perfil/agregar_comentario.html", {"form_comentario": form_comentario, "publicacion": publicacion})
+    return render(request, "perfil/agregar_comentario.html", {"form_comentario": form_comentario, "publicacion": publicacion,'perfiles': perfiles})

@@ -26,7 +26,7 @@
                 <td>{{ publicacion.id }}</td>
                 {% for perfil in perfiles %}
                     {% if perfil.username_id == publicacion.user_id %}
-                        <td><img src="{{ perfil.profile_pic.url }}" height="60" width="60" class="img-thumbnail" style="border-radius: 50%;"/></td>
+                        <td><img src="{{ perfil.profile_pic.url }}" height="60" width="60" style="border-radius: 50%;"/></td>
                     {% endif %}
                 {% endfor %}
                 <td>{{ publicacion.user }}</td>
