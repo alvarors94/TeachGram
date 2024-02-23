@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block titulo %} Feed {% endblock %}
+{% block contenido %} 
+
+<h6>Fecha límite:</h6>
+<style>
+    input[type="date"] {
+        padding: 5px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        outline: none;
+        font-size: 14px;
+        color: #333;
+    }
+</style>
+<input type="date" id="start" name="trip-start" value="2024-02-02" min="2024-02-02" max="2029-12-31" />
+
+{% for publicacion in publicaciones %}
+<div class="d-flex justify-content-center">
+    <div class="card mb-3" style="width: 468px;">
+        <div style="overflow: hidden; height: 468px;">
+            <img class="card-img-top" src="{{ publicacion.foto_publicacion.url }}" alt="Card image cap" style="width: 100%; height: 100%; object-fit: cover;">
+        </div>
+        <div class="card-body">
+            {% for perfil in perfiles %}
+            {% if perfil.username_id == publicacion.user_id %}
+                <a href="{% url 'ver_perfil' publicacion.user %}" class="no-link-style"><img src="{{ perfil.profile_pic.url }}" height="60" width="60" style="border-radius: 50%;"/></a>
+            {% endif %}
+            {% endfor %}
+            <h5><a href="{% url 'ver_perfil' publicacion.user %}" class="no-link-style">{{publicacion.user}}</a> · <p>{{publicacion.fecha_publicacion }}</p></h5>
+            <p class="card-text">{{ publicacion.descripcion }}</p>
+            
+            
+
+            <div class="col">
+                <a class="btn btn-secondary btn-sm w-100 mb-2" href="{% url 'ver_comentarios' publicacion.id %}" role="button">
+                    <p class="m-0">{{publicacion.numero_de_comentarios }}</p>
+                    <span class="material-symbols-outlined">check_circle</span>
+                </a>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <a class="btn btn-secondary btn-sm w-100 mb-2" href="{% url 'agregar_comentario' publicacion.id %}" role="button">
+                        <img width="24" height="24" src="https://img.icons8.com/cotton/64/000000/speech-bubble-with-dots.png" alt="speech-bubble-with-dots"/>
+                        Comentar
+                    </a>
+                </div>
+                <div class="col">
+                    <a class="btn btn-warning btn-sm w-100 mb-2" href="{% url 'editar_publicacion' publicacion.id %}" role="button">
+                        <img width="24" height="24" src="https://img.icons8.com/cotton/64/create-new--v1.png" alt="create-new--v1"/>
+                        Editar publicación
+                    </a>
+                </div>
+                <div class="col">
+                    <a class="btn btn-danger btn-sm w-100" href="{% url 'eliminar_publicacion' publicacion.id %}" role="button">
+                        <img width="40" height="40" src="https://img.icons8.com/cotton/64/000000/trash--v1.png" alt="trash--v1"/>
+                        Eliminar publicación
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+{% endblock %}

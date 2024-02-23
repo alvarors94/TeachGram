@@ -14,6 +14,7 @@
                 <th scope="col">Foto</th>
                 <th scope="col">Descripción</th>
                 <th scope="col">Fecha de publicación</th>
+                <th scope="col">Comentarios</th>
                 <th scope="col">Agregar comentarios</th>
                 <th scope="col">Ver comentarios</th>
                 <th scope="col">Editar publicación</th>
@@ -26,16 +27,17 @@
                 <td>{{ publicacion.id }}</td>
                 {% for perfil in perfiles %}
                     {% if perfil.username_id == publicacion.user_id %}
-                        <td><img src="{{ perfil.profile_pic.url }}" height="60" width="60" style="border-radius: 50%;"/></td>
+                        <td><a href="{% url 'ver_perfil' publicacion.user %}" class="no-link-style"><img src="{{ perfil.profile_pic.url }}" height="60" width="60" style="border-radius: 50%;"/></a></td>
                     {% endif %}
                 {% endfor %}
-                <td>{{ publicacion.user }}</td>
+                <td><a href="{% url 'ver_perfil' publicacion.user %}" class="no-link-style">{{ publicacion.user }}</a></td>
                 <td>{{ publicacion.user_id }}</td>
                 <td><img src="{{ publicacion.foto_publicacion.url }}" height="80" width="80"/></td>
                 <td>{{ publicacion.descripcion }}</td>
                 <td>{{ publicacion.fecha_publicacion }}</td>
+                <td>{{ publicacion.numero_de_comentarios }}</td>
                 <td><a class="btn btn-secondary btn-sm" href="{% url 'agregar_comentario' publicacion.id %}" role="button">Agregar Comentarios</a></td>
-                <td><a class="btn btn-primary btn-sm" href="{% url 'ver_comentarios' publicacion.id %}" role="button">Ver    Comentarios</a></td>
+                <td><a class="btn btn-primary btn-sm" href="{% url 'ver_comentarios' publicacion.id %}" role="button">Ver Comentarios</a></td>
                 <td><a class="btn btn-warning btn-sm" href="{% url 'editar_publicacion' publicacion.id %}" role="button">Editar Publicación</a></td>
                 <td><a class="btn btn-danger btn-sm" href="{% url 'eliminar_publicacion' publicacion.id %}" role="button">Eliminar Publicación</a></td>
             </tr>

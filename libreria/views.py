@@ -41,7 +41,7 @@ def crear_publicacion(request):
             publicacion = form_publicacion.save(commit=False)
             publicacion.user_id = request.user.id  # Asigna el id del usuario autenticado
             publicacion.save()
-            return redirect("publicaciones")
+            return redirect("listado_publicaciones")
     else:
         form_publicacion = PublicacionForm()
     
@@ -52,23 +52,28 @@ def editar_publicacion(request,id):
     form_publicacion = PublicacionForm(request.POST or None, request.FILES or None, instance = publicacion)
     if form_publicacion.is_valid() and request.POST:
         form_publicacion.save()
-        return redirect("publicaciones")
+        return redirect("listado_publicaciones")
     return render(request, "perfil/editar_publicacion.html", {"form_publicacion": form_publicacion,'perfiles': perfiles})
 
 def eliminar_publicacion(request,id):
     publicacion = Publicacion.objects.get(id = id)
     publicacion.delete()
-    return redirect("publicaciones")
+    return redirect("listado_publicaciones")
 
-def ver_publicaciones(request):
+def ver_publicaciones(request, template_name):
     publicaciones = Publicacion.objects.all()
-    return render(request, "perfil/publicaciones.html", {"publicaciones": publicaciones, "perfiles": perfiles})
+    comentarios = Comentario.objects.all()  # Obtener todos los comentarios de la publicación específica
+    for publicacion in publicaciones:
+        publicacion.numero_de_comentarios = publicacion.comentarios.count()
+    return render(request, template_name, {"publicaciones": publicaciones, "perfiles": perfiles, "comentarios": comentarios})
+
 
 
 def ver_comentarios(request, id):
     publicacion = Publicacion.objects.get(id=id)
     comentarios = publicacion.comentarios.all()  # Obtener todos los comentarios de la publicación específica
     return render(request, "perfil/ver_comentarios.html", {"publicacion": publicacion, "comentarios": comentarios,'perfiles': perfiles})
+
 
 
 
