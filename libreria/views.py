@@ -2,7 +2,8 @@ from django.shortcuts import render, redirect
 from .models import  Publicacion, Comentario, Perfil #Importamos las clases
 from .forms import PublicacionForm, ComentarioForm
 from django.contrib.auth.models import User
-
+import locale
+locale.setlocale(locale.LC_ALL, 'es_ES')
 perfiles = Perfil.objects.all()
 
 def base(request):
@@ -61,12 +62,29 @@ def eliminar_publicacion(request,id):
     return redirect("listado_publicaciones")
 
 def ver_publicaciones(request, template_name):
+    from datetime import datetime, timedelta
     publicaciones = Publicacion.objects.all()
     comentarios = Comentario.objects.all()  # Obtener todos los comentarios de la publicación específica
+
+    # Formatear la fecha actual
+    ahora = datetime.now().date()
+
+
+    # Calcular la diferencia en días para cada comentario
+    for comentario in comentarios:
+        diferencia = ahora - comentario.fecha_publicacion_comentario
+        if diferencia.days == 0:
+            comentario.dias_desde_publicacion = "hoy"
+        elif diferencia.days == 1:
+            comentario.dias_desde_publicacion = "ayer"
+        else:
+            comentario.dias_desde_publicacion = diferencia.days  # Obtener la diferencia en días
+
+    # Obtener el número de comentarios por publicación y formatear la fecha de publicación de la publicación
     for publicacion in publicaciones:
         publicacion.numero_de_comentarios = publicacion.comentarios.count()
-    return render(request, template_name, {"publicaciones": publicaciones, "perfiles": perfiles, "comentarios": comentarios})
-
+        publicacion.fecha_publicacion = publicacion.fecha_publicacion.strftime("%d de %B de %Y")
+    return render(request, template_name, {"publicaciones": publicaciones, "perfiles": perfiles,"comentarios": comentarios,})
 
 
 def ver_comentarios(request, id):
@@ -101,5 +119,5 @@ def agregar_comentario(request, id):
             comentario.publicacion_id = publicacion.id
             comentario.user_id = request.user.id
             comentario.save()
-            return redirect("publicaciones")
+            return redirect("feed")
     return render(request, "perfil/agregar_comentario.html", {"form_comentario": form_comentario, "publicacion": publicacion,'perfiles': perfiles})

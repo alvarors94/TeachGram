@@ -14,7 +14,8 @@ urlpatterns = [
     path("eliminar_publicacion/<int:id>", views.eliminar_publicacion, name="eliminar_publicacion"), 
     path("listado_publicaciones", views.ver_publicaciones, {"template_name": "perfil/listado_publicaciones.html"}, name="listado_publicaciones"),
     path("feed", views.ver_publicaciones, {"template_name": "perfil/feed.html"}, name="feed"),
-    path("ver_comentarios/<int:id>", views.ver_comentarios, name="ver_comentarios"), 
+    path("ver_comentarios/<int:id>", views.ver_publicaciones, {"template_name": "perfil/feed.html"}, name="ver_comentarios"),  # Utiliza la misma vista para ver comentarios en el feed
+    path("feed/ver_comentarios/<int:id>", views.ver_comentarios, name="feed_ver_comentarios"),  # Nueva ruta para ver comentarios en el feed
     path("agregar_comentario/<int:id>", views.agregar_comentario, name="agregar_comentario"),  
     path("perfil/<str:username>", views.ver_perfil, name="ver_perfil"),
 
