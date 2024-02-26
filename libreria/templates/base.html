@@ -42,10 +42,10 @@
                     {% for perfil in perfiles %}
                         {% if user.id == perfil.username_id %}
                             <img src="{{ perfil.profile_pic.url }}" height="40" width="40" style="border-radius: 50%; margin-right: 10px;"/>                    
-                        {% endif %}
-                    {% endfor %}
-                    
+
                     <a class="nav-link" href="{% url 'ver_perfil' user.username %}"><strong>{{ user.username }}</strong></a>
+                    {% endif %}
+                    {% endfor %}
                 </div>
                 <form method="post" action="{% url 'login' %}">
                     {% csrf_token %}

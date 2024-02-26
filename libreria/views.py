@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from .models import  Publicacion, Comentario, Perfil #Importamos las clases
-from .forms import PublicacionForm, ComentarioForm
+from .forms import PublicacionForm, ComentarioForm, PerfilForm, UserForm
 from django.contrib.auth.models import User
 import locale
 locale.setlocale(locale.LC_ALL, 'es_ES')
@@ -12,28 +12,34 @@ def base(request):
 def inicio(request):
     return render(request, "paginas/inicio.html",{'perfiles': perfiles})
 
-def perfil(request):
+def perfil(request, template_name='perfil/index.html'):
 
-    # Crear una lista para almacenar los nombres de usuario y otros atributos
-    datos_de_usuario = []
+        datos_de_usuario = []
+        for perfil in perfiles:
+            datos_usuario = {
+                'id': perfil.username.id,
+                'username': perfil.username.username,
+                'full_name': perfil.username.first_name + " " + perfil.username.last_name,
+                'profile_pic': perfil.profile_pic.url,
+                'last_login': perfil.username.last_login,
+                'is_superuser': perfil.username.is_superuser,
+                'is_active': perfil.username.is_active,
+            }
+            datos_de_usuario.append(datos_usuario)
 
-    # Iterar sobre cada perfil y obtener los datos del usuario
-    for perfil in perfiles:
-        # Crear un diccionario para almacenar los datos del usuario
-        datos_usuario = {
-            'id': perfil.username.id,
-            'username': perfil.username.username,  # Nombre de usuario
-            'full_name': perfil.full_name,
-            'profile_pic': perfil.profile_pic.url,
-            'last_login': perfil.username.last_login,  
-            'is_superuser': perfil.username.is_superuser,
-            'is_active': perfil.username.is_active,
-            # Otros atributos del modelo User que desees incluir
-        }
-        # Añadir los datos del usuario a la lista
-        datos_de_usuario.append(datos_usuario)
+        return render(request, template_name, {"datos_de_usuario": datos_de_usuario, "perfiles": perfiles})
+    
 
-    return render(request, "perfil/index.html", {"datos_de_usuario": datos_de_usuario, "perfiles": perfiles})
+def editar_perfil(request, username):
+    perfil_usuario = Perfil.objects.get(username__username=username)
+    form_user = UserForm(request.POST, instance=perfil_usuario.username)
+    
+    if request.method == 'POST' and form_user.is_valid():
+        form_user.save()
+        return redirect('ver_perfil', username=perfil_usuario.username.username)  # Redirigir a la página de perfil
+
+    return render(request, "perfil/editar_perfil.html", {"perfil_usuario": perfil_usuario, "form_user": form_user, 'perfiles': perfiles})
+
 
 def crear_publicacion(request):
     if request.method == 'POST':
@@ -53,13 +59,32 @@ def editar_publicacion(request,id):
     form_publicacion = PublicacionForm(request.POST or None, request.FILES or None, instance = publicacion)
     if form_publicacion.is_valid() and request.POST:
         form_publicacion.save()
-        return redirect("listado_publicaciones")
+        return redirect("feed")
     return render(request, "perfil/editar_publicacion.html", {"form_publicacion": form_publicacion,'perfiles': perfiles})
+
+def editar_comentario(request, id):
+    comentario = Comentario.objects.get(id=id)
+    publicacion = Publicacion.objects.get(id=comentario.publicacion_id)
+    form_comentario = ComentarioForm(request.POST or None, instance=comentario)  # Pasar la instancia del comentario a editar
+    if request.method == 'POST':
+        if form_comentario.is_valid() and request.POST:
+            form_comentario.save()  # El formulario ya contiene el comentario a editar, no es necesario modificarlo manualmente
+            return redirect("feed")
+    return render(request, "perfil/editar_comentario.html", {"form_comentario": form_comentario, "publicacion": publicacion, "perfiles": perfiles})
+
+
+
+   
 
 def eliminar_publicacion(request,id):
     publicacion = Publicacion.objects.get(id = id)
     publicacion.delete()
     return redirect("listado_publicaciones")
+
+def eliminar_comentario(request,id):
+    comentario = Comentario.objects.get(id = id)
+    comentario.delete()
+    return redirect("feed")
 
 def ver_publicaciones(request, template_name):
     from datetime import datetime, timedelta
@@ -95,6 +120,8 @@ def ver_comentarios(request, id):
 
 
 
+
+
 def ver_perfil(request, username):
     # Obtener el usuario correspondiente al nombre de usuario
     usuario = User.objects.get(username=username)
@@ -102,13 +129,6 @@ def ver_perfil(request, username):
     publicaciones = Publicacion.objects.filter(user_id=usuario.id)
 
     return render(request, "perfil/ver_perfil.html", {"publicaciones": publicaciones, "perfiles": perfiles, "usuario": usuario})
-
-
-def editar_perfil(request, username):
-    publicaciones = Publicacion.objects.all()
-    # publicaciones = Publicacion.objects.filter(usuario__username=username)
-    # Obtener todos los comentarios de la publicación específica
-    return render(request, "perfil/ver_perfil.html", {"publicaciones": publicaciones, "perfiles": perfiles})
 
 def agregar_comentario(request, id):
     publicacion = Publicacion.objects.get(id=id)

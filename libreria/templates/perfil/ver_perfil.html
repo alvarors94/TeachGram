@@ -18,7 +18,10 @@
                     
                             <h2>{{ usuario.username}}</h2> 
                             <h2>{{ usuario.first_name }} {{ usuario.last_name }}</h2> 
-                            <button>Editar perfil</button>
+                            <a class="btn btn-warning " href="{% url 'editar_perfil' usuario.username %}" role="button">
+                               
+                                Editar perfil
+                            </a>
                     
                     
                 </div>

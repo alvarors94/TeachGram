@@ -5,7 +5,6 @@ from django.utils import timezone
 
 class Perfil(models.Model):
     username = models.OneToOneField(User,max_length=200, on_delete=models.CASCADE,unique=True, verbose_name="Nombre de usuario")
-    full_name = models.CharField(max_length=200, verbose_name="Nombre completo", blank=True, null=True)
     profile_pic = models.ImageField(
         upload_to="media/profile_pics",
         default='media/avatar.png',
