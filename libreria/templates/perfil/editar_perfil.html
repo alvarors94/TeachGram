@@ -9,36 +9,28 @@
         <div class="perfil-container mb-3">
             <div class="contenedor-cabecera mt-3" >
                 <div class="cabecera1">
-                    
                 </div>
                
                         <img src="{{ perfil_usuario.profile_pic.url }}" height="150" width="150" style="border-radius: 50%;"/>
-                            
-              
-   
-                       
-                        <a
-                            name=""
-                            id=""
-                            class="btn btn-outline-danger"
-                            href="{% url 'cambiar_password' %}" 
-                            role="button"
-                            >Cambiar Contraseña</a
-                        >
-                    
-                  
-                    
-                    
-
-
-                    <form method="post" action="{% url 'editar_perfil' perfil_usuario.username.username %}">
-                        {% csrf_token %} 
+                        <a class="btn btn-outline-danger" href="{% url 'cambiar_password' %}" role="button">Cambiar Contraseña</a>
+                        <form enctype="multipart/form-data" method="post" action="{% url 'editar_perfil' %}">
+                            {% csrf_token %} 
+                            {% for campo in form_perfil %}
+                            <div class="mb-3">
+                                <label for="" class="form-label">{{campo.label}}:</label>
+                                <input
+                                    type="{{campo.field.widget.input_type}}" 
+                                    class="form-control"
+                                    name="{{campo.name}}"
+                                    value="{{campo.value}}"/>
+                                    <!-- Muestra el valor del campo para editarlo o por defecto ''-->            
+                            </div>
+                            <div class="col-12 help-text">{{campo.errors}}</div>
+                            {% endfor %}
+             
                         {% for campo in form_user %}
                         <div class="mb-3">
                             <label for="" class="form-label">{{campo.label}}:</label>
-                        
-                    
-                            <!-- type="{{campo.field.widget.input_type}}" es para que cambie el tipo de input en función de si es texto, imagen...-->
                             <input
                                 type="{{campo.field.widget.input_type}}" 
                                 class="form-control"
@@ -46,32 +38,14 @@
                                 id=""
                                 aria-describedby="helpId"
                                 placeholder="{{campo.label}}"
-                                value="{{ campo.value | default_if_none:'' }}"/>
-                                <!-- Muestra el valor del campo para editarlo o por defecto ''-->            
+                                value="{{ campo.value | default_if_none:'' }}"/>         
                         </div>
                         <div class="col-12 help-text">{{campo.errors}}</div>
                         {% endfor %}
-                    
-                        <input
-                            name=""
-                            id=""
-                            class="btn btn-success"
-                            type="submit"
-                            value="Actualizar información"
-                        />
-                    
-                        <a
-                            name=""
-                            id=""
-                            class="btn btn-danger"
-                            href="{% url 'ver_perfil' user.username %}" 
-                            role="button"
-                            >Cancelar</a
-                        >
-                    
-                        
+                        <input class="btn btn-success" type="submit" value="Actualizar información"/>
+                        <a class="btn btn-danger" href="{% url 'ver_perfil' user.username %}" role="button" >Cancelar</a>
                     </form>
-        
+
 
 
 

@@ -11,7 +11,7 @@ Incluyendo el token de CSRF en el formulario, se garantiza que las solicitudes d
         {% if campo.field.widget.input_type == 'file' and campo.value %}
         <!-- ESTO DE ARRIBA SIGNIFICA SI HAY UNA IMAGEN, ...-->
         <br/>
-        <img src="/{{campo.value}}" height="200" width="200" />
+        <img src="/media/{{campo.value}}" height="468" width="468" />
 
         
         {% endif %}

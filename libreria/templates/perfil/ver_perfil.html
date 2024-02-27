@@ -5,25 +5,19 @@
     <header>
         <div class="perfil-container mb-3">
             <div class="contenedor-cabecera mt-3" >
-                <div class="cabecera1">
-                    
-                </div>
+                
                 
                 <div>
                     {% for perfil in perfiles %}
                         {% if perfil.username_id == usuario.id %}
                             <img src="{{ perfil.profile_pic.url }}" height="150" width="150" style="border-radius: 50%;"/>
+                            <h2>{{ usuario.username }}</h2> 
+                            <h2>{{ usuario.first_name }} {{ usuario.last_name }}</h2> 
+                            {% if perfil.username_id == user.id %}
+                                <a class="btn btn-warning" href="{% url 'editar_perfil' %}" role="button">Editar perfil</a>
+                            {% endif %}
                         {% endif %}
                     {% endfor %}
-                    
-                            <h2>{{ usuario.username}}</h2> 
-                            <h2>{{ usuario.first_name }} {{ usuario.last_name }}</h2> 
-                            <a class="btn btn-warning " href="{% url 'editar_perfil' usuario.username %}" role="button">
-                               
-                                Editar perfil
-                            </a>
-                    
-                    
                 </div>
                 </div>
             </div>

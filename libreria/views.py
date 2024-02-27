@@ -10,7 +10,8 @@ locale.setlocale(locale.LC_ALL, 'es_ES')
 perfiles = Perfil.objects.all()
 
 def base(request):
-    return render(request, 'base.html', {'perfiles': perfiles})
+    perfil_usuario = Perfil.objects.get(username_id=request.user.id)
+    return render(request, 'base.html', {'perfiles': perfiles ,"perfil_usuario":perfil_usuario})
 
 def inicio(request):
     return render(request, "paginas/inicio.html",{'perfiles': perfiles})
@@ -33,24 +34,32 @@ def perfil(request, template_name='perfil/index.html'):
         return render(request, template_name, {"datos_de_usuario": datos_de_usuario, "perfiles": perfiles})
     
 
-def editar_perfil(request, username):
-    perfil_usuario = Perfil.objects.get(username__username=username)
+def editar_perfil(request):
+    perfil_usuario = Perfil.objects.get(username=request.user)
     form_user = UserForm(request.POST or None, instance=perfil_usuario.username)
+    form_perfil = PerfilForm(request.POST or None, request.FILES or None, instance=perfil_usuario)
 
     if request.method == 'POST':
-        if form_user.is_valid():
+        if form_user.is_valid() and form_perfil.is_valid():
             form_user.save()
-            return redirect('ver_perfil', username=perfil_usuario.username.username)  # Redirigir a la página de perfil
+            form_perfil.save()
+            return redirect('ver_perfil', username=request.user.username)  # Redirigir a la página de perfil
 
-    return render(request, "perfil/editar_perfil.html", {"perfil_usuario": perfil_usuario, "form_user": form_user})
+    return render(request, "perfil/editar_perfil.html", {"perfil_usuario": perfil_usuario, "form_user": form_user, "form_perfil": form_perfil})
 
+
+
+
+  
+           
+           
 class CambiarPassword(View):
     template_name = "perfil/cambiar_password.html"
     form_password = CambiarPasswordForm
     success_url = reverse_lazy('perfil')
     
     def get(self, request):
-        return render(request, self.template_name, {'form': self.form_password})
+        return render(request, self.template_name, {'form': self.form_password, 'user': request.user})
 
     def post(self, request):
         form = self.form_password(request.POST)
@@ -67,10 +76,9 @@ class CambiarPassword(View):
                     login(request, new_user)
                     
                 return redirect('ver_perfil', username=user.username)
-            return redirect('ver_perfil', username=user.username)
-        else:
-            return render(request, self.template_name, {'form': form})
-           
+            else:
+             return render(request, self.template_name, {'form': form})
+        return render(request, self.template_name, {'form': form, 'user': request.user})
 
 
 def crear_publicacion(request):
@@ -155,12 +163,13 @@ def ver_comentarios(request, id):
 
 
 def ver_perfil(request, username):
+    perfil_usuario = Perfil.objects.get(username=request.user)
     # Obtener el usuario correspondiente al nombre de usuario
     usuario = User.objects.get(username=username)
     # Filtrar las publicaciones por el usuario
     publicaciones = Publicacion.objects.filter(user_id=usuario.id)
 
-    return render(request, "perfil/ver_perfil.html", {"publicaciones": publicaciones, "perfiles": perfiles, "usuario": usuario})
+    return render(request, "perfil/ver_perfil.html", {"perfil_usuario":perfil_usuario,"publicaciones": publicaciones, "perfiles": perfiles, "usuario": usuario})
 
 def agregar_comentario(request, id):
     publicacion = Publicacion.objects.get(id=id)

@@ -1,6 +1,7 @@
 from django import forms
 from .models import Publicacion, Comentario, Perfil
 from django.contrib.auth.models import User
+import re
 
 class PublicacionForm(forms.ModelForm):
     class Meta:
@@ -16,22 +17,21 @@ class PerfilForm(forms.ModelForm):
     class Meta:
         model = Perfil
         fields = ['profile_pic']  
-        widgets = {
-            'profile_pic': forms.FileInput(attrs={'class': 'form-control'}),
-        }
+
 
 class UserForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ['username' ,'first_name', 'last_name']
+        fields = ['username', 'first_name', 'last_name']
+        labels = {
+            'username': 'Nombre de usuario',
+            'first_name': 'Nombre',
+            'last_name': 'Apellido',
+        }
         widgets = {
-            'username': forms.TextInput(attrs={'class': 'form-control',
-                                               'placeholder': 'Nombre de usuario'}),
-            # 'password': forms.PasswordInput(attrs={'class': 'form-control'}),
-            'first_name': forms.TextInput(attrs={'class': 'form-control',
-                                                'placeholder': 'Apellido'}),
-            'last_name': forms.TextInput(attrs={'class': 'form-control',
-                                                'placeholder': 'Apellido'}),
+            'username': forms.TextInput(attrs={'class': 'form-control'}),
+            'first_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'last_name': forms.TextInput(attrs={'class': 'form-control'})
         }
 
        
@@ -51,8 +51,22 @@ class CambiarPasswordForm(forms.Form):
         cleaned_data = super().clean()
         password1 = self.cleaned_data.get("password1")
         password2 = self.cleaned_data.get("password2")
+        errors = []
+
+        # Verificar si las contraseñas coinciden
         if password1 and password2 and password1 != password2:
-            raise forms.ValidationError("Las contraseñas no coinciden")
-        elif len(password2) < 8:
-            raise forms.ValidationError("La contraseña debe tener al menos 8 caracteres")
+            errors.append("Las contraseñas no coinciden")
+
+        # Verificar si la contraseña tiene al menos 8 caracteres
+        if len(password2) < 8:
+            errors.append("La contraseña debe tener al menos 8 caracteres")
+
+        # Verificar si la contraseña contiene al menos una letra minúscula, una letra mayúscula y un dígito
+        if not re.match(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$', password2):
+            errors.append("La contraseña debe contener al menos una letra, un número y una mayúscula")
+
+        # Si hay errores, lanzar una excepción con los mensajes de error
+        if errors:
+            raise forms.ValidationError(errors)
+
         return cleaned_data

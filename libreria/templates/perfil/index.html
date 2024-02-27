@@ -25,7 +25,6 @@
                    
                     <tr>
                         <td>{{ dato.id }}</td>
-                        <td>{{ perfil_usuario.id }}</td>
                         <td><a href="{% url 'ver_perfil' dato.username %}" class="no-link-style">{{ dato.username }}</a></td>
                         <td><a href="{% url 'ver_perfil' dato.username %}" class="no-link-style">{{ dato.full_name }}</a></td>
                         <td><a href="{% url 'ver_perfil' dato.username %}" class="no-link-style"><img src="{{ dato.profile_pic }}" height="60" width="60" style="border-radius: 50%;"/></a></td>
@@ -35,6 +34,7 @@
 
                         
                     </tr>
+                    
                     {% endfor %}
                     
                 </tbody>
