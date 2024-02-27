@@ -17,9 +17,18 @@
               
    
                        
-                        
+                        <a
+                            name=""
+                            id=""
+                            class="btn btn-outline-danger"
+                            href="{% url 'cambiar_password' %}" 
+                            role="button"
+                            >Cambiar Contraseña</a
+                        >
                     
-
+                  
+                    
+                    
 
 
                     <form method="post" action="{% url 'editar_perfil' perfil_usuario.username.username %}">
@@ -48,7 +57,7 @@
                             id=""
                             class="btn btn-success"
                             type="submit"
-                            value="Enviar información"
+                            value="Actualizar información"
                         />
                     
                         <a
@@ -62,8 +71,7 @@
                     
                         
                     </form>
-           
-
+        
 
 
 

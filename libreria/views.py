@@ -1,7 +1,10 @@
 from django.shortcuts import render, redirect
+from django.urls import reverse_lazy
+from django.views import View
 from .models import  Publicacion, Comentario, Perfil #Importamos las clases
-from .forms import PublicacionForm, ComentarioForm, PerfilForm, UserForm
+from .forms import PublicacionForm, ComentarioForm, PerfilForm, UserForm, CambiarPasswordForm
 from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login
 import locale
 locale.setlocale(locale.LC_ALL, 'es_ES')
 perfiles = Perfil.objects.all()
@@ -32,13 +35,42 @@ def perfil(request, template_name='perfil/index.html'):
 
 def editar_perfil(request, username):
     perfil_usuario = Perfil.objects.get(username__username=username)
-    form_user = UserForm(request.POST, instance=perfil_usuario.username)
-    
-    if request.method == 'POST' and form_user.is_valid():
-        form_user.save()
-        return redirect('ver_perfil', username=perfil_usuario.username.username)  # Redirigir a la página de perfil
+    form_user = UserForm(request.POST or None, instance=perfil_usuario.username)
 
-    return render(request, "perfil/editar_perfil.html", {"perfil_usuario": perfil_usuario, "form_user": form_user, 'perfiles': perfiles})
+    if request.method == 'POST':
+        if form_user.is_valid():
+            form_user.save()
+            return redirect('ver_perfil', username=perfil_usuario.username.username)  # Redirigir a la página de perfil
+
+    return render(request, "perfil/editar_perfil.html", {"perfil_usuario": perfil_usuario, "form_user": form_user})
+
+class CambiarPassword(View):
+    template_name = "perfil/cambiar_password.html"
+    form_password = CambiarPasswordForm
+    success_url = reverse_lazy('perfil')
+    
+    def get(self, request):
+        return render(request, self.template_name, {'form': self.form_password})
+
+    def post(self, request):
+        form = self.form_password(request.POST)
+        if form.is_valid():
+            user = User.objects.filter(username=request.user)
+            if user.exists():
+                user = user.first()
+                user.set_password(form.cleaned_data['password1'])
+                user.save()
+                
+                # Reautenticar al usuario después de cambiar la contraseña
+                new_user = authenticate(username=user.username, password=form.cleaned_data['password1'])
+                if new_user is not None:
+                    login(request, new_user)
+                    
+                return redirect('ver_perfil', username=user.username)
+            return redirect('ver_perfil', username=user.username)
+        else:
+            return render(request, self.template_name, {'form': form})
+           
 
 
 def crear_publicacion(request):
@@ -141,3 +173,4 @@ def agregar_comentario(request, id):
             comentario.save()
             return redirect("feed")
     return render(request, "perfil/agregar_comentario.html", {"form_comentario": form_comentario, "publicacion": publicacion,'perfiles': perfiles})
+
