@@ -1,5 +1,5 @@
 from django import forms
-from .models import Publicacion, Comentario, Perfil
+from .models import Publicacion, Comentario, Perfil, Recursos
 from django.contrib.auth.models import User
 import re
 
@@ -70,3 +70,8 @@ class CambiarPasswordForm(forms.Form):
             raise forms.ValidationError(errors)
 
         return cleaned_data
+    
+class RecursosForm(forms.ModelForm):
+    class Meta:
+        model = Recursos
+        fields = ['archivo_recurso', 'descripcion'] 

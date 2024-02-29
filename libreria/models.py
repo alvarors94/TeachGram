@@ -37,4 +37,12 @@ class Comentario(models.Model):
     publicacion = models.ForeignKey(Publicacion, on_delete=models.CASCADE,related_name='comentarios')
     comentario = models.CharField(max_length=400, verbose_name="Comentario")
     fecha_publicacion_comentario = models.DateField(auto_now_add=True)
+    
+class Recursos(models.Model):
+    archivo_recurso = models.FileField(upload_to="recursos", verbose_name="Archivo")
+    descripcion = models.CharField(max_length=200, verbose_name="Descripción")
+    fecha_publicacion_recurso = models.DateField(auto_now_add=True, verbose_name="Fecha de publicación")
+
+    class Meta:
+        ordering = ['-fecha_publicacion_recurso']
 

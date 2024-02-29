@@ -1,0 +1,35 @@
+{% extends "base.html"%}
+{% block titulo %} Añadir recursos {% endblock %}
+{% block contenido %} 
+
+<form enctype="multipart/form-data" method="post">
+    {% csrf_token %}
+    <div style="margin-top: 3px;"> <!-- Add a margin-top of 3px -->
+        {{ form_recurso}} <!-- Render the form fields -->
+    </div>
+  
+    <input
+        name=""
+        id=""
+        class="btn btn-success"
+        type="submit"
+        value="Enviar información"
+    />
+
+    <a
+        name=""
+        id=""
+        class="btn btn-danger"
+        href="{% url 'listado_publicaciones'%}" 
+        role="button"
+        >Cancelar</a
+    >  
+</form>
+
+        {%for recurso in recursos%}
+            {{recurso.id}}
+            {{recurso.descripcion}}
+            {{recurso.fecha_publicacion_recurso}}
+            {{recurso.archivo_recurso}}
+        {%endfor%}
+{%endblock%}

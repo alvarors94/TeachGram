@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views import View
-from .models import  Publicacion, Comentario, Perfil #Importamos las clases
-from .forms import PublicacionForm, ComentarioForm, PerfilForm, UserForm, CambiarPasswordForm
+from .models import  Publicacion, Comentario, Perfil, Recursos #Importamos las clases
+from .forms import PublicacionForm, ComentarioForm, PerfilForm, UserForm, CambiarPasswordForm, RecursosForm
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 import locale
@@ -14,24 +14,25 @@ def base(request):
     return render(request, 'base.html', {'perfiles': perfiles ,"perfil_usuario":perfil_usuario})
 
 def inicio(request):
-    return render(request, "paginas/inicio.html",{'perfiles': perfiles})
+    perfil_usuario = Perfil.objects.get(username_id=request.user.id)
+    return render(request, "paginas/inicio.html",{"perfil_usuario":perfil_usuario})
 
 def perfil(request, template_name='perfil/index.html'):
+    perfil_usuario = Perfil.objects.get(username_id=request.user.id)
+    datos_de_usuario = []
+    for perfil in perfiles:
+        datos_usuario = {
+            'id': perfil.username.id,
+            'username': perfil.username.username,
+            'full_name': perfil.username.first_name + " " + perfil.username.last_name,
+            'profile_pic': perfil.profile_pic.url,
+            'last_login': perfil.username.last_login,
+            'is_superuser': perfil.username.is_superuser,
+            'is_active': perfil.username.is_active,
+        }
+        datos_de_usuario.append(datos_usuario)
 
-        datos_de_usuario = []
-        for perfil in perfiles:
-            datos_usuario = {
-                'id': perfil.username.id,
-                'username': perfil.username.username,
-                'full_name': perfil.username.first_name + " " + perfil.username.last_name,
-                'profile_pic': perfil.profile_pic.url,
-                'last_login': perfil.username.last_login,
-                'is_superuser': perfil.username.is_superuser,
-                'is_active': perfil.username.is_active,
-            }
-            datos_de_usuario.append(datos_usuario)
-
-        return render(request, template_name, {"datos_de_usuario": datos_de_usuario, "perfiles": perfiles})
+    return render(request, template_name, {"datos_de_usuario": datos_de_usuario, "perfiles": perfiles, "perfil_usuario": perfil_usuario})
     
 
 def editar_perfil(request):
@@ -58,10 +59,13 @@ class CambiarPassword(View):
     form_password = CambiarPasswordForm
     success_url = reverse_lazy('perfil')
     
+    
     def get(self, request):
-        return render(request, self.template_name, {'form': self.form_password, 'user': request.user})
+        perfil_usuario = Perfil.objects.get(username_id=request.user.id)
+        return render(request, self.template_name, {'form': self.form_password, 'user': request.user, "perfil_usuario": perfil_usuario})
 
     def post(self, request):
+        perfil_usuario = Perfil.objects.get(username_id=request.user.id)
         form = self.form_password(request.POST)
         if form.is_valid():
             user = User.objects.filter(username=request.user)
@@ -78,7 +82,7 @@ class CambiarPassword(View):
                 return redirect('ver_perfil', username=user.username)
             else:
              return render(request, self.template_name, {'form': form})
-        return render(request, self.template_name, {'form': form, 'user': request.user})
+        return render(request, self.template_name, {'form': form, 'user': request.user,"perfil_usuario": perfil_usuario})
 
 
 def crear_publicacion(request):
@@ -130,6 +134,7 @@ def ver_publicaciones(request, template_name):
     from datetime import datetime, timedelta
     publicaciones = Publicacion.objects.all()
     comentarios = Comentario.objects.all()  # Obtener todos los comentarios de la publicación específica
+    perfil_usuario = Perfil.objects.get(username_id=request.user.id)
 
     # Formatear la fecha actual
     ahora = datetime.now().date()
@@ -149,7 +154,7 @@ def ver_publicaciones(request, template_name):
     for publicacion in publicaciones:
         publicacion.numero_de_comentarios = publicacion.comentarios.count()
         publicacion.fecha_publicacion = publicacion.fecha_publicacion.strftime("%d de %B de %Y")
-    return render(request, template_name, {"publicaciones": publicaciones, "perfiles": perfiles,"comentarios": comentarios,})
+    return render(request, template_name, {"publicaciones": publicaciones, "perfiles": perfiles,"comentarios": comentarios,"perfil_usuario": perfil_usuario})
 
 
 def ver_comentarios(request, id):
@@ -163,7 +168,7 @@ def ver_comentarios(request, id):
 
 
 def ver_perfil(request, username):
-    perfil_usuario = Perfil.objects.get(username=request.user)
+    perfil_usuario = Perfil.objects.get(username=request.user) 
     # Obtener el usuario correspondiente al nombre de usuario
     usuario = User.objects.get(username=username)
     # Filtrar las publicaciones por el usuario
@@ -183,3 +188,40 @@ def agregar_comentario(request, id):
             return redirect("feed")
     return render(request, "perfil/agregar_comentario.html", {"form_comentario": form_comentario, "publicacion": publicacion,'perfiles': perfiles})
 
+def  recursos(request):
+    from datetime import datetime, timedelta
+    recursos = Recursos.objects.all()
+    perfil_usuario = Perfil.objects.get(username_id=request.user.id)
+    
+
+    # Formatear la fecha actual
+    ahora = datetime.now().date()
+
+
+    # Calcular la diferencia en días para cada comentario
+    # for comentario in comentarios:
+    #     diferencia = ahora - comentario.fecha_publicacion_comentario
+    #     if diferencia.days == 0:
+    #         comentario.dias_desde_publicacion = "hoy"
+    #     elif diferencia.days == 1:
+    #         comentario.dias_desde_publicacion = "ayer"
+    #     else:
+    #         comentario.dias_desde_publicacion = diferencia.days  # Obtener la diferencia en días
+
+    # # Obtener el número de comentarios por publicación y formatear la fecha de publicación de la publicación
+    # for publicacion in publicaciones:
+    #     publicacion.numero_de_comentarios = publicacion.comentarios.count()
+    #     publicacion.fecha_publicacion = publicacion.fecha_publicacion.strftime("%d de %B de %Y")
+    return render(request, "perfil/recursos.html", {"recursos": recursos, "perfiles": perfiles,"perfil_usuario": perfil_usuario})
+
+def agregar_recurso(request):
+    recursos = Recursos.objects.all()
+    form_recurso= RecursosForm(request.POST, request.FILES) # Initialize the form
+    if request.method == 'POST':
+        if form_recurso.is_valid():
+            recurso = form_recurso.save(commit=False)
+            recurso.save()
+            return redirect("recursos")
+        else:
+            form_recurso = RecursosForm()
+    return render(request, "perfil/agregar_recurso.html", {"form_recurso": form_recurso,'perfiles': perfiles, "recursos": recursos})

@@ -1,0 +1,50 @@
+{% extends "base.html"%}
+{% block titulo %} Recursos {% endblock %}
+{% block contenido %} 
+
+<div class="container mt-3">
+    <a class="btn btn-warning" href="{% url 'agregar_recurso' %}" role="button">Añadir recurso</a>
+    
+    <!-- q<iframe  src="https://www.uv.es/jbosch/PDF/Curso%20de%20HTML.pdf" style="width:500px; height:375px;" frameborder="0" ></iframe>q
+    https://www.uv.es/jbosch/PDF/Curso%20de%20HTML.pdf
+    <embed src= "https://www.uv.es/jbosch/PDF/Curso%20de%20HTML.pdf" type="application/pdf" width= "500" height= "375">1
+        <object data="https://www.uv.es/jbosch/PDF/Curso%20de%20HTML.pdf" type="application/pdf" width="100%" height="100%">2
+            <p>Alternative text - include a link <a href="https://www.uv.es/jbosch/PDF/Curso%20de%20HTML.pdf">to the PDF!</a></p>
+          </object> -->
+<!-- Usando la etiqueta <embed> -->
+    <!-- <embed src="https://drive.google.com/file/d/0B7IuMuzsyD8RdDdlTlRyVk5feTA/view?usp=sharing&resourcekey=0-HqCs-Td5esLO1rYEunNO5Q" type="application/pdf" width="500px" height="375px">
+        <p>aaTexto alternativo: incluye un enlace <a href="https://drive.google.com/file/d/0B7IuMuzsyD8RdDdlTlRyVk5feTA/view?usp=sharing&resourcekey=0-HqCs-Td5esLO1rYEunNO5Q">al PDF</a>.</p>
+    </embed>
+    
+     Usando la etiqueta <iframe> 
+    <iframe src="/media/media/recursos/justificante0355KJN.pdf/" style="width:500px; height:375px;" frameborder="0">
+        <p>bbTexto alternativo: incluye un enlace <a href="/media/media/recursos/justificante0355KJN.pdf/">al PDF</a>.</p>
+    </iframe> -->
+</div>
+
+<div class="container">
+    <div class="card" style="width: 560px;">
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/BaxYR51zQRw?si=F6y0HwFwHR_AcWGb" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+        <div class="card-body">
+            <p class="card-text">{{ recurso.descripcion }} descripcion</p>
+            <hr class="card-divider">
+            <ul class="list-group list-group-flush">
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="card" style="width: 560px;">
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/nLflWQuswYg?si=o4IC3zy6Opnt8zVk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+        <div class="card-body">
+            <p class="card-text">{{ recurso.descripcion }} descripcion</p>
+            <hr class="card-divider">
+            <ul class="list-group list-group-flush">
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+<!-- /media/media/recursos/justificante0355KJN.pdf -->
