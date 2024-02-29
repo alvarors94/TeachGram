@@ -3,24 +3,34 @@
 {% block contenido %} 
 
 <div class="container mt-3">
-    <a class="btn btn-warning" href="{% url 'agregar_recurso' %}" role="button">Añadir recurso</a>
-    
-    <!-- q<iframe  src="https://www.uv.es/jbosch/PDF/Curso%20de%20HTML.pdf" style="width:500px; height:375px;" frameborder="0" ></iframe>q
-    https://www.uv.es/jbosch/PDF/Curso%20de%20HTML.pdf
-    <embed src= "https://www.uv.es/jbosch/PDF/Curso%20de%20HTML.pdf" type="application/pdf" width= "500" height= "375">1
-        <object data="https://www.uv.es/jbosch/PDF/Curso%20de%20HTML.pdf" type="application/pdf" width="100%" height="100%">2
-            <p>Alternative text - include a link <a href="https://www.uv.es/jbosch/PDF/Curso%20de%20HTML.pdf">to the PDF!</a></p>
-          </object> -->
-<!-- Usando la etiqueta <embed> -->
-    <!-- <embed src="https://drive.google.com/file/d/0B7IuMuzsyD8RdDdlTlRyVk5feTA/view?usp=sharing&resourcekey=0-HqCs-Td5esLO1rYEunNO5Q" type="application/pdf" width="500px" height="375px">
-        <p>aaTexto alternativo: incluye un enlace <a href="https://drive.google.com/file/d/0B7IuMuzsyD8RdDdlTlRyVk5feTA/view?usp=sharing&resourcekey=0-HqCs-Td5esLO1rYEunNO5Q">al PDF</a>.</p>
-    </embed>
-    
-     Usando la etiqueta <iframe> 
-    <iframe src="/media/media/recursos/justificante0355KJN.pdf/" style="width:500px; height:375px;" frameborder="0">
-        <p>bbTexto alternativo: incluye un enlace <a href="/media/media/recursos/justificante0355KJN.pdf/">al PDF</a>.</p>
-    </iframe> -->
+{% for recurso in recursos %}
+<div class="card mt-3" style="width: 40rem;">
+    {% if recurso.extension == 'pdf' %}
+    <img width="100" height="100" src="https://img.icons8.com/parakeet/100/pdf.png" alt="pdf"/>
+    {% elif recurso.extension == 'doc' or recurso.extension == 'docx' %}
+    <img width="100" height="100" src="https://img.icons8.com/parakeet/100/word.png" alt="word"/>
+    {% else %}
+    <img width="100" height="100" src="https://img.icons8.com/parakeet/100/document.png" alt="document"/>
+    {% endif %}
+    <div class="card-body d-flex justify-content-between">
+        
+        <div>
+            
+            <h5 class="card-title"><a href="{{ recurso.archivo_recurso.url }}" style="font-weight: bold; text-decoration: underline;">{{ recurso.nombre }}</a></h5>
+            <hr class="card-divider d-flex w-100 mt-0">
+            <p class="card-text" style="font-weight: bold">Descripción: </p>
+            <p>{{ recurso.descripcion }}</p>
+        </div>
+        
+        <div>
+            <small class="text-body-secondary ml-auto">{{ recurso.fecha_publicacion_recurso }}</small>
+        </div>
+    </div>
 </div>
+{% endfor %}
+    
+
+<a class="btn btn-warning" href="{% url 'agregar_recurso' %}" role="button">Añadir recurso</a>
 
 <div class="container">
     <div class="card" style="width: 560px;">
@@ -44,6 +54,30 @@
         </div>
     </div>
 </div>
+<div class="container">
+    <div class="card" style="width: 560px;">
+<iframe style="border-radius:12px" src="https://open.spotify.com/embed/episode/3U2ZzX5rD4M0IO1ADa5Hbx?utm_source=generator" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+        <div class="card-body">
+            <p class="card-text">{{ recurso.descripcion }} descripcion</p>
+            <hr class="card-divider">
+            <ul class="list-group list-group-flush">
+            </ul>
+        </div>
+    </div>
+</div>
+<!-- {% for recurso in recursos%}
+    <div class="container">
+        <div class="card" style="width: 560px;">
+        <iframe style="border-radius:12px" src="{{recurso.archivo_recurso.url}}" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+            <div class="card-body">
+                <p class="card-text">{{ recurso.descripcion }}</p>
+                <hr class="card-divider">
+                <ul class="list-group list-group-flush">
+                </ul>
+            </div>
+        </div>
+    </div>
+{%endfor%} -->
 {% endblock %}
 
 

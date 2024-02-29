@@ -6,6 +6,7 @@ from .forms import PublicacionForm, ComentarioForm, PerfilForm, UserForm, Cambia
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 import locale
+from datetime import datetime, timedelta
 locale.setlocale(locale.LC_ALL, 'es_ES')
 perfiles = Perfil.objects.all()
 
@@ -131,7 +132,7 @@ def eliminar_comentario(request,id):
     return redirect("feed")
 
 def ver_publicaciones(request, template_name):
-    from datetime import datetime, timedelta
+    
     publicaciones = Publicacion.objects.all()
     comentarios = Comentario.objects.all()  # Obtener todos los comentarios de la publicación específica
     perfil_usuario = Perfil.objects.get(username_id=request.user.id)
@@ -188,35 +189,22 @@ def agregar_comentario(request, id):
             return redirect("feed")
     return render(request, "perfil/agregar_comentario.html", {"form_comentario": form_comentario, "publicacion": publicacion,'perfiles': perfiles})
 
-def  recursos(request):
-    from datetime import datetime, timedelta
+def recursos(request):
     recursos = Recursos.objects.all()
     perfil_usuario = Perfil.objects.get(username_id=request.user.id)
     
-
-    # Formatear la fecha actual
-    ahora = datetime.now().date()
-
-
-    # Calcular la diferencia en días para cada comentario
-    # for comentario in comentarios:
-    #     diferencia = ahora - comentario.fecha_publicacion_comentario
-    #     if diferencia.days == 0:
-    #         comentario.dias_desde_publicacion = "hoy"
-    #     elif diferencia.days == 1:
-    #         comentario.dias_desde_publicacion = "ayer"
-    #     else:
-    #         comentario.dias_desde_publicacion = diferencia.days  # Obtener la diferencia en días
-
-    # # Obtener el número de comentarios por publicación y formatear la fecha de publicación de la publicación
-    # for publicacion in publicaciones:
-    #     publicacion.numero_de_comentarios = publicacion.comentarios.count()
-    #     publicacion.fecha_publicacion = publicacion.fecha_publicacion.strftime("%d de %B de %Y")
-    return render(request, "perfil/recursos.html", {"recursos": recursos, "perfiles": perfiles,"perfil_usuario": perfil_usuario})
-
+    for recurso in recursos:
+        # Obtener la extensión del archivo recurso
+        extension = recurso.archivo_recurso.name.split(".")[-1]
+        # Asignar la extensión al recurso actual
+        recurso.extension = extension
+    
+    return render(request, "perfil/recursos.html", {"recursos": recursos, "perfil_usuario": perfil_usuario})
 def agregar_recurso(request):
     recursos = Recursos.objects.all()
-    form_recurso= RecursosForm(request.POST, request.FILES) # Initialize the form
+    form_recurso = RecursosForm(request.POST, request.FILES)
+
+    
     if request.method == 'POST':
         if form_recurso.is_valid():
             recurso = form_recurso.save(commit=False)
@@ -224,4 +212,12 @@ def agregar_recurso(request):
             return redirect("recursos")
         else:
             form_recurso = RecursosForm()
-    return render(request, "perfil/agregar_recurso.html", {"form_recurso": form_recurso,'perfiles': perfiles, "recursos": recursos})
+  
+    fechas_formateadas = [recurso.fecha_publicacion_recurso.strftime("%d de %B de %Y") for recurso in recursos]
+    
+    return render(request, "perfil/agregar_recurso.html", {"form_recurso": form_recurso, "recursos": recursos, "perfiles": perfiles, "fechas_formateadas": fechas_formateadas})
+
+def eliminar_recurso(request,id):
+    recurso = Recursos.objects.get(id = id)
+    recurso.delete()
+    return redirect("agregar_recurso")

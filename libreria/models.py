@@ -39,10 +39,11 @@ class Comentario(models.Model):
     fecha_publicacion_comentario = models.DateField(auto_now_add=True)
     
 class Recursos(models.Model):
-    archivo_recurso = models.FileField(upload_to="recursos", verbose_name="Archivo")
+    nombre = models.CharField(max_length=200, verbose_name="Nombre", default="Recursos")
+    archivo_recurso = models.FileField(upload_to="media/recursos", verbose_name="Archivo")
     descripcion = models.CharField(max_length=200, verbose_name="Descripción")
     fecha_publicacion_recurso = models.DateField(auto_now_add=True, verbose_name="Fecha de publicación")
 
     class Meta:
-        ordering = ['-fecha_publicacion_recurso']
+        ordering = ['-id']
 

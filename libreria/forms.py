@@ -74,4 +74,4 @@ class CambiarPasswordForm(forms.Form):
 class RecursosForm(forms.ModelForm):
     class Meta:
         model = Recursos
-        fields = ['archivo_recurso', 'descripcion'] 
+        fields = ['archivo_recurso', 'nombre','descripcion'] 

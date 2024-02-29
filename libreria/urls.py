@@ -24,6 +24,7 @@ urlpatterns = [
     path("perfil/<str:username>", views.ver_perfil, name="ver_perfil"),
     path("recursos", views.recursos, name="recursos"),
     path("agregar_recurso", views.agregar_recurso, name="agregar_recurso"),
+    path("eliminar_recurso/<int:id>", views.eliminar_recurso, name="eliminar_recurso"),
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) # así concatenamos el path de la carpeta media y la ruta de la carpeta static
 
