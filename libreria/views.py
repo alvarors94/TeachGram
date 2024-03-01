@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views import View
-from .models import  Publicacion, Comentario, Perfil, Recursos #Importamos las clases
-from .forms import PublicacionForm, ComentarioForm, PerfilForm, UserForm, CambiarPasswordForm, RecursosForm
+from .models import  Publicacion, Comentario, Perfil, Recursos, Imagen #Importamos las clases
+from .forms import PublicacionForm, ComentarioForm, PerfilForm, UserForm, CambiarPasswordForm, RecursosForm, ImagenForm
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 import locale
@@ -27,7 +27,7 @@ def perfil(request, template_name='perfil/index.html'):
             'username': perfil.username.username,
             'full_name': perfil.username.first_name + " " + perfil.username.last_name,
             'profile_pic': perfil.profile_pic.url,
-            'last_login': perfil.username.last_login,
+            'last_login': perfil.username.last_login.strftime("%d de %B de %Y - %H:%M:%S"),
             'is_superuser': perfil.username.is_superuser,
             'is_active': perfil.username.is_active,
         }
@@ -89,16 +89,27 @@ class CambiarPassword(View):
 def crear_publicacion(request):
     if request.method == 'POST':
         form_publicacion = PublicacionForm(request.POST, request.FILES)
+        form_imagen = ImagenForm(request.POST, request.FILES)
+        
         if form_publicacion.is_valid():
             publicacion = form_publicacion.save(commit=False)
             publicacion.user_id = request.user.id  # Asigna el id del usuario autenticado
             publicacion.save()
+            imagen = form_imagen.save(commit=False)
+            imagen.publicacion_id = publicacion.id
+            imagen.save()
+            
+            # Guarda las imágenes asociadas a la publicación
+            # for imagen in request.FILES.getlist('imagenes'):
+            #     Imagen.objects.create(publicacion=publicacion, imagen=imagen)
+
             return redirect("listado_publicaciones")
     else:
         form_publicacion = PublicacionForm()
+        form_imagen = ImagenForm()
+       
     
-    return render(request, "perfil/crear_publicacion.html", {"form_publicacion": form_publicacion,'perfiles': perfiles})
-
+    return render(request, "perfil/crear_publicacion.html", {"form_publicacion": form_publicacion, "form_imagen": form_imagen})
 def editar_publicacion(request,id):
     publicacion = Publicacion.objects.get(id = id)
     form_publicacion = PublicacionForm(request.POST or None, request.FILES or None, instance = publicacion)
@@ -132,7 +143,7 @@ def eliminar_comentario(request,id):
     return redirect("feed")
 
 def ver_publicaciones(request, template_name):
-    
+    imagenes = Imagen.objects.all()
     publicaciones = Publicacion.objects.all()
     comentarios = Comentario.objects.all()  # Obtener todos los comentarios de la publicación específica
     perfil_usuario = Perfil.objects.get(username_id=request.user.id)
@@ -155,7 +166,7 @@ def ver_publicaciones(request, template_name):
     for publicacion in publicaciones:
         publicacion.numero_de_comentarios = publicacion.comentarios.count()
         publicacion.fecha_publicacion = publicacion.fecha_publicacion.strftime("%d de %B de %Y")
-    return render(request, template_name, {"publicaciones": publicaciones, "perfiles": perfiles,"comentarios": comentarios,"perfil_usuario": perfil_usuario})
+    return render(request, template_name, {"imagenes":imagenes,"publicaciones": publicaciones, "perfiles": perfiles,"comentarios": comentarios,"perfil_usuario": perfil_usuario})
 
 
 def ver_comentarios(request, id):
@@ -199,6 +210,7 @@ def recursos(request):
         extension = recurso.archivo_recurso.name.split(".")[-1]
         # Asignar la extensión al recurso actual
         recurso.extension = extension
+        recurso.fecha_publicacion_recurso=recurso.fecha_publicacion_recurso.strftime("%d de %B de %Y")
     
     return render(request, "perfil/recursos.html", {"recursos": recursos, "usuario": usuario, "perfiles" : perfiles, "perfil_usuario": perfil_usuario})
 def agregar_recurso(request):

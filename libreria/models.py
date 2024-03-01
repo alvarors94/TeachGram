@@ -21,8 +21,7 @@ class Perfil(models.Model):
         return f'Perfil de {self.username}'
 
 class Publicacion(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='publicacion')
-    foto_publicacion = models.ImageField(upload_to="publicaciones", verbose_name="Imagen")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='publicaciones')
     descripcion = models.CharField(max_length=200, verbose_name="Descripción")
     fecha_publicacion = models.DateField(auto_now_add=True, verbose_name="Fecha de publicación")
 
@@ -32,6 +31,13 @@ class Publicacion(models.Model):
     def __str__(self):
         return f'{self.user.username}: {self.descripcion}'
 
+class Imagen(models.Model):
+    publicacion = models.ForeignKey(Publicacion, on_delete=models.CASCADE, related_name='imagenes')
+    imagen = models.ImageField(upload_to="publicaciones", verbose_name="Imagen", blank=True, null=True)
+
+    def __str__(self):
+        return f'Imagen de la publicación: {self.publicacion.id}'
+    
 class Comentario(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comentario')
     publicacion = models.ForeignKey(Publicacion, on_delete=models.CASCADE,related_name='comentarios')

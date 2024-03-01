@@ -1,19 +1,110 @@
-{% extends "base.html"%}
+{% extends "base.html" %}
 {% block titulo %} Crear publicaciones {% endblock %}
 {% block contenido %} 
-
-Añadir una publicacion
-
 
 <div class="card">
     <div class="card-header">Crear una publicación</div>
     <div class="card-body">
-       
         <h4 class="card-title">Descripción</h4>
-        {% include 'perfil/form.html' %}
+        <form enctype="multipart/form-data" method="post">
+            {% csrf_token %}
+            
+            {% for campo in form_publicacion %}
+                <div class="mb-3">
+                    <label for="{{ campo.id }}" class="form-label">{{ campo.label }}:</label>
+                    
+                    {% if campo.field.widget.input_type == 'file' and campo.value %}
+                        <br/>
+                        <img src="{{ campo.value.url }}" height="200" width="200" />
+                    {% endif %}
         
-
+                    <input
+                        type="{{ campo.field.widget.input_type }}" 
+                        class="form-control"
+                        name="{{ campo.name }}"
+                        id="{{ campo.id }}"
+                        aria-describedby="helpId"
+                        placeholder="{{ campo.label }}"
+                        value="{{ campo.value | default_if_none:'' }}"
+                    />
+                    <div class="col-12 help-text">{{ campo.errors }}</div>
+                </div>
+            {% endfor %}
+            
+        
+            {% for campo in form_imagen %}
+            <div class="mb-3">
+                <label for="{{ campo.id }}" class="form-label">{{ campo.label }}:</label>
+                
+                {% if campo.field.widget.input_type == 'file' and campo.value %}
+                    <br/>
+                    <img src="{{ campo.value.url }}" height="200" width="200" />
+                {% endif %}
+    
+                <input
+                    type="{{ campo.field.widget.input_type }}" 
+                    class="form-control"
+                    name="{{ campo.name }}"
+                    id="{{ campo.id }}"
+                    aria-describedby="helpId"
+                    placeholder="{{ campo.label }}"
+                    value="{{ campo.value | default_if_none:'' }}"
+                    multiple
+                />
+                <div class="col-12 help-text">{{ campo.errors }}</div>
+            </div>
+        {% endfor %}
+        
+            <input
+                class="btn btn-success"
+                type="submit"
+                value="Enviar información"
+            />
+        
+            <a
+                class="btn btn-danger"
+                href="{% url 'listado_publicaciones' %}" 
+                role="button"
+            >Cancelar</a>
+        </form>
         
     </div>
+    <script>
+        // Esta función se ejecuta cuando se carga el documento HTML
+        document.addEventListener('DOMContentLoaded', function () {
+            // Seleccionamos el campo de entrada de archivos
+            const inputField = document.querySelector('input[type="file"]');
+            
+            // Agregamos un evento change al campo de entrada de archivos
+            inputField.addEventListener('change', function () {
+                // Obtenemos los archivos seleccionados por el usuario
+                const files = inputField.files;
+                
+                // Seleccionamos el contenedor donde se mostrarán las imágenes previas
+                const imageContainer = document.querySelector('#image-preview-container');
+                
+                // Limpiamos el contenedor para eliminar imágenes previas
+                imageContainer.innerHTML = '';
+                
+                // Iteramos sobre cada archivo seleccionado
+                for (let i = 0; i < files.length; i++) {
+                    // Creamos un elemento de imagen para mostrar la vista previa
+                    const img = document.createElement('img');
+                    
+                    // Establecemos el atributo src de la imagen con la URL del archivo seleccionado
+                    img.src = URL.createObjectURL(files[i]);
+                    
+                    // Establecemos algunos estilos para la imagen previa
+                    img.style.maxWidth = '200px';
+                    img.style.maxHeight = '200px';
+                    img.style.marginRight = '10px';
+                    img.style.marginBottom = '10px';
+                    
+                    // Agregamos la imagen al contenedor
+                    imageContainer.appendChild(img);
+                }
+            });
+        });
+    </script>
 </div>
 {% endblock %}

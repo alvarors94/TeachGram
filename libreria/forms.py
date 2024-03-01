@@ -1,12 +1,21 @@
 from django import forms
-from .models import Publicacion, Comentario, Perfil, Recursos
+from .models import Publicacion, Comentario, Perfil, Recursos, Imagen
 from django.contrib.auth.models import User
 import re
 
 class PublicacionForm(forms.ModelForm):
     class Meta:
         model = Publicacion
-        fields = ['foto_publicacion', 'descripcion']
+        fields = ['descripcion']
+        
+class ImagenForm(forms.ModelForm):
+    
+    widgets = {'imagen': forms.ImageField(widget=forms.ClearableFileInput(attrs={'allow_multiple_selected': True}))}
+    required = False
+    class Meta:
+        model = Imagen
+        fields = ['imagen']
+        
         
 class ComentarioForm(forms.ModelForm):
     class Meta:
