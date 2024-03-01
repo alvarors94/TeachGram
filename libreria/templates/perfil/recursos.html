@@ -1,84 +1,108 @@
-{% extends "base.html"%}
+{% extends "base.html" %}
 {% block titulo %} Recursos {% endblock %}
 {% block contenido %} 
-
+<style>
+    .dropdown-toggle::after {
+        content: none;
+    }
+</style>
 <div class="container mt-3">
-{% for recurso in recursos %}
-<div class="card mt-3" style="width: 40rem;">
-    {% if recurso.extension == 'pdf' %}
-    <img width="100" height="100" src="https://img.icons8.com/parakeet/100/pdf.png" alt="pdf"/>
-    {% elif recurso.extension == 'doc' or recurso.extension == 'docx' %}
-    <img width="100" height="100" src="https://img.icons8.com/parakeet/100/word.png" alt="word"/>
-    {% else %}
-    <img width="100" height="100" src="https://img.icons8.com/parakeet/100/document.png" alt="document"/>
-    {% endif %}
-    <div class="card-body d-flex justify-content-between">
-        
-        <div>
-            
-            <h5 class="card-title"><a href="{{ recurso.archivo_recurso.url }}" style="font-weight: bold; text-decoration: underline;">{{ recurso.nombre }}</a></h5>
-            <hr class="card-divider d-flex w-100 mt-0">
-            <p class="card-text" style="font-weight: bold">Descripción: </p>
-            <p>{{ recurso.descripcion }}</p>
-        </div>
-        
-        <div>
-            <small class="text-body-secondary ml-auto">{{ recurso.fecha_publicacion_recurso }}</small>
-        </div>
-    </div>
-</div>
-{% endfor %}
-    
-
-<a class="btn btn-warning" href="{% url 'agregar_recurso' %}" role="button">Añadir recurso</a>
-
-<div class="container">
-    <div class="card" style="width: 560px;">
-        <iframe width="560" height="315" src="https://www.youtube.com/embed/BaxYR51zQRw?si=F6y0HwFwHR_AcWGb" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-        <div class="card-body">
-            <p class="card-text">{{ recurso.descripcion }} descripcion</p>
-            <hr class="card-divider">
-            <ul class="list-group list-group-flush">
-            </ul>
-        </div>
-    </div>
-</div>
-<div class="container">
-    <div class="card" style="width: 560px;">
-        <iframe width="560" height="315" src="https://www.youtube.com/embed/nLflWQuswYg?si=o4IC3zy6Opnt8zVk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-        <div class="card-body">
-            <p class="card-text">{{ recurso.descripcion }} descripcion</p>
-            <hr class="card-divider">
-            <ul class="list-group list-group-flush">
-            </ul>
-        </div>
-    </div>
-</div>
-<div class="container">
-    <div class="card" style="width: 560px;">
-<iframe style="border-radius:12px" src="https://open.spotify.com/embed/episode/3U2ZzX5rD4M0IO1ADa5Hbx?utm_source=generator" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-        <div class="card-body">
-            <p class="card-text">{{ recurso.descripcion }} descripcion</p>
-            <hr class="card-divider">
-            <ul class="list-group list-group-flush">
-            </ul>
-        </div>
-    </div>
-</div>
-<!-- {% for recurso in recursos%}
-    <div class="container">
-        <div class="card" style="width: 560px;">
-        <iframe style="border-radius:12px" src="{{recurso.archivo_recurso.url}}" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-            <div class="card-body">
-                <p class="card-text">{{ recurso.descripcion }}</p>
-                <hr class="card-divider">
-                <ul class="list-group list-group-flush">
-                </ul>
+    <div class="row">
+        <div class="col-md-6">
+            {% for recurso in recursos %}
+            <div class="card mt-3 mb-3" style="width: 100%;border-radius: 12px"> 
+                <div class="d-flex align-items-center">
+                    {% if recurso.extension == 'pdf' %}
+                    <img class="mt-3 ml-3" width="100" height="100" src="https://img.icons8.com/parakeet/100/pdf.png" alt="pdf"/>
+                    {% elif recurso.extension == 'doc' or recurso.extension == 'docx' %}
+                    <img class="mt-3 ml-3" width="100" height="100" src="https://img.icons8.com/parakeet/100/word.png" alt="word"/>
+                    {% elif recurso.extension == 'png' or recurso.extension == 'jpg' or recurso.extension == 'bmp' or recurso.extension == 'gif' or recurso.extension == 'tif' %}
+                    <img  class="mt-3 ml-3" width="100" height="100" src="https://img.icons8.com/parakeet/100/image-file.png" alt="image-file"/>
+                    {% else %}
+                    <img class="mt-3 ml-3" width="100" height="100" src="https://img.icons8.com/parakeet/100/document.png" alt="document"/>
+                    {% endif %}
+                    <div class="card-body d-flex justify-content-between "> 
+                        <div>
+                            <h5 class="card-title ml-3"><a href="{{ recurso.archivo_recurso.url }}" style="font-weight: bold; text-decoration: underline;">{{ recurso.nombre }}</a></h5>
+                            <small class="text-body-secondary">{{ recurso.fecha_publicacion_recurso }}</small>
+                            <hr class="card-divider d-flex w-100 mt-0 mb-0 ml-3">
+                            <div class="mb-3">
+                                <p class="card-text" style="font-weight: bold">Descripción: </p>
+                                <p>{{ recurso.descripcion }}</p>
+                            </div>
+                        </div>
+                        {% if user.is_superuser == True %}
+                        <div class="ml-auto">
+                            <div class="btn-group dropdown">
+                                <button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,300,0,0" />
+                                    <span class="material-symbols-outlined"> more_vert </span>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li><h6 class="dropdown-header">Opciones</h6></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="{% url 'editar_recurso' recurso.id %}">Editar recurso</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'eliminar_recurso' recurso.id %}" style="color: red;">Eliminar recurso</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
             </div>
+            {% endfor %}
         </div>
+
+
+        <div class="col-md-6">
+            
+            <div class="container mt-3">
+                <div class="card mb-3" style="width: 560px; border-radius: 12px;">
+                    <iframe width="560" height="315" style="border-radius:12px" src="https://www.youtube.com/embed/BaxYR51zQRw?si=F6y0HwFwHR_AcWGb" title="YouTube video player" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture;" allowfullscreen></iframe>
+                    <div class="card-body">
+                        <p class="card-text">descripcion</p>
+                        <hr class="card-divider">
+                        <ul class="list-group list-group-flush">
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="container mt-3">
+                <div class="card mb-3" style="width: 560px; border-radius: 12px;">
+                    <iframe width="560" height="315" style="border-radius:12px" src="https://www.youtube.com/embed/nLflWQuswYg?si=o4IC3zy6Opnt8zVk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                    <div class="card-body">
+                        <p class="card-text">{{ recurso.descripcion }} descripcion</p>
+                        <hr class="card-divider">
+                        <ul class="list-group list-group-flush">
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="container mt-3">
+                <div class="card mb-3" style="width: 560px; border-radius: 12px;">
+                    <iframe style="border-radius:12px" src="https://open.spotify.com/embed/episode/3U2ZzX5rD4M0IO1ADa5Hbx?utm_source=generator" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                    <div class="card-body">
+                        <p class="card-text">{{ recurso.descripcion }} descripcion</p>
+                        <hr class="card-divider" width="100%">
+                        <ul class="list-group list-group-flush">
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            
+            
+            
+        </div>
+       
     </div>
-{%endfor%} -->
+
+
+    {%if user.is_superuser == True%}
+    <div class="container-fluid fixed-bottom fixed-left mb-3 mr-3">
+        <a class="btn btn-warning" href="{% url 'agregar_recurso' %}" role="button">Añadir recurso</a>
+    </div>
+    
+    {%endif%}
+
 {% endblock %}
-
-
-<!-- /media/media/recursos/justificante0355KJN.pdf -->

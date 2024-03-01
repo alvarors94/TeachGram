@@ -1,0 +1,37 @@
+{% extends "base.html"%}
+{% block titulo %} Editar recurso {% endblock %}
+{% block contenido %} 
+
+Editar información
+
+<div class="card">
+
+    <div class="card-body">
+       
+        <form enctype="multipart/form-data" method="post" action="{% url 'editar_recurso' recurso.id%}">
+            {% csrf_token %} 
+            
+            {% for campo in form_recurso %}
+            <div class="mb-3">
+                <label for="" class="form-label">{{campo.label}}:</label>
+                <input
+                    type="{{campo.field.widget.input_type}}" 
+                    class="form-control"
+                    name="{{campo.name}}"
+                    value="{{campo.value}}"/>
+                    <!-- Muestra el valor del campo para editarlo o por defecto ''-->            
+            </div>
+            <div class="col-12 help-text">{{campo.errors}}</div>
+            {% endfor %}
+
+        
+        <input class="btn btn-success" type="submit" value="Actualizar información"/>
+        <a class="btn btn-danger" href="{% url 'recursos' %}" role="button" >Cancelar</a>
+    </form>
+
+
+    
+        
+    </div>
+</div>
+{% endblock %}

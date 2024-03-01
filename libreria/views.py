@@ -190,8 +190,9 @@ def agregar_comentario(request, id):
     return render(request, "perfil/agregar_comentario.html", {"form_comentario": form_comentario, "publicacion": publicacion,'perfiles': perfiles})
 
 def recursos(request):
-    recursos = Recursos.objects.all()
     perfil_usuario = Perfil.objects.get(username_id=request.user.id)
+    recursos = Recursos.objects.all()
+    usuario = User.objects.get(id=request.user.id)
     
     for recurso in recursos:
         # Obtener la extensión del archivo recurso
@@ -199,8 +200,9 @@ def recursos(request):
         # Asignar la extensión al recurso actual
         recurso.extension = extension
     
-    return render(request, "perfil/recursos.html", {"recursos": recursos, "perfil_usuario": perfil_usuario})
+    return render(request, "perfil/recursos.html", {"recursos": recursos, "usuario": usuario, "perfiles" : perfiles, "perfil_usuario": perfil_usuario})
 def agregar_recurso(request):
+    perfil_usuario = Perfil.objects.get(username_id=request.user.id)
     recursos = Recursos.objects.all()
     form_recurso = RecursosForm(request.POST, request.FILES)
 
@@ -215,9 +217,21 @@ def agregar_recurso(request):
   
     fechas_formateadas = [recurso.fecha_publicacion_recurso.strftime("%d de %B de %Y") for recurso in recursos]
     
-    return render(request, "perfil/agregar_recurso.html", {"form_recurso": form_recurso, "recursos": recursos, "perfiles": perfiles, "fechas_formateadas": fechas_formateadas})
+    return render(request, "perfil/agregar_recurso.html", {"form_recurso": form_recurso, "recursos": recursos, "perfiles": perfiles, "fechas_formateadas": fechas_formateadas, "perfil_usuario": perfil_usuario})
 
 def eliminar_recurso(request,id):
     recurso = Recursos.objects.get(id = id)
     recurso.delete()
-    return redirect("agregar_recurso")
+    return redirect("recursos")
+
+def editar_recurso(request,id):
+    perfil_usuario = Perfil.objects.get(username_id=request.user.id)
+    recurso = Recursos.objects.get(id = id)
+    form_recurso = RecursosForm(request.POST or None, request.FILES or None, instance = recurso)
+    if form_recurso.is_valid() and request.POST:
+        form_recurso.save()
+        return redirect("recursos")
+    return render(request, "perfil/editar_recurso.html", {"form_recurso": form_recurso,'perfiles': perfiles, "recurso": recurso, "perfil_usuario": perfil_usuario})
+
+    
+    

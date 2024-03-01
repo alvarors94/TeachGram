@@ -5,7 +5,18 @@
 <form enctype="multipart/form-data" method="post">
     {% csrf_token %}
     <div style="margin-top: 3px;"> <!-- Add a margin-top of 3px -->
-        {{ form_recurso}} <!-- Render the form fields -->
+        {% for campo in form_recurso %}
+        <div class="mb-3">
+            <label for="" class="form-label">{{campo.label}}:</label>
+            <input
+                type="{{campo.field.widget.input_type}}" 
+                class="form-control"
+                name="{{campo.name}}"
+                value="{{campo.value}}"/>
+                <!-- Muestra el valor del campo para editarlo o por defecto ''-->            
+        </div>
+        <div class="col-12 help-text">{{campo.errors}}</div>
+        {% endfor %}
     </div>
   
     <input
@@ -20,7 +31,7 @@
         name=""
         id=""
         class="btn btn-danger"
-        href="{% url 'listado_publicaciones'%}" 
+        href="{% url 'recursos'%}" 
         role="button"
         >Cancelar</a
     >  

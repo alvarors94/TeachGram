@@ -25,6 +25,7 @@ urlpatterns = [
     path("recursos", views.recursos, name="recursos"),
     path("agregar_recurso", views.agregar_recurso, name="agregar_recurso"),
     path("eliminar_recurso/<int:id>", views.eliminar_recurso, name="eliminar_recurso"),
+    path("editar_recurso/<int:id>", views.editar_recurso, name="editar_recurso"),
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) # así concatenamos el path de la carpeta media y la ruta de la carpeta static
 
