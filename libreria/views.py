@@ -87,29 +87,25 @@ class CambiarPassword(View):
 
 
 def crear_publicacion(request):
+    form_publicacion = PublicacionForm()  # Definir form_publicacion fuera del bloque de condición
+
     if request.method == 'POST':
         form_publicacion = PublicacionForm(request.POST, request.FILES)
-        form_imagen = ImagenForm(request.POST, request.FILES)
         
         if form_publicacion.is_valid():
             publicacion = form_publicacion.save(commit=False)
             publicacion.user_id = request.user.id  # Asigna el id del usuario autenticado
             publicacion.save()
-            imagen = form_imagen.save(commit=False)
-            imagen.publicacion_id = publicacion.id
-            imagen.save()
-            
-            # Guarda las imágenes asociadas a la publicación
-            # for imagen in request.FILES.getlist('imagenes'):
-            #     Imagen.objects.create(publicacion=publicacion, imagen=imagen)
 
-            return redirect("listado_publicaciones")
-    else:
-        form_publicacion = PublicacionForm()
-        form_imagen = ImagenForm()
-       
+            images = request.FILES.getlist('images')
+            # Recorrer la lista de archivos adjuntos,
+            for image in images:
+                Imagen.objects.create(imagen=image, publicacion_id=publicacion.id)
     
-    return render(request, "perfil/crear_publicacion.html", {"form_publicacion": form_publicacion, "form_imagen": form_imagen})
+            return redirect("listado_publicaciones")
+    
+    return render(request, "perfil/crear_publicacion.html", {"form_publicacion": form_publicacion})
+
 def editar_publicacion(request,id):
     publicacion = Publicacion.objects.get(id = id)
     form_publicacion = PublicacionForm(request.POST or None, request.FILES or None, instance = publicacion)

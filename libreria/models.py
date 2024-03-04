@@ -26,7 +26,7 @@ class Publicacion(models.Model):
     fecha_publicacion = models.DateField(auto_now_add=True, verbose_name="Fecha de publicación")
 
     class Meta:
-        ordering = ['-fecha_publicacion']
+        ordering = ['-id']
         
     def __str__(self):
         return f'{self.user.username}: {self.descripcion}'
