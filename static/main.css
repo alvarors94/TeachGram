@@ -1,7 +1,7 @@
 
 .mi-navbar {
   width: 100%;
-  background: linear-gradient(to right, #1fa761, #e1d9de);
+  background: linear-gradient(to right, #29b6b3, #e1d9de);
   margin-bottom: 20px; /* Aumenta el margen inferior */
 }
 
@@ -25,6 +25,10 @@ body{
 
 .my-dropdown-toggle::after {
   content: none;
+}
+
+.carousel-indicators .carousel-indicator {
+  background-color: green
 }
 
 

@@ -181,20 +181,24 @@ def ver_perfil(request, username):
     usuario = User.objects.get(username=username)
     # Filtrar las publicaciones por el usuario
     publicaciones = Publicacion.objects.filter(user_id=usuario.id)
+    imagenes = Imagen.objects.all()
+    for publicacion in publicaciones:
+        publicacion.fecha_publicacion=publicacion.fecha_publicacion.strftime("%d de %B de %Y")
 
-    return render(request, "perfil/ver_perfil.html", {"perfil_usuario":perfil_usuario,"publicaciones": publicaciones, "perfiles": perfiles, "usuario": usuario})
+    return render(request, "perfil/ver_perfil.html", {"perfil_usuario":perfil_usuario,"publicaciones": publicaciones, "perfiles": perfiles, "usuario": usuario, "imagenes": imagenes})
 
 def agregar_comentario(request, id):
-    publicacion = Publicacion.objects.get(id=id)
-    form_comentario = ComentarioForm(request.POST)  # Initialize the form
     if request.method == 'POST':
+        publicacion = Publicacion.objects.get(id=id)
+        form_comentario = ComentarioForm(request.POST)
         if form_comentario.is_valid():
             comentario = form_comentario.save(commit=False)
-            comentario.publicacion_id = publicacion.id
-            comentario.user_id = request.user.id
+            comentario.publicacion = publicacion
+            comentario.user = request.user
             comentario.save()
             return redirect("feed")
-    return render(request, "perfil/agregar_comentario.html", {"form_comentario": form_comentario, "publicacion": publicacion,'perfiles': perfiles})
+    # Si el método de solicitud no es POST o si hay errores en el formulario, simplemente redirige de nuevo a la página de feed
+    return redirect("feed")
 
 def recursos(request):
     perfil_usuario = Perfil.objects.get(username_id=request.user.id)
