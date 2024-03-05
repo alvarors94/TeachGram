@@ -1,7 +1,7 @@
 
 .mi-navbar {
   width: 100%;
-  background: linear-gradient(to right, #29b6b3, #e1d9de);
+  background: linear-gradient(to right, #7229b6, #e1d9de);
   margin-bottom: 20px; /* Aumenta el margen inferior */
 }
 
@@ -23,16 +23,22 @@ body{
     color: inherit;
 }
 
-.my-dropdown-toggle::after {
-  content: none;
-}
 
 .carousel-indicators .carousel-indicator {
   background-color: green
 }
 
+.comment-gradient{
+  background: linear-gradient(to left, #2ab55f, #38ef7d);
+}
 
+.edit-gradient{
+  background: linear-gradient(to left, #ffc107, #e5ba3a); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
 
+.danger-gradient{
+  background: linear-gradient(to left, #c70f0f, #891b1b);
+}
   .grid-container {
     display: grid;
     grid-template-columns: repeat(3, 1fr); /* Tres columnas */
@@ -57,6 +63,23 @@ body{
 
   .my-dropdown-toggle::after {
     content: none;
+}
+
+
+
+.zoom-img {
+  width: 100%; /* Ajusta la imagen al ancho del contenedor */
+  
+  border-radius: 12px;
+  transition: transform 0.3s ease;
+}
+
+.hover-zoom:hover .zoom-img {
+  transform: scale(1.1);
+}
+
+.dropdown-toggle::after {
+  content: none;
 }
   
   @media (min-width: 768px) {

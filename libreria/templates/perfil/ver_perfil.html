@@ -33,16 +33,21 @@
             {% if publicacion.imagenes.all %}
                 <!-- Si hay al menos una imagen, mostrar la imagen y otra información -->
                 <div class="grid-item" style="position: relative;">
-                    <img src="{{ publicacion.imagenes.first.imagen.url }}" style="width: 420px; height: 420px; border-radius: 12px"/>
+                    <div class="bg-image hover-zoom">
+                        {{publicacion.id}}
+                    <img src="{{ publicacion.imagenes.first.imagen.url }}" style="width: 420px; height: 420px; border-radius: 12px" class="zoom-img"/>
                     {% if publicacion.imagenes.count > 1 %}
                         <!-- Si hay más de una imagen, mostrar el símbolo especial como superposición -->
                         <div class="special-overlay" style="position: absolute; top: 0; right: 0; background-color: rgba(255, 255, 255, 0.8); border-radius: 12px; width: 30px; height: 30px; text-align: center; font-size: 20px; line-height: 30px;">+</div>
                         {% endif %}
+                    </div>
                 </div>
             {% else %}
                 <!-- Si no hay imágenes, mostrar la tarjeta especial -->
+                
                 <div class="card mb-3" style="width: 420px; height: 420px; border-radius: 12px">
                     <div class="card-body">
+                        {{publicacion.id}}
                         {% for perfil in perfiles %}
                             {% if perfil.username_id == publicacion.user_id %}
                                 <a href="{% url 'ver_perfil' publicacion.user %}" class="no-link-style"><img src="{{ perfil.profile_pic.url }}" height="60" width="60" style="border-radius: 50%;"/></a>
@@ -56,6 +61,17 @@
                     </div>
                 </div>
             {% endif %}
+             <!-- Modal -->
+        <div id="modal-{{ publicacion.id }}" class="modal">
+            <div class="modal-content">
+                <a href="#" class="close-modal">&times;</a>
+                <h3>{{ publicacion.titulo }}</h3>
+                {% if publicacion.imagenes.all %}
+                    <!-- Si hay imágenes, mostrar la primera imagen -->
+                    <img src="{{ publicacion.imagenes.first.imagen.url }}" alt="Imagen" style="max-width: 100%; max-height: 100%;">
+                {% endif %}
+            </div>
+        </div>
         {% endfor %}
         </div>
     </main>

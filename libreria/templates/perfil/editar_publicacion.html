@@ -1,17 +1,65 @@
-{% extends "base.html"%}
+{% extends "base.html" %}
 {% block titulo %} Editar publicaciones {% endblock %}
 {% block contenido %} 
 
-Editar información
-
 <div class="card">
-    <div class="card-header"></div>
+    <div class="card-header">Editar información</div>
     <div class="card-body">
-       
-        <h4 class="card-title">Descripción</h4>
-        {% include 'perfil/form.html' %}
-    
-        
+        <h4 class="card-title"></h4>
+        <form enctype="multipart/form-data" method="post">
+            {% csrf_token %} 
+            <div class="grid-container">
+                {% for imagen in imagenes_publicacion %}
+                <div class="modal fade" id="exampleModal{{ imagen.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Eliminar imagen</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                ¿Seguro que desea eliminar esta imagen?
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                <a class="btn btn-danger" href="{% url 'eliminar_imagen' imagen.id %}" style="color: white;">Eliminar</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-image hover-zoom" style="position: relative;">
+                    <div class="special-overlay" style="position: absolute; top: 10px; right: 60px; background-color: rgba(227, 13, 13, 0);z-index: 1;">
+                        <div class="dropdown-container">
+                            <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#exampleModal{{ imagen.id }}">
+                                <img width="25" height="25" src="https://img.icons8.com/parakeet/25/delete-sign.png" alt="delete-sign"/>
+                            </button>
+                        </div>
+                    </div>
+                    <img src="{{ imagen.imagen.url }}" style="width: 360px; height: 360px; border-radius: 12px; z-index: 0;" class="zoom-img" />
+                </div>
+                {% endfor %}
+                <div class="bg-image hover-zoom">
+                    <label for="file-upload" class="btn btn-success btn-lg zoom-img" style="width: 360px; height: 360px; border-radius: 12px; background-color: #f1f1f1c7; color: black; border-style: dashed; border-color: gray;">
+                        Subir más imágenes
+                        <img width="300" height="300" src="https://img.icons8.com/parakeet/300/add-image.png" alt="add-image"/>
+                    </label>
+                    <input id="file-upload" type="file" name="images" multiple style="display: none;" />
+                </div>
+            </div>
+            <form action="{% url 'crear_publicacion' %}" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% for campo in form_publicacion %}
+            <div class="mb-3">
+                <label for="" class="form-label">{{campo.label}}:</label>
+                <input type="{{campo.field.widget.input_type}}" class="form-control" name="{{campo.name}}" id="" aria-describedby="helpId" placeholder="{{campo.label}}" value="{{ campo.value | default_if_none:'' }}"/>
+            </div>
+            <div class="col-12 help-text">{{campo.errors}}</div>
+            {% endfor %}
+            <input class="btn btn-success" type="submit" value="Editar publicación"/>
+            <a class="btn btn-danger" href="{% url 'listado_publicaciones'%}" role="button">Cancelar</a>
+        </form>
     </div>
 </div>
+
+
 {% endblock %}

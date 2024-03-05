@@ -84,3 +84,4 @@ class RecursosForm(forms.ModelForm):
     class Meta:
         model = Recursos
         fields = ['archivo_recurso', 'nombre','descripcion'] 
+        

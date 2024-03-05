@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views import View
 from .models import  Publicacion, Comentario, Perfil, Recursos, Imagen #Importamos las clases
-from .forms import PublicacionForm, ComentarioForm, PerfilForm, UserForm, CambiarPasswordForm, RecursosForm, ImagenForm
+from .forms import PublicacionForm, ComentarioForm, PerfilForm, UserForm, CambiarPasswordForm, RecursosForm
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 import locale
@@ -49,17 +49,10 @@ def editar_perfil(request):
 
     return render(request, "perfil/editar_perfil.html", {"perfil_usuario": perfil_usuario, "form_user": form_user, "form_perfil": form_perfil})
 
-
-
-
-  
-           
-           
 class CambiarPassword(View):
     template_name = "perfil/cambiar_password.html"
     form_password = CambiarPasswordForm
     success_url = reverse_lazy('perfil')
-    
     
     def get(self, request):
         perfil_usuario = Perfil.objects.get(username_id=request.user.id)
@@ -108,12 +101,20 @@ def crear_publicacion(request):
 
 def editar_publicacion(request,id):
     publicacion = Publicacion.objects.get(id = id)
+    imagenes_publicacion = Imagen.objects.filter(publicacion_id=publicacion.id)
     form_publicacion = PublicacionForm(request.POST or None, request.FILES or None, instance = publicacion)
+    
     if form_publicacion.is_valid() and request.POST:
         form_publicacion.save()
-        return redirect("feed")
-    return render(request, "perfil/editar_publicacion.html", {"form_publicacion": form_publicacion,'perfiles': perfiles})
+        images = request.FILES.getlist('images')
+        for image in images:
+            Imagen.objects.create(imagen=image, publicacion_id=publicacion.id)
+        return redirect(reverse_lazy("editar_publicacion", kwargs={'id': publicacion.id}))
+    return render(request, "perfil/editar_publicacion.html", {"form_publicacion": form_publicacion,'perfiles': perfiles, "imagenes_publicacion":imagenes_publicacion})
 
+        
+    
+#     return render(request, "perfil/crear_publicacion.html", {"form_publicacion": form_publicacion})
 def editar_comentario(request, id):
     comentario = Comentario.objects.get(id=id)
     publicacion = Publicacion.objects.get(id=comentario.publicacion_id)
@@ -131,12 +132,18 @@ def editar_comentario(request, id):
 def eliminar_publicacion(request,id):
     publicacion = Publicacion.objects.get(id = id)
     publicacion.delete()
-    return redirect("listado_publicaciones")
+    return redirect("feed")
 
 def eliminar_comentario(request,id):
     comentario = Comentario.objects.get(id = id)
     comentario.delete()
     return redirect("feed")
+
+def eliminar_imagen(request, id):
+    imagen = Imagen.objects.get(id=id)
+    imagen.delete()
+    return redirect(reverse_lazy("editar_publicacion", kwargs={'id': imagen.publicacion_id}))
+
 
 def ver_publicaciones(request, template_name):
     imagenes = Imagen.objects.all()
@@ -169,11 +176,6 @@ def ver_comentarios(request, id):
     publicacion = Publicacion.objects.get(id=id)
     comentarios = publicacion.comentarios.all()  # Obtener todos los comentarios de la publicación específica
     return render(request, "perfil/ver_comentarios.html", {"publicacion": publicacion, "comentarios": comentarios,'perfiles': perfiles})
-
-
-
-
-
 
 def ver_perfil(request, username):
     perfil_usuario = Perfil.objects.get(username=request.user) 
@@ -245,5 +247,4 @@ def editar_recurso(request,id):
         return redirect("recursos")
     return render(request, "perfil/editar_recurso.html", {"form_recurso": form_recurso,'perfiles': perfiles, "recurso": recurso, "perfil_usuario": perfil_usuario})
 
-    
-    
+
