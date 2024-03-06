@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, resolve, reverse
 from django.views import View
 from .models import  Publicacion, Comentario, Perfil, Recursos, Imagen #Importamos las clases
 from .forms import PublicacionForm, ComentarioForm, PerfilForm, UserForm, CambiarPasswordForm, RecursosForm
@@ -99,18 +99,27 @@ def crear_publicacion(request):
     
     return render(request, "perfil/crear_publicacion.html", {"form_publicacion": form_publicacion})
 
-def editar_publicacion(request,id):
-    publicacion = Publicacion.objects.get(id = id)
+def editar_publicacion(request, id):
+    publicacion = Publicacion.objects.get(id=id)
     imagenes_publicacion = Imagen.objects.filter(publicacion_id=publicacion.id)
-    form_publicacion = PublicacionForm(request.POST or None, request.FILES or None, instance = publicacion)
-    
-    if form_publicacion.is_valid() and request.POST:
-        form_publicacion.save()
-        images = request.FILES.getlist('images')
-        for image in images:
-            Imagen.objects.create(imagen=image, publicacion_id=publicacion.id)
-        return redirect(reverse_lazy("editar_publicacion", kwargs={'id': publicacion.id}))
-    return render(request, "perfil/editar_publicacion.html", {"form_publicacion": form_publicacion,'perfiles': perfiles, "imagenes_publicacion":imagenes_publicacion})
+    form_publicacion = PublicacionForm(request.POST or None, request.FILES or None, instance=publicacion)
+
+    if request.method == 'POST':
+        if form_publicacion.is_valid():
+            form_publicacion.save()
+            images = request.FILES.getlist('images')
+            for image in images:
+                Imagen.objects.create(imagen=image, publicacion_id=publicacion.id)
+            
+            # Verificar si el usuario estaba en la página de feed antes de editar la publicación
+            if 'feed' in request.META.get('HTTP_REFERER', ''):
+                # Si estaba en la página de feed, redirigir de vuelta a esa página
+                return redirect('feed')
+            
+            # De lo contrario, redirigir a la página de perfil del usuario que publicó la publicación
+            return redirect(reverse('ver_perfil', kwargs={'username': publicacion.user.username}))
+
+    return render(request, "perfil/editar_publicacion.html", {"form_publicacion": form_publicacion, 'perfiles': perfiles, "imagenes_publicacion": imagenes_publicacion})
 
         
     
@@ -136,8 +145,18 @@ def eliminar_publicacion(request,id):
 
 def eliminar_comentario(request,id):
     comentario = Comentario.objects.get(id = id)
+    publicacion = Publicacion.objects.get(id=comentario.publicacion_id)
+    usuario_publicacion = publicacion.user
     comentario.delete()
-    return redirect("feed")
+    if 'feed' in request.META.get('HTTP_REFERER', ''):
+        # Si estaba en la página de feed, redirigir de vuelta a esa página
+        return redirect('feed')
+    
+    # De lo contrario, redirigir a la página de perfil del usuario que publicó la publicación
+    return redirect(reverse('ver_perfil', kwargs={'username': usuario_publicacion.username}))
+    
+    # Si el método de solicitud no es POST o si hay errores en el formulario, simplemente redirige de nuevo a la página de feed
+
 
 def eliminar_imagen(request, id):
     imagen = Imagen.objects.get(id=id)
@@ -178,16 +197,27 @@ def ver_comentarios(request, id):
     return render(request, "perfil/ver_comentarios.html", {"publicacion": publicacion, "comentarios": comentarios,'perfiles': perfiles})
 
 def ver_perfil(request, username):
+    ahora = datetime.now().date()
     perfil_usuario = Perfil.objects.get(username=request.user) 
     # Obtener el usuario correspondiente al nombre de usuario
     usuario = User.objects.get(username=username)
     # Filtrar las publicaciones por el usuario
     publicaciones = Publicacion.objects.filter(user_id=usuario.id)
+    comentarios = Comentario.objects.all()
     imagenes = Imagen.objects.all()
     for publicacion in publicaciones:
         publicacion.fecha_publicacion=publicacion.fecha_publicacion.strftime("%d de %B de %Y")
+        
+    for comentario in comentarios:
+        diferencia = ahora - comentario.fecha_publicacion_comentario
+        if diferencia.days == 0:
+            comentario.dias_desde_publicacion = "hoy"
+        elif diferencia.days == 1:
+            comentario.dias_desde_publicacion = "ayer"
+        else:
+            comentario.dias_desde_publicacion = diferencia.days  # Obtener la diferencia en días
 
-    return render(request, "perfil/ver_perfil.html", {"perfil_usuario":perfil_usuario,"publicaciones": publicaciones, "perfiles": perfiles, "usuario": usuario, "imagenes": imagenes})
+    return render(request, "perfil/ver_perfil.html", {"perfil_usuario":perfil_usuario,"publicaciones": publicaciones, "perfiles": perfiles, "usuario": usuario, "imagenes": imagenes, "comentarios":comentarios})
 
 def agregar_comentario(request, id):
     if request.method == 'POST':
@@ -198,9 +228,24 @@ def agregar_comentario(request, id):
             comentario.publicacion = publicacion
             comentario.user = request.user
             comentario.save()
-            return redirect("feed")
+            
+            # Obtener el usuario asociado a la publicación
+            usuario_publicacion = publicacion.user
+            
+            # Verificar si el usuario estaba en la página de feed antes de agregar el comentario
+            if 'feed' in request.META.get('HTTP_REFERER', ''):
+                # Si estaba en la página de feed, redirigir de vuelta a esa página
+                return redirect('feed')
+            
+            # De lo contrario, redirigir a la página de perfil del usuario que publicó la publicación
+            return redirect(reverse('ver_perfil', kwargs={'username': usuario_publicacion.username}))
+    
     # Si el método de solicitud no es POST o si hay errores en el formulario, simplemente redirige de nuevo a la página de feed
-    return redirect("feed")
+    return redirect('feed')
+                        
+    
+
+
 
 def recursos(request):
     perfil_usuario = Perfil.objects.get(username_id=request.user.id)
