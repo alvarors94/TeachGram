@@ -174,6 +174,7 @@ def ver_publicaciones(request, template_name):
     ahora = datetime.now().date()
 
 
+
     # Calcular la diferencia en días para cada comentario
     for comentario in comentarios:
         diferencia = ahora - comentario.fecha_publicacion_comentario

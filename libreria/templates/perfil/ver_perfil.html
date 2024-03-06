@@ -26,70 +26,62 @@
         </div>
         <div class="grid-container">
             {% for publicacion in publicaciones %}
-                <div class="modal fade" id="exampleModal{{ publicacion.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-xl">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">{{ publicacion.titulo }}</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <!-- Columna para la imagen -->
-                                        {% if publicacion.imagenes.count > 1 %}
-                                        <div id="carouselExampleControls_{{ publicacion.id }}" class="carousel slide" data-bs-ride="false">
-                                            <div class="carousel-indicators">
-                                                {% for imagen in publicacion.imagenes.all %}
-                                                    <button type="button" class="carousel-indicator {% if forloop.first %}active{% endif %}" data-bs-target="#carouselExampleControls_{{ publicacion.id }}" data-bs-slide-to="{{ forloop.counter0 }}" aria-label="Slide {{ forloop.counter }}"></button>
-                                                {% endfor %}
-                                            </div>
-                                            <div class="carousel-inner">
-                                                {% for imagen in publicacion.imagenes.all %}
-                                                    <div class="carousel-item {% if forloop.first %} active {% endif %}">
-                                                        <img class="d-block w-100" src="{{ imagen.imagen.url }}" style=" border-radius: 12px">
-                                                        
-                                                    </div>
-                                                    
-                                                {% endfor %}
-                                                
-                                            </div>
-                                            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls_{{ publicacion.id }}" data-bs-slide="prev">
-                                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                                <span class="visually-hidden">Previous</span>
-                                            </button>
-                                            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls_{{ publicacion.id }}" data-bs-slide="next">
-                                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                                <span class="visually-hidden">Next</span>
-                                            </button>
+            <div class="modal fade" id="exampleModal{{ publicacion.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog {% if publicacion.imagenes.all %}modal-xl{% else %}modal-lg{% endif %}">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">{{ publicacion.titulo }}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                {% if publicacion.imagenes.count > 0 %}
+                                <div class="col-md-6">
+                                    <!-- Columna para la imagen -->
+                                    {% if publicacion.imagenes.count > 1 %}
+                                    <div id="carouselExampleControls_{{ publicacion.id }}" class="carousel slide" data-bs-ride="false">
+                                        <div class="carousel-indicators">
+                                            {% for imagen in publicacion.imagenes.all %}
+                                            <button type="button" class="carousel-indicator {% if forloop.first %}active{% endif %}" data-bs-target="#carouselExampleControls_{{ publicacion.id }}" data-bs-slide-to="{{ forloop.counter0 }}" aria-label="Slide {{ forloop.counter }}"></button>
+                                            {% endfor %}
                                         </div>
-                                        <div>
-                                            <!-- Texto de la descripción en negrita -->
-                                            <strong>Descripción: </strong>
-                                            <br>
-                                            {{ publicacion.descripcion }}
-                                            <br>
-                                            <br>
-                                            <!-- Fecha de publicación alineada a la derecha -->
-                                            <small style="float: right;">Fecha de publicación: {{ publicacion.fecha_publicacion }}</small>
-                                        </div>
-                                        {% else %}
-                                            <img class="d-block w-100" src="{{ publicacion.imagenes.first.imagen.url }}"  style="border-radius: 12px">
-                                            <div>
-                                                <!-- Texto de la descripción en negrita -->
-                                                <strong>Descripción: </strong>
-                                                <br>
-                                                {{ publicacion.descripcion }}
-                                                <br>
-                                                <br>
-                                                <!-- Fecha de publicación alineada a la derecha -->
-                                                <small style="float: right;">Fecha de publicación: {{ publicacion.fecha_publicacion }}</small>
+                                        <div class="carousel-inner">
+                                            {% for imagen in publicacion.imagenes.all %}
+                                            <div class="carousel-item {% if forloop.first %} active {% endif %}">
+                                                <img class="d-block w-100" src="{{ imagen.imagen.url }}" style=" border-radius: 12px">
                                             </div>
-                                        {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls_{{ publicacion.id }}" data-bs-slide="prev">
+                                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                            <span class="visually-hidden">Previous</span>
+                                        </button>
+                                        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls_{{ publicacion.id }}" data-bs-slide="next">
+                                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                            <span class="visually-hidden">Next</span>
+                                        </button>
                                     </div>
-                                    <div class="col-md-6">
-                                        <h4>Comentarios:</h4>
-                                        <ul class="list-group">
+                                    {% else %}
+                                    <img class="d-block w-100" src="{{ publicacion.imagenes.first.imagen.url }}" style="border-radius: 12px;">
+                                    {% endif %}
+                                </div>
+                                {% endif %}
+                                <div class="{% if publicacion.imagenes.count > 0 %}col-md-6{% else %}col-md-12{% endif %}">
+                                    <div>
+                                        {% for perfil in perfiles %}
+                                        {% if perfil.username_id == usuario.id %}
+                                        <img src="{{ perfil.profile_pic.url }}" height="32" width="32" style="border-radius: 50%;">
+                                        {% endif %}
+                                        {% endfor %}
+                                        <strong>{{ usuario.username }}</strong>
+                                        <br>
+                                        {{ publicacion.descripcion }}
+                                        <br>
+                                        <br>
+                                        <small style="float: right;">Fecha de publicación: {{ publicacion.fecha_publicacion }}</small>
+                                    </div>
+                                    <h4>Comentarios:</h4>
+                                    <ul class="list-group">
                                             {% for comentario in comentarios %}
                                                 {% if comentario.publicacion_id == publicacion.id %}
                                                     

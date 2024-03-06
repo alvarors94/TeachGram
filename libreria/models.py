@@ -44,6 +44,9 @@ class Comentario(models.Model):
     comentario = models.CharField(max_length=400, verbose_name="Comentario")
     fecha_publicacion_comentario = models.DateField(auto_now_add=True)
     
+    class Meta:
+        ordering = ['-id']
+    
 class Recursos(models.Model):
     nombre = models.CharField(max_length=200, verbose_name="Nombre", default="Recursos")
     archivo_recurso = models.FileField(upload_to="media/recursos", verbose_name="Archivo")
