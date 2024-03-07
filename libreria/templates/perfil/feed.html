@@ -5,155 +5,180 @@
 <h2>&#128507;</h2>
 <div class="container mt-5">
     <div class="row">
-        <div class="col-md-5 " >
+        <div class="col-md-5">
             <div class="card mb-3" style="width: 468px; border-radius: 20px">
-                    <script src="https://static.elfsight.com/platform/platform.js" data-use-service-core defer></script>
-                    <div class="elfsight-app-c5378aa2-1c8a-48fb-b51a-f5797442ac3e" data-elfsight-app-lazy></div>
-                
+                <script src="https://static.elfsight.com/platform/platform.js" data-use-service-core defer></script>
+                <div class="elfsight-app-c5378aa2-1c8a-48fb-b51a-f5797442ac3e" data-elfsight-app-lazy></div>
             </div>
         </div>
 
         <div class="col-md-5">
-                <div class="row">
-                    {% for publicacion in publicaciones %}
-                        <div class="row justify-content-end" style="width: 100%; border-radius: 12px">
-                            <div class="col-md-6 mt-0" style="width: 100%;">
-                                <div class="card mb-3" style="border-radius: 12px">
-                                {% if publicacion.imagenes.count > 1 %}
-                                <div id="carouselExampleControls_{{ publicacion.id }}" class="carousel slide" data-bs-ride="false">
-                                    <div class="carousel-indicators">
-                                        {% for imagen in publicacion.imagenes.all %}
-                                            <button type="button" class="carousel-indicator {% if forloop.first %}active{% endif %}" data-bs-target="#carouselExampleControls_{{ publicacion.id }}" data-bs-slide-to="{{ forloop.counter0 }}" aria-label="Slide {{ forloop.counter }}"></button>
-                                        {% endfor %}
-                                    </div>
-                                    <div class="carousel-inner">
-                                        {% for imagen in publicacion.imagenes.all %}
-                                            <div class="carousel-item {% if forloop.first %} active {% endif %}">
-                                                <img class="d-block w-100" src="{{ imagen.imagen.url }}" style=" border-radius: 12px">
-                                            </div>
-                                        {% endfor %}
-                                    </div>
-                                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls_{{ publicacion.id }}" data-bs-slide="prev">
-                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                        <span class="visually-hidden">Previous</span>
-                                    </button>
-                                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls_{{ publicacion.id }}" data-bs-slide="next">
-                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                        <span class="visually-hidden">Next</span>
-                                    </button>
-                                </div>
-                                {% else %}
+            <div class="row">
+                {% for publicacion in publicaciones %}
+                <div class="row justify-content-end" style="width: 100%; border-radius: 12px">
+                    <div class="col-md-6 mt-0" style="width: 100%;">
+                        <div class="card mb-3" style="border-radius: 12px">
+                            {% if publicacion.imagenes.count > 1 %}
+                            <div id="carouselExampleControls_{{ publicacion.id }}" class="carousel slide" data-bs-ride="false">
+                                <div class="carousel-indicators">
                                     {% for imagen in publicacion.imagenes.all %}
-                                        {% if forloop.first %}
-                                            <img class="d-block w-100" src="{{ imagen.imagen.url }}" alt="Slide " style="border-radius: 12px">
-                                        {% endif %}
+                                    <button type="button" class="carousel-indicator {% if forloop.first %}active{% endif %}" data-bs-target="#carouselExampleControls_{{ publicacion.id }}" data-bs-slide-to="{{ forloop.counter0 }}" aria-label="Slide {{ forloop.counter }}"></button>
                                     {% endfor %}
+                                </div>
+                                <div class="carousel-inner">
+                                    {% for imagen in publicacion.imagenes.all %}
+                                    <div class="carousel-item {% if forloop.first %} active {% endif %}">
+                                        <img class="d-block w-100" src="{{ imagen.imagen.url }}" style=" border-radius: 12px">
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls_{{ publicacion.id }}" data-bs-slide="prev">
+                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Previous</span>
+                                </button>
+                                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls_{{ publicacion.id }}" data-bs-slide="next">
+                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Next</span>
+                                </button>
+                            </div>
+                            {% else %}
+                            {% for imagen in publicacion.imagenes.all %}
+                            {% if forloop.first %}
+                            <img class="d-block w-100" src="{{ imagen.imagen.url }}" alt="Slide " style="border-radius: 12px">
+                            {% endif %}
+                            {% endfor %}
+                            {% endif %}
+                            <div class="card-body">
+                                {% for perfil in perfiles %}
+                                {% if perfil.username_id == publicacion.user_id %}
+                                <a href="{% url 'ver_perfil' publicacion.user %}" class="no-link-style"><img src="{{ perfil.profile_pic.url }}" height="60" width="60" style="border-radius: 50%;"/></a>
                                 {% endif %}
-                                <div class="card-body">
-                                    {% for perfil in perfiles %}
-                                    {% if perfil.username_id == publicacion.user_id %}
-                                        <a href="{% url 'ver_perfil' publicacion.user %}" class="no-link-style"><img src="{{ perfil.profile_pic.url }}" height="60" width="60" style="border-radius: 50%;"/></a>
-                                    {% endif %}
-                                    {% endfor %}
-                                    <h5>
-                                        <a href="{% url 'ver_perfil' publicacion.user %}" class="no-link-style">{{publicacion.user}}</a> · 
-                                        <small class="text-body-secondary">{{publicacion.fecha_publicacion }}</small>
-                                    </h5>
-                                    <p class="card-text">{{ publicacion.descripcion }}</p>
-                                    <hr class="card-divider">
-                                    <ul class="list-group list-group-flush">
-                                        {% for comentario in comentarios %}
-                                            {% if comentario.publicacion_id == publicacion.id %}
-                                                <li class="list-group-item list-group-item-action hover-bg rounded-4">
-                                                    <div class="d-flex align-items-start hovered">
-                                                        <div class="mr-3">
-                                                            {% for perfil in perfiles %}
-                                                                {% if perfil.username_id == comentario.user_id %}
-                                                                    <a href="{% url 'ver_perfil' comentario.user %}" class="no-link-style">
-                                                                        <img src="{{ perfil.profile_pic.url }}" height="32" width="32" style="border-radius: 50%;"/>
-                                                                    </a>
-                                                                {% endif %}
-                                                            {% endfor %}
-                                                        </div>
-                                                        <div class="flex-grow-1">
-                                                            <a href="{% url 'ver_perfil' comentario.user %}" class="no-link-style">
-                                                                <strong>{{ comentario.user }}:</strong>
-                                                            </a>
-                                                            <div>{{ comentario.comentario }}</div>
-                                                            <small class="text-body-secondary">
-                                                                {% if comentario.dias_desde_publicacion == "hoy" %}
-                                                                    Hoy
-                                                                {% elif comentario.dias_desde_publicacion == "ayer" %}
-                                                                    Ayer
-                                                                {% else %}
-                                                                    Hace {{ comentario.dias_desde_publicacion }} días
-                                                                {% endif %}
-                                                            </small>
-                                                        </div>
-                                                        {% if comentario.user_id == user.id or user.is_superuser == True %}
-                                                        <div class="ml-auto">
-                                                            <div class="btn-group dropdown">
-                                                                <button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                                                    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,300,0,0" />
-                                                                    <span class="material-symbols-outlined"> more_vert </span>
-                                                                </button>
-                                                                <ul class="dropdown-menu dropdown-menu-end">
-                                                                    <li><h6 class="dropdown-header">Opciones</h6></li>
-                                                                    <li><hr class="dropdown-divider"></li>
-                                                                    <li><a class="dropdown-item" href="{% url 'editar_comentario' comentario.id %}">Editar comentario</a></li>
-                                                                    <li><a class="dropdown-item" href="{% url 'eliminar_comentario' comentario.id %}" style="color: red;">Eliminar comentario</a></li>
-                                                                </ul>
-                                                            </div>
-                                                        </div>
-                                                        {% endif %}
-                                                    </div>
-                                                </li>
-                                            {% endif %}
-                                        {% endfor %}
-                                    </ul>
-                                    <div class="row mt-3 grid-container">
-                                        <div class="col">
-                                            <form method="post" action="{% url 'agregar_comentario' publicacion.id %}">
-                                                {% csrf_token %}
-                                                <div class="btn-group">
-                                                    <button class="btn comment-gradient my-dropdown-toggle  w-100 mb-2" style="width: 250px; height: 80px; border-radius: 5px;" type="button" data-bs-toggle="dropdown" data-bs-auto-close="true" aria-expanded="false"> 
-                                                        <img width="20" height="20" src="https://img.icons8.com/cotton/24/000000/speech-bubble-with-dots.png" alt="speech-bubble-with-dots"/> <span style="color: white; font-weight: bold;">Comentar ({{publicacion.numero_de_comentarios}})</span>
+                                {% endfor %}
+                                <h5>
+                                    <a href="{% url 'ver_perfil' publicacion.user %}" class="no-link-style">{{publicacion.user}}</a> · 
+                                    <small class="text-body-secondary">{{publicacion.fecha_publicacion }}</small>
+                                </h5>
+                                <p class="card-text">{{ publicacion.descripcion }}</p>
+                                <hr class="card-divider">
+                                <ul class="list-group list-group-flush">
+                                    {% for comentario in comentarios %}
+                                    {% if comentario.publicacion_id == publicacion.id %}
+                                    <li class="list-group-item list-group-item-action hover-bg rounded-4">
+                                        <div class="d-flex align-items-start hovered">
+                                            <div class="mr-3">
+                                                {% for perfil in perfiles %}
+                                                {% if perfil.username_id == comentario.user_id %}
+                                                <a href="{% url 'ver_perfil' comentario.user %}" class="no-link-style">
+                                                    <img src="{{ perfil.profile_pic.url }}" height="32" width="32" style="border-radius: 50%;"/>
+                                                </a>
+                                                {% endif %}
+                                                {% endfor %}
+                                            </div>
+                                            <div class="flex-grow-1">
+                                                <a href="{% url 'ver_perfil' comentario.user %}" class="no-link-style">
+                                                    <strong>{{ comentario.user }}:</strong>
+                                                </a>
+                                                <div>{{ comentario.comentario }}</div>
+                                                <small class="text-body-secondary">
+                                                    {% if comentario.dias_desde_publicacion == "hoy" %}
+                                                    Hoy
+                                                    {% elif comentario.dias_desde_publicacion == "ayer" %}
+                                                    Ayer
+                                                    {% else %}
+                                                    Hace {{ comentario.dias_desde_publicacion }} días
+                                                    {% endif %}
+                                                </small>
+                                            </div>
+                                            {% if comentario.user_id == user.id or user.is_superuser == True %}
+                                            <div class="ml-auto">
+                                                <div class="btn-group dropdown">
+                                                    <button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,300,0,0" />
+                                                        <span class="material-symbols-outlined"> more_vert </span>
                                                     </button>
-                                                    <ul class="dropdown-menu" style="width: 500px;"> 
-                                                        <li>
-                                                            <div class="p-3">
-                                                                <form method="post" action="{% url 'agregar_comentario' publicacion.id %}">
-                                                                    {% csrf_token %}
-                                                                    <div class="form-group">
-                                                                        <input class="form-control" id="inputdefault" name="comentario" type="text" style="width: 460px; max-width: 100%; overflow-x: auto;" placeholder="Escribe tu comentario aquí...">
-                                                                    </div>
-                                                                    <button type="submit" class="btn comment-gradient btn-lg mt-2 w-100">Enviar comentario</button>
-                                                                </form>
-                                                            </div>
-                                                        </li>
+
+                                                    
+                                                    <ul class="dropdown-menu dropdown-menu-end">
+                                                        <li><h6 class="dropdown-header">Opciones</h6></li>
+                                                        <li><hr class="dropdown-divider"></li>
+                                                        <li><a class="dropdown-item" href="#" data-toggle="modal" data-target="#editarComentarioModal">Editar comentario</a></li>         
+                                                        <li><a class="dropdown-item" href="{% url 'eliminar_comentario' comentario.id %}" style="color: red;">Eliminar comentario</a></li>
                                                     </ul>
                                                 </div>
-                                            </form>
+                                            </div>
+                                            {% endif %}
                                         </div>
-                                        {% if publicacion.user_id == user.id  or user.is_superuser == True %}
-                                        <div class="col">
-                                            <a class="btn edit-gradient my-dropdown-toggle w-100 mb-2" style="width: 250px; height: 80px; border-radius: 5px;" href="{% url 'editar_publicacion' publicacion.id %}" role="button"> 
-                                                <img width="24" height="24" src="https://img.icons8.com/cotton/64/create-new--v1.png" alt="create-new--v1"/> <span style="color: white; font-weight: bold;">Editar publicación</span>
-                                            </a>
-                                        </div>
-                                        <div class="col align-items-start">
-                                            <a class="btn danger-gradient my-dropdown-toggle w-100 mb-2" style="width: 100%; height: 80px; border-radius: 5px;"  href="{% url 'eliminar_publicacion' publicacion.id %}" role="button">
-                                                <img width="30" height="30" src="https://img.icons8.com/cotton/64/000000/trash--v1.png" alt="trash--v1"/> <span style="color: white; font-weight: bold;">Eliminar publicación</span>
-                                            </a>
-                                        </div>
-                                        {% endif %}
+                                    </li>
+                                    {% endif %}
+                                    {% endfor %}
+                                </ul>
+                                <div class="row mt-3">
+                                    <div class="col">
+                                        <!-- Formulario de comentario -->
+                                        <form id="comment-form" method="post" action="{% url 'agregar_comentario' publicacion.id %}">
+                                            {% csrf_token %}
+                                            <div class="btn-group">
+                                                <div class="container">
+                                                    <div class="box_input">
+                                                        <!-- Contenido del formulario de comentario -->
+                                                        <div style="position: relative;">
+                                                            <input class="form-control" id="inputdefault" name="comentario" type="text" style="width: 380px; max-width: 100%; overflow-x: auto;">
+                                                            <label class="label_input" for="">Comentario</label>
+                                                            <svg class="icon_input emoji" xmlns="http://www.w3.org/2000/svg" width="20px" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.182 15.182a4.5 4.5 0 01-6.364 0M21 12a9 9 0 11-18 0 9 9 0 0118 0zM9.75 9.75c0 .414-.168.75-.375.75S9 10.164 9 9.75 9.168 9 9.375 9s.375.336.375.75zm-.375 0h.008v.015h-.008V9.75zm5.625 0c0 .414-.168.75-.375.75s-.375-.336-.375-.75.168-.75.375-.75.375.336.375.75zm-.375 0h.008v.015h-.008V9.75z" />
+                                                            </svg>
+                                                        </div>
+                                                        <div>
+                                                            <button type="submit" class="send">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="20px" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
+                                                                </svg>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
                                     </div>
-                                        
                                 </div>
+                                {% if publicacion.user_id == user.id or user.is_superuser == True %}
+                                <div class="row mt-3">
+                                    <div class="col text-center">
+                                        <!-- Botón de editar publicación -->
+                                        <a class="btn edit-gradient btn-me my-dropdown-toggle w-100 mb-2" style="width: 40px; height: 40px; border-radius: 5px;" href="{% url 'editar_publicacion' publicacion.id %}" role="button"> 
+                                            <!-- Contenido del botón de editar publicación -->
+                                            <img width="24" height="24" src="https://img.icons8.com/cotton/64/create-new--v1.png" alt="create-new--v1"/> <span style="color: white; font-weight: bold;">Editar publicación</span>
+                                        </a>
+                                    </div>
+                                    <div class="col text-center">
+                                        <!-- Botón de eliminar publicación -->
+                                        <a class="btn danger-gradient btn-me my-dropdown-toggle w-100 mb-2" style="width: 40px; height: 40px; border-radius: 5px;"  href="{% url 'eliminar_publicacion' publicacion.id %}" role="button">
+                                            <!-- Contenido del botón de eliminar publicación -->
+                                            <img width="30" height="30" src="https://img.icons8.com/cotton/64/000000/trash--v1.png" alt="trash--v1"/> <span style="color: white; font-weight: bold;">Eliminar publicación</span>
+                                        </a>
+                                    </div>
+                                </div>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
-{% endfor %}
-
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+        <div class="modal fade" id="exampleModal{{ comentario.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                 <div class="modal-content">
+                     <div class="modal-header">
+                            eeeeeeee
+                            </div>
+                        </div>
+                    </div>
+                    
+                    
+                </div>
+               
 
 {% endblock %}

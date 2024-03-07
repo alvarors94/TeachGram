@@ -140,8 +140,14 @@ def editar_comentario(request, id):
 
 def eliminar_publicacion(request,id):
     publicacion = Publicacion.objects.get(id = id)
+    usuario_publicacion = publicacion.user
     publicacion.delete()
-    return redirect("feed")
+    if 'feed' in request.META.get('HTTP_REFERER', ''):
+        # Si estaba en la página de feed, redirigir de vuelta a esa página
+        return redirect('feed')
+    
+    # De lo contrario, redirigir a la página de perfil del usuario que publicó la publicación
+    return redirect(reverse('ver_perfil', kwargs={'username': usuario_publicacion.username}))
 
 def eliminar_comentario(request,id):
     comentario = Comentario.objects.get(id = id)

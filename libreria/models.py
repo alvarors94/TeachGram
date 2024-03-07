@@ -55,10 +55,3 @@ class Recursos(models.Model):
 
     class Meta:
         ordering = ['-id']
-
-class Actividad(models.Model):
-    titulo = models.CharField(max_length=100)
-    descripcion = models.CharField(max_length=400)
-    inicio = models.DateTimeField()
-    fin = models.DateTimeField()
-    ubicacion = models.CharField(max_length=200, blank=True, null=True)
