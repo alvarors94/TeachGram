@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.urls import reverse_lazy, resolve, reverse
+from django.urls import reverse_lazy, reverse
 from django.views import View
 from .models import  Publicacion, Comentario, Perfil, Recursos, Imagen #Importamos las clases
 from .forms import PublicacionForm, ComentarioForm, PerfilForm, UserForm, CambiarPasswordForm, RecursosForm
@@ -7,6 +7,8 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 import locale
 from datetime import datetime, timedelta
+import os
+from django.conf import settings
 locale.setlocale(locale.LC_ALL, 'es_ES')
 perfiles = Perfil.objects.all()
 
@@ -128,20 +130,38 @@ def editar_comentario(request, id):
     comentario = Comentario.objects.get(id=id)
     publicacion = Publicacion.objects.get(id=comentario.publicacion_id)
     form_comentario = ComentarioForm(request.POST or None, instance=comentario)  # Pasar la instancia del comentario a editar
+    usuario_publicacion = publicacion.user
     if request.method == 'POST':
         if form_comentario.is_valid() and request.POST:
             form_comentario.save()  # El formulario ya contiene el comentario a editar, no es necesario modificarlo manualmente
-            return redirect("feed")
+           
+        
+        if 'feed' in request.META.get('HTTP_REFERER', ''):
+                # Si estaba en la página de feed, redirigir de vuelta a esa página
+                return redirect('feed')
+            
+            # De lo contrario, redirigir a la página de perfil del usuario que publicó la publicación
+        return redirect(reverse('ver_perfil', kwargs={'username': usuario_publicacion.username}))
+        
+        # De lo contrario, redirigir a la página de perfil del usuario que publicó la publicación
     return render(request, "perfil/editar_comentario.html", {"form_comentario": form_comentario, "publicacion": publicacion, "perfiles": perfiles})
 
 
-
-   
-
-def eliminar_publicacion(request,id):
-    publicacion = Publicacion.objects.get(id = id)
+def eliminar_publicacion(request, id):
+    publicacion = Publicacion.objects.get(id=id)
     usuario_publicacion = publicacion.user
+    
+    # Eliminar todas las imágenes asociadas a la publicación
+    imagenes = publicacion.imagenes.all()
+    for imagen in imagenes:
+        imagen_path = os.path.join(settings.MEDIA_ROOT, str(imagen.imagen))
+        if os.path.exists(imagen_path):
+            os.remove(imagen_path)
+        imagen.delete()
+
+    # Eliminar la publicación
     publicacion.delete()
+
     if 'feed' in request.META.get('HTTP_REFERER', ''):
         # Si estaba en la página de feed, redirigir de vuelta a esa página
         return redirect('feed')
@@ -166,6 +186,12 @@ def eliminar_comentario(request,id):
 
 def eliminar_imagen(request, id):
     imagen = Imagen.objects.get(id=id)
+    # Obtiene la ruta completa de la imagen en el directorio de medios
+    imagen_path = os.path.join(settings.MEDIA_ROOT, str(imagen.imagen))
+    # Elimina la imagen del directorio
+    if os.path.exists(imagen_path):
+        os.remove(imagen_path)
+    # Elimina la entrada de imagen de la base de datos
     imagen.delete()
     return redirect(reverse_lazy("editar_publicacion", kwargs={'id': imagen.publicacion_id}))
 

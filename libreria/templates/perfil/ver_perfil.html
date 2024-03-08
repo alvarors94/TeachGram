@@ -80,7 +80,7 @@
                                     <div>
                                         {% for perfil in perfiles %}
                                         {% if perfil.username_id == usuario.id %}
-                                        <img src="{{ perfil.profile_pic.url }}" height="32" width="32" style="border-radius: 50%;">
+                                        <img src="{{ perfil.profile_pic.url }}" height="32" width="32" style="border-radius: 50%; margin-right: 6px;">
                                         {% endif %}
                                         {% endfor %}
                                         <strong>{{ usuario.username }}</strong>
@@ -90,57 +90,64 @@
                                         <br>
                                         <small style="float: right;">Fecha de publicación: {{ publicacion.fecha_publicacion }}</small>
                                     </div>
+                                    <br>
+                                    <hr class="card-divider"/>
                                     <h4>Comentarios:</h4>
-                                    <ul class="list-group">
-                                            {% for comentario in comentarios %}
-                                                {% if comentario.publicacion_id == publicacion.id %}
-                                                    
-                                                        <li class="list-group-item list-group-item-action hover-bg rounded-4">
-                                                            <!-- Contenido del comentario -->
-                                                            <div class="d-flex align-items-start hovered">
-                                                                <div class="mr-3">
-                                                                    {% for perfil in perfiles %}
-                                                                        {% if perfil.username_id == comentario.user_id %}
-                                                                            <a href="{% url 'ver_perfil' comentario.user %}" class="no-link-style">
-                                                                                <img src="{{ perfil.profile_pic.url }}" height="32" width="32" style="border-radius: 50%;"/>
-                                                                            </a>
-                                                                        {% endif %}
-                                                                    {% endfor %}
-                                                                </div>
-                                                                <div class="flex-grow-1">
-                                                                    <a href="{% url 'ver_perfil' comentario.user %}" class="no-link-style">
-                                                                        <strong>{{ comentario.user }}:</strong>
-                                                                    </a>
-                                                                    <div>{{ comentario.comentario }}</div>
-                                                                    <small class="text-body-secondary">
-                                                                        {% if comentario.dias_desde_publicacion == "hoy" %}
-                                                                            Hoy
-                                                                        {% elif comentario.dias_desde_publicacion == "ayer" %}
-                                                                            Ayer
-                                                                        {% else %}
-                                                                            Hace {{ comentario.dias_desde_publicacion }} días
-                                                                        {% endif %}
-                                                                    </small>
-                                                                </div>
-                                                                {% if comentario.user_id == user.id or user.is_superuser == True %}
-                                                                <div class="ml-auto">
-                                                                    <!-- Botones de opciones -->
-                                                                    <div class="btn-group dropdown">
-                                                                        <button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                                                            <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,300,0,0" />
-                                                                            <span class="material-symbols-outlined"> more_vert </span>
-                                                                        </button>
-                                                                        <ul class="dropdown-menu dropdown-menu-end">
-                                                                            <li><h6 class="dropdown-header">Opciones</h6></li>
-                                                                            <li><hr class="dropdown-divider"></li>
-                                                                            <li><a class="dropdown-item" href="#" >Editar comentario </a></li>
-                                                                            <li><a class="dropdown-item" href="{% url 'eliminar_comentario' comentario.id %}" style="color: red;">Eliminar comentario</a></li>
-                                                                        </ul>
-                                                                    </div>
-                                                                </div>
-                                                                {% endif %}
+                                    <ul class="list-group list-group-flush" style="max-height: 320px; overflow-y: auto;">
+                                        {% for comentario in comentarios %}
+                                            {% if comentario.publicacion_id == publicacion.id %}
+                                                <li class="list-group-item list-group-item-action hover-bg rounded-4 mt-2">
+                                                    <div class="d-flex align-items-start hovered">
+                                                        <div class="mr-3">
+                                                            {% for perfil in perfiles %}
+                                                            {% if perfil.username_id == comentario.user_id %}
+                                                            <a href="{% url 'ver_perfil' comentario.user %}" class="no-link-style">
+                                                                <img src="{{ perfil.profile_pic.url }}" height="32" width="32" style="border-radius: 50%;"/>
+                                                            </a>
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </div>
+                                                        <div class="flex-grow-1 ms-2">
+                                                            <a href="{% url 'ver_perfil' comentario.user %}" class="no-link-style">
+                                                                <strong>{{ comentario.user }}:</strong>
+                                                            </a>
+                                                            <div style="max-width: 950px; overflow-x: auto; word-wrap: break-word;">
+                                                                {{ comentario.comentario }}
                                                             </div>
-                                                        </li>
+                                                            <small class="text-body-secondary">
+                                                                {% if comentario.dias_desde_publicacion == "hoy" %}
+                                                                Hoy
+                                                                {% elif comentario.dias_desde_publicacion == "ayer" %}
+                                                                Ayer
+                                                                {% else %}
+                                                                Hace {{ comentario.dias_desde_publicacion }} días
+                                                                {% endif %}
+                                                            </small>
+                                                        </div>
+                                                        {% if comentario.user_id == user.id or user.is_superuser == True %}
+                                                        <div class="ml-auto">
+                                                            <a class="dropdown-toggle" href="#" role="button" id="editarComentarioDropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Editar comentario">
+                                                                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAAAsTAAALEwEAmpwYAAAEcElEQVR4nO1YX2hbVRi/nX/Bh62XzdW2qKB2tNuanHM7HxwYtnwnKYKgQuaLXb6T6t1wzg4fZhVmfNBRn+oYCjqciIPuwSnMOWS2WrtaV+qU+ZLczj/kZjIFmXWiA2cbOTf33N5kSZq2iQl4PzgPOff77vn9vr+5R1E88cQTTzzxJE9WTZsBNWl+qBrpS6qRztR4XVKT5vFVhnm/Uo40JtP9atKcqwPgmZyVNOcak+be0uATZrguwRvzJNTpFCtOwDCHaw7SKL0ak+lTpQj8UfcEDPNyUQK1BqeWuTwCqheBtJdCBaXWqaF6RWz8T9po67GRjC/SZ62WDz6tqo5aDQLiQMq4tTq37amqjuoRMK71ggi38J7wWrHQV0pHrUYEar0Uj4BROW+u/np6pvnkRKL1yImplvdHvr11/NyF+o9AIjV758F3xzsf3vUNAf6P7ERy+bt7U+19+0fXfJX4te4IrB2ePE8e0I180IThDGH4d+4ev3zXwFtjdUOgdejjswKUDfgqZXiYMtx6d/fum2wIDZ3BnjYC+Cxh/KIk0rHzhc/VRGqupgTWDp/5XoKngOc1wI1FgSiK0skeu4UAvi1JtPUPjtaOQCI166SNAB/QVytlCgE8YNvNNp08nShJQHwwV4OAKFiZNm7Pa2H9Ng30lXkwGrrCsXXyRyAQv54ATgp73yNPnW1Mpn//z69VRLfJpgIedoMngH+KXCfQ227tafoNlOF7Qldj/GlHNxTbYqfSXNPI1FBRAup0KlTpiy3R57MFyzMCiAMK9JWyUAnDnzXQN1LGjzldCPg2d1QIcNPaf3DnnqIErCgkzb2FSKzX45mOHS8uXKzj5zIb8DlHV+St9F4gEL3ZfVZXOLaOMvwp+zx2RYLXgPfn46LAj9qt9VVlIREXqeJCVTVMZ5DIl5cC33x8NON7aJelt/6JfdnWeeTElG37W6Gz7u3mHRT4Xw74YGywkJ4AbkfmqLIUkQcUfR7iuhxEhPGPZHFqLLpZFrASj69w20Qikeso8KGcoQb8ly4W23ANAdlSAd+oKIGOSORGwvghmSaU8QE3ULIldofz0RLsaXMM4/EVsmCtvw+Ar4hakDXhB7wnhwDjX9rFva9iBEQ/J4x/Znv9CoFoTyFbwvh3to5zPS7I0Pm/Ec9YetDbPk+Cvyx1fVu3t4g5kCUQ3VwRAv4Q91HgP9r7F/xB3FTCdsAGdVFMWGcfsI+E8FG3rvA8Ab6fQKzZcQDw1+z0Seen4ZIIaAwjoofbOfvFpkC0qZRtNlI4Y8+CdxZzrhZCJtuwn/HeJYF3E6AMX7JzXXj0kKiBcuwJwx1OygAeEBNWWQg8i4UkcQJ8TBT90gkA/uDK2askGN296HcwftBFYtIebA35eiLnCcPX5beCqCF/N1+jLEf8IbyPMpwggGfcE3WR0kABn5cFSbOeNUUrJQwHs60SJ/Kejy0bfKVFCyOlDD/J/6jJnQeY1gAfX1baVFs06LmdMnzSmrJWFPibos9brbLMbvMvPcdfltZuhDUAAAAASUVORK5CYII=" height="25px" width="25px">
+                                                            </a>
+                                                            <div class="dropdown-menu" aria-labelledby="editarComentarioDropdown" data-bs-auto-close="false">
+                                                                <form action="{% url 'editar_comentario' comentario.id %}" method="POST">
+                                                                    {% csrf_token %}
+                                                                    <div class="form-group ms-3 me-3">
+                                                                        <label for="comentarioEdit"><h5>Editar Comentario:</h5></label>
+                                                                        <textarea class="form-control mt-3 mr-3" id="comentarioEdit" name="comentario" rows="4" style="min-width: 500px; overflow-x: auto;">{{ comentario.comentario }}</textarea>
+                                                                    </div>
+                                                                    <div class="container mt-2 ms-1">
+                                                                        <button type="submit" class="btn comment-gradient ms-2" style="color: white; font-weight: bold;">Guardar Cambios</button>
+                                                                        <button type="button" class="btn danger-gradient ms-2" style="color: white; font-weight: bold;">Cancelar</button>
+                                                                    </div>
+                                                                </form>
+                                                            </div>
+                                                            <a class="dropdown-item" href="{% url 'eliminar_comentario' comentario.id %}" data-toggle="tooltip" title="Eliminar comentario">
+                                                                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAAAsTAAALEwEAmpwYAAAEcElEQVR4nO1YX2hbVRi/nX/Bh62XzdW2qKB2tNuanHM7HxwYtnwnKYKgQuaLXb6T6t1wzg4fZhVmfNBRn+oYCjqciIPuwSnMOWS2WrtaV+qU+ZLczj/kZjIFmXWiA2cbOTf33N5kSZq2iQl4PzgPOff77vn9vr+5R1E88cQTTzzxJE9WTZsBNWl+qBrpS6qRztR4XVKT5vFVhnm/Uo40JtP9atKcqwPgmZyVNOcak+be0uATZrguwRvzJNTpFCtOwDCHaw7SKL0ak+lTpQj8UfcEDPNyUQK1BqeWuTwCqheBtJdCBaXWqaF6RWz8T9po67GRjC/SZ62WDz6tqo5aDQLiQMq4tTq37amqjuoRMK71ggi38J7wWrHQV0pHrUYEar0Uj4BROW+u/np6pvnkRKL1yImplvdHvr11/NyF+o9AIjV758F3xzsf3vUNAf6P7ERy+bt7U+19+0fXfJX4te4IrB2ePE8e0I180IThDGH4d+4ev3zXwFtjdUOgdejjswKUDfgqZXiYMtx6d/fum2wIDZ3BnjYC+Cxh/KIk0rHzhc/VRGqupgTWDp/5XoKngOc1wI1FgSiK0skeu4UAvi1JtPUPjtaOQCI166SNAB/QVytlCgE8YNvNNp08nShJQHwwV4OAKFiZNm7Pa2H9Ng30lXkwGrrCsXXyRyAQv54ATgp73yNPnW1Mpn//z69VRLfJpgIedoMngH+KXCfQ227tafoNlOF7Qldj/GlHNxTbYqfSXNPI1FBRAup0KlTpiy3R57MFyzMCiAMK9JWyUAnDnzXQN1LGjzldCPg2d1QIcNPaf3DnnqIErCgkzb2FSKzX45mOHS8uXKzj5zIb8DlHV+St9F4gEL3ZfVZXOLaOMvwp+zx2RYLXgPfn46LAj9qt9VVlIREXqeJCVTVMZ5DIl5cC33x8NON7aJelt/6JfdnWeeTElG37W6Gz7u3mHRT4Xw74YGywkJ4AbkfmqLIUkQcUfR7iuhxEhPGPZHFqLLpZFrASj69w20Qikeso8KGcoQb8ly4W23ANAdlSAd+oKIGOSORGwvghmSaU8QE3ULIldofz0RLsaXMM4/EVsmCtvw+Ar4hakDXhB7wnhwDjX9rFva9iBEQ/J4x/Znv9CoFoTyFbwvh3to5zPS7I0Pm/Ec9YetDbPk+Cvyx1fVu3t4g5kCUQ3VwRAv4Q91HgP9r7F/xB3FTCdsAGdVFMWGcfsI+E8FG3rvA8Ab6fQKzZcQDw1+z0Seen4ZIIaAwjoofbOfvFpkC0qZRtNlI4Y8+CdxZzrhZCJtuwn/HeJYF3E6AMX7JzXXj0kKiBcuwJwx1OygAeEBNWWQg8i4UkcQJ8TBT90gkA/uDK2askGN296HcwftBFYtIebA35eiLnCcPX5beCqCF/N1+jLEf8IbyPMpwggGfcE3WR0kABn5cFSbOeNUUrJQwHs60SJ/Kejy0bfKVFCyOlDD/J/6jJnQeY1gAfX1baVFs06LmdMnzSmrJWFPibos9brbLMbvMvPcdfltZuhDUAAAAASUVORK5CYII=" height="25px" width="25px">                                                            </a>
+                                                        </div>
+                                                        {% endif %}
+                                                    </div>
+                                                </li>
                                                 {% endif %}
                                             {% endfor %}
                                             {% if publicacion.comentarios.count == 0 %}
@@ -163,16 +170,13 @@
                                                         <div class="box_input">
                                                             <div style="position: relative;">
                                                                 <input class="form-control" id="inputdefault" name="comentario" type="text" style="width: 100%; max-width: 100%; min-width: 1025px; overflow-x: auto;">
-                                                                <label class="label_input" for="">Comentario</label>
-                                                                <svg class="icon_input emoji" xmlns="http://www.w3.org/2000/svg" width="20px" fill="none" viewBox="0 0 24 24"
-                                                                  stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                                                                  <path stroke-linecap="round" stroke-linejoin="round"
-                                                                    d="M15.182 15.182a4.5 4.5 0 01-6.364 0M21 12a9 9 0 11-18 0 9 9 0 0118 0zM9.75 9.75c0 .414-.168.75-.375.75S9 10.164 9 9.75 9.168 9 9.375 9s.375.336.375.75zm-.375 0h.008v.015h-.008V9.75zm5.625 0c0 .414-.168.75-.375.75s-.375-.336-.375-.75.168-.75.375-.75.375.336.375.75zm-.375 0h.008v.015h-.008V9.75z" />
-                                                                </svg>
+                                                                <label class="label_input" for="">Escribe tu comentario...</label>
                                                             </div>
                                                             <div>
                                                                 <button type="submit" class="send">
-                                                                    <img width="24" height="24" src="https://img.icons8.com/parakeet-line/24/sent.png" alt="sent"/>
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20px" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
+                                                                    </svg>
                                                                 </button>
                                                             </div>
                                                         </div>
@@ -197,7 +201,7 @@
                                 <img src="{{ publicacion.imagenes.first.imagen.url }}" style="width: 420px; height: 420px; border-radius: 12px" class="zoom-img"/>
                                 {% if publicacion.imagenes.count > 1 %}
                                     <!-- Si hay más de una imagen, mostrar el símbolo especial como superposición -->
-                                    <div class="special-overlay" style="position: absolute; top: 0; right: 0; background-color: rgba(255, 255, 255, 0.8); border-radius: 12px; width: 30px; height: 30px; text-align: center; font-size: 20px; line-height: 30px;">+</div>
+                                    <div class="special-overlay" style="position: absolute; top: 0; right: 0; background-color: rgba(255, 255, 255, 0.8); border-radius: 12px; width: 30px; height: 30px; text-align: center; font-size: 20px; line-height: 30px;"><img width="48" height="48" src="https://img.icons8.com/parakeet/48/stack-of-photos.png" alt="stack-of-photos"/></div>
                                 {% endif %}
                             </div>
                         </a>
@@ -226,12 +230,6 @@
                     </div>
                 {% endif %}
             {% endfor %}
-            <div class="fixed-bottom-right">
-                <a href="{% url 'crear_publicacion' %}" role="button">
-                    <img width="96" height="96" src="https://img.icons8.com/parakeet/96/add.png" alt="add"/>
-                    <span class="tooltip">Crear publicación</span>
-                </a>
-            </div>
         </div>
     </main>
 </body>

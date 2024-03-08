@@ -1,37 +1,80 @@
+{% load static %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'main.css' %}">
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+<!------ Include the above in your HEAD tag ---------->
+
+<section class="login-block">
+  <div class="container">
+      <div class="row align-content-center align-items-center"> <!-- Añadidas las clases para centrar -->
+          <div class="col-md-4 login-sec">
+              <h2 class="text-center">Acceda para continuar</h2>
+        
 
 
-{% block content %}
 
-  {% if form.errors %}
-    <p>Su nombre de usuario y contraseña no coinciden. Inténtalo de nuevo.</p>
+{% if form.errors %}
+  <p>Su nombre de usuario y contraseña no coinciden. Inténtalo de nuevo.</p>
+{% endif %}
+
+{% if next %}
+  {% if user.is_authenticated %}
+    <p>Su cuenta no tiene acceso a esta página. Para continuar,
+    inicie sesión con una cuenta que tenga acceso.</p>
+  {% else %}
+    <p>Por favor inicie sesión para ver esta página.</p>
   {% endif %}
+{% endif %}
 
-  {% if next %}
-    {% if user.is_authenticated %}
-      <p>Su cuenta no tiene acceso a esta página. Para continuar,
-      inicie sesión con una cuenta que tenga acceso.</p>
-    {% else %}
-      <p>Por favor inicie sesión para ver esta página.</p>
-    {% endif %}
-  {% endif %}
+<form method="post" action="{% url 'login' %}">
+  {% csrf_token %}
+  <div class="form-group">
+    <label for="exampleInputEmail1" class="text-uppercase">Nombre de usuario</label>
+    {{ form.username }}
+  </div>
+  <div class="form-group">
+    <label for="exampleInputPassword1" class="text-uppercase">Contraseña</label>
+    <br>
+    {{ form.password }}
+  </div>
+  <div class="form-check">
+    <label class="form-check-label">
+      <input type="checkbox" class="form-check-input">
+      <small>Remember Me</small>
+    </label>
+  </div>
+  <input type="submit" class="btn btn-login float-right" value="Entrar">
+  <input type="hidden" name="next" value="{{ next }}">
+</form>
 
-  <form method="post" action="{% url 'login' %}">
-    {% csrf_token %}
-    <table>
-      <tr>
-        <td>{{ form.username.label_tag }}</td>
-        <td>{{ form.username }}</td>
-      </tr>
-      <tr>
-        <td>{{ form.password.label_tag }}</td>
-        <td>{{ form.password }}</td>
-      </tr>
-    </table>
-    <input type="submit" value="login">
-    <input type="hidden" name="next" value="{{ next }}">
-  </form>
 
-  {# Asume que configura la vista de restablecimiento de contraseña en su URLconf #}
-  <p><a href="{% url 'password_reset' %}">¿Olvidó su contraseña?</a></p>
 
-{% endblock %}
+
+		</div>
+		<div class="col-md-8 banner-sec">
+            <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+                 <ol class="carousel-indicators">
+                    <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+                    <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+                    <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+                  </ol>
+            <div class="carousel-inner" role="listbox">
+    <div class="carousel-item active">
+      <img class="d-block img-fluid" src="https://static.pexels.com/photos/33972/pexels-photo.jpg" alt="First slide">
+      <div class="carousel-caption d-none d-md-block">
+        <div class="banner-text">
+            <h2>This is Heaven</h2>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation</p>
+        </div>	
+  </div>
+    </div>
+    
+  </div>
+            </div>	   
+		    
+		</div>
+	</div>
+</div>
+</section>
