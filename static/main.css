@@ -1,19 +1,34 @@
 
 .mi-navbar {
   width: 100%;
-  background: linear-gradient(to right, #7229b6, #e1d9de);
+  background: linear-gradient(to right, #de7171, #DE6262);
   margin-bottom: 20px; /* Aumenta el margen inferior */
 }
 
 body{
- 
+     background: linear-gradient(to bottom, #f7f1ed, #FFB88C); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+      }
 
-    background: linear-gradient(to bottom, #f7f1ed, #4545bc); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-    
-  }
+.nav-item {
+    position: relative;
+}
 
+.nav-item::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 3px; /* Altura de la barra */
+    background-color: transparent; /* Color de la barra inicial */
+    transition: width 0.3s ease, background-color 0.3s ease; /* Transición suave */
+}
 
- 
+.nav-item:hover::after {
+    width: 100%; /* Ancho completo de la barra al pasar el ratón por encima */
+    background-color: #e7afaf; /* Color de la barra al pasar el ratón por encima */
+}
+
 
   .no-link-style {
     text-decoration: none;
@@ -84,6 +99,7 @@ body{
 
 .danger-gradient{
   background: linear-gradient(to left, #c70f0f, #891b1b);
+  
 }
   .grid-container {
     display: grid;

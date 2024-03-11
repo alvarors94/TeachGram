@@ -7,7 +7,7 @@
             <div class="contenedor-cabecera mt-3">
                 <div>
                     {% for perfil in perfiles %}
-                        {% if perfil.username_id == usuario.id %}
+                        {% if perfil.username_id == usuario.id or user.is_superuser%}
                             <img src="{{ perfil.profile_pic.url }}" height="150" width="150" style="border-radius: 50%;"/>
                             <h2>{{ usuario.username }}</h2> 
                             <h2>{{ usuario.first_name }} {{ usuario.last_name }}</h2> 

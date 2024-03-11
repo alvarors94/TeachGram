@@ -1,0 +1,48 @@
+{% extends "base.html"%}
+{% block titulo %} Perfiles {% endblock %}
+{% block contenido %} 
+
+{%if user.is_superuser%}
+<div class="container mt-5"> <!-- Agregando margen superior a la tarjeta -->
+    <div class="card">
+        <div class="card-header" style="background-color: rgb(173, 164, 158);"><strong>Listado de perfiles</strong></div>
+        <div class="table-responsive"> <!-- Ajustando margen superior aquí -->
+            <table class="table table-striped table-bordered table-hover thead-dark">
+                <thead>
+                    <tr>
+                        <th scope="col">ID Usuario</th>
+                        <th scope="col">Foto de Perfil</th>
+                        <th scope="col">Nombre Usuario</th>
+                        <th scope="col">Nombre completo</th>
+                        <th scope="col">Último Acceso</th>
+                        <th scope="col">¿Es superusuario?</th>
+                        <th scope="col">¿Está activo?</th>
+                        <th scope="col">Nº de comentarios</th>
+                        <th scope="col">Nº de publicaciones</th>
+                        <th scope="col">Eliminar perfil</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for dato in datos_de_usuario %}
+                        <tr>
+                            <td>{{ dato.id }}</td>
+                            <td><a href="{% url 'ver_perfil' dato.username %}" class="no-link-style"><img src="{{ dato.profile_pic }}" height="60" width="60" style="border-radius: 50%;"/></a></td>
+                            <td><a href="{% url 'ver_perfil' dato.username %}" class="no-link-style">{{ dato.username }}</a></td>
+                            <td><a href="{% url 'ver_perfil' dato.username %}" class="no-link-style">{{ dato.full_name }}</a></td>
+                            <td>{{ dato.last_login }}</td>
+                            <td>{{ dato.is_superuser }}</td>
+                            <td>{{ dato.is_active }}</td>
+                            <td>{{ dato.total_comentarios }}</td>
+                            <td>{{ dato.total_publicaciones }}</td>
+                            <td><a class="btn danger-gradient" href="{% url 'eliminar_perfil' dato.id %}" role="button"><span style="color: white; font-weight: bold;">Eliminar perfil</span></a></td>
+
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{%endif%}
+{% endblock %}

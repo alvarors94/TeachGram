@@ -5,7 +5,7 @@ from django.contrib.staticfiles.urls import static # para usar estos archivos en
 
 urlpatterns = [
     path("", views.inicio, name="inicio"), # "" indica la ruta 127.0.0.1:8000
-    path("perfil", views.perfil, name="perfil"),
+    path("listado_perfiles", views.listado_perfiles, name="listado_perfiles"),
     path("crear_publicacion", views.crear_publicacion, name="crear_publicacion"), 
     path("editar_publicacion/<int:id>", views.editar_publicacion, name="editar_publicacion"), 
     path("editar_comentario/<int:id>", views.editar_comentario, name="editar_comentario"), 
@@ -24,6 +24,8 @@ urlpatterns = [
     path("eliminar_recurso/<int:id>", views.eliminar_recurso, name="eliminar_recurso"),
     path("editar_recurso/<int:id>", views.editar_recurso, name="editar_recurso"),
     path("eliminar_imagen/<int:id>", views.eliminar_imagen, name="eliminar_imagen"),
+    path("eliminar_perfil/<int:id>", views.eliminar_perfil, name="eliminar_perfil"),
+    path("buscar_perfil/<str:username>", views.buscar_perfil, name="buscar_perfil"),
    
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) # así concatenamos el path de la carpeta media y la ruta de la carpeta static

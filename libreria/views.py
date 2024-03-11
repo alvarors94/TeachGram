@@ -12,6 +12,7 @@ from django.conf import settings
 locale.setlocale(locale.LC_ALL, 'es_ES')
 perfiles = Perfil.objects.all()
 
+
 def base(request):
     perfil_usuario = Perfil.objects.get(username_id=request.user.id)
     return render(request, 'base.html', {'perfiles': perfiles ,"perfil_usuario":perfil_usuario})
@@ -20,9 +21,11 @@ def inicio(request):
     perfil_usuario = Perfil.objects.get(username_id=request.user.id)
     return render(request, "paginas/inicio.html",{"perfil_usuario":perfil_usuario})
 
-def perfil(request, template_name='perfil/index.html'):
+def listado_perfiles(request, template_name='perfil/listado_perfiles.html'):
     perfil_usuario = Perfil.objects.get(username_id=request.user.id)
     datos_de_usuario = []
+    publicaciones = Publicacion.objects.all()
+    comentarios = Comentario.objects.all()
     for perfil in perfiles:
         datos_usuario = {
             'id': perfil.username.id,
@@ -32,10 +35,12 @@ def perfil(request, template_name='perfil/index.html'):
             'last_login': perfil.username.last_login.strftime("%d de %B de %Y - %H:%M:%S"),
             'is_superuser': perfil.username.is_superuser,
             'is_active': perfil.username.is_active,
+            'total_comentarios': Comentario.objects.filter(user_id=perfil.username.id).count(),
+            'total_publicaciones': Publicacion.objects.filter(user_id=perfil.username.id).count(),
         }
         datos_de_usuario.append(datos_usuario)
 
-    return render(request, template_name, {"datos_de_usuario": datos_de_usuario, "perfiles": perfiles, "perfil_usuario": perfil_usuario})
+    return render(request, template_name, {"comentarios":comentarios,"publicaciones":publicaciones,"datos_de_usuario": datos_de_usuario, "perfiles": perfiles, "perfil_usuario": perfil_usuario})
     
 
 def editar_perfil(request):
@@ -47,7 +52,7 @@ def editar_perfil(request):
         if form_user.is_valid() and form_perfil.is_valid():
             form_user.save()
             form_perfil.save()
-            return redirect('ver_perfil', username=request.user.username)  # Redirigir a la página de perfil
+            return redirect('feed')  # Redirigir a la página de perfil
 
     return render(request, "perfil/editar_perfil.html", {"perfil_usuario": perfil_usuario, "form_user": form_user, "form_perfil": form_perfil})
 
@@ -169,6 +174,11 @@ def eliminar_publicacion(request, id):
     # De lo contrario, redirigir a la página de perfil del usuario que publicó la publicación
     return redirect(reverse('ver_perfil', kwargs={'username': usuario_publicacion.username}))
 
+def eliminar_perfil(request, id):
+    usuario = User.objects.get(id=id)
+    usuario.delete()
+    return redirect('listado_perfiles' )
+
 def eliminar_comentario(request,id):
     comentario = Comentario.objects.get(id = id)
     publicacion = Publicacion.objects.get(id=comentario.publicacion_id)
@@ -196,6 +206,14 @@ def eliminar_imagen(request, id):
     return redirect(reverse_lazy("editar_publicacion", kwargs={'id': imagen.publicacion_id}))
 
 
+def buscar_perfil(request, username):
+    query = request.GET.get('q')
+    perfiles = None
+    if query:
+        # Filtrar perfiles por nombre que contenga la consulta
+        perfiles = Perfil.objects.filter(usuario__username=username, username__icontains=query)
+    return render(request, 'buscar_perfil.html', {'perfiles': perfiles, 'query': query})
+    
 def ver_publicaciones(request, template_name):
     imagenes = Imagen.objects.all()
     publicaciones = Publicacion.objects.all()

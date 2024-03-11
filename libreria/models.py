@@ -11,7 +11,6 @@ class Perfil(models.Model):
         verbose_name="Foto de perfil",
         blank=True,
     )
-    is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'username'

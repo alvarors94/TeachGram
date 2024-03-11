@@ -2,6 +2,8 @@ from django import forms
 from .models import Publicacion, Comentario, Perfil, Recursos, Imagen
 from django.contrib.auth.models import User
 import re
+from django.contrib.auth.forms import AuthenticationForm, UsernameField
+
 
 class PublicacionForm(forms.ModelForm):
     class Meta:
@@ -85,3 +87,5 @@ class RecursosForm(forms.ModelForm):
         model = Recursos
         fields = ['archivo_recurso', 'nombre','descripcion'] 
         
+
+
