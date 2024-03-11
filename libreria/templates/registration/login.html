@@ -1,80 +1,87 @@
 {% load static %}
 
-<link rel="stylesheet" type="text/css" href="{% static 'main.css' %}">
-<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-<!------ Include the above in your HEAD tag ---------->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tu Título Aquí</title>
+  <link rel="stylesheet" type="text/css" href="{% static 'main.css' %}">
+  <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+  
+</head>
+<body>
 
-<section class="login-block">
-  <div class="container">
-      <div class="row align-content-center align-items-center"> <!-- Añadidas las clases para centrar -->
-          <div class="col-md-4 login-sec">
-              <h2 class="text-center">Acceda para continuar</h2>
-        
-
-
-
-{% if form.errors %}
-  <p>Su nombre de usuario y contraseña no coinciden. Inténtalo de nuevo.</p>
-{% endif %}
-
-{% if next %}
-  {% if user.is_authenticated %}
-    <p>Su cuenta no tiene acceso a esta página. Para continuar,
-    inicie sesión con una cuenta que tenga acceso.</p>
-  {% else %}
-    <p>Por favor inicie sesión para ver esta página.</p>
-  {% endif %}
-{% endif %}
-
-<form method="post" action="{% url 'login' %}">
-  {% csrf_token %}
-  <div class="form-group">
-    <label for="exampleInputEmail1" class="text-uppercase">Nombre de usuario</label>
-    {{ form.username }}
-  </div>
-  <div class="form-group">
-    <label for="exampleInputPassword1" class="text-uppercase">Contraseña</label>
-    <br>
-    {{ form.password }}
-  </div>
-  <div class="form-check">
-    <label class="form-check-label">
-      <input type="checkbox" class="form-check-input">
-      <small>Remember Me</small>
-    </label>
-  </div>
-  <input type="submit" class="btn btn-login float-right" value="Entrar">
-  <input type="hidden" name="next" value="{{ next }}">
-</form>
-
-
-
-
-		</div>
-		<div class="col-md-8 banner-sec">
-            <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
-                 <ol class="carousel-indicators">
-                    <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
-                    <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
-                    <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
-                  </ol>
-            <div class="carousel-inner" role="listbox">
-    <div class="carousel-item active">
-      <img class="d-block img-fluid" src="https://static.pexels.com/photos/33972/pexels-photo.jpg" alt="First slide">
-      <div class="carousel-caption d-none d-md-block">
-        <div class="banner-text">
+  <section class="login-block">
+    <div class="container">
+      <div class="row align-content-center align-items-center">
+        <div class="col-md-4 login-sec">
+          <h2 class="text-center">Acceda para continuar</h2>
+  
+          {% if form.errors %}
+            <p>Su nombre de usuario y contraseña no coinciden. Inténtalo de nuevo.</p>
+          {% endif %}
+  
+          {% if next %}
+            {% if user.is_authenticated %}
+              <p>Su cuenta no tiene acceso a esta página. Para continuar, inicie sesión con una cuenta que tenga acceso.</p>
+            {% else %}
+              <p>Por favor inicie sesión para ver esta página.</p>
+            {% endif %}
+          {% endif %}
+  
+          <form method="post" action="{% url 'login' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <div class="input">
+                  <label class="label_input" for="inputUsername" style="color: rgb(129, 137, 137);">Nombre de usuario</label>
+                    <input class="form-control" id="inputdefault" name="username" type="text" style="width: 100%; max-width: 100%; overflow-x: auto; border-color: #E36262;">
+                    
+                </div>
+            </div>
+            <div class="input mt-3">
+              <label class="label_input" for="inputPassword" style="color: rgb(129, 137, 137);">Contraseña</label>
+                <input class="form-control" id="inputPassword" name="password" type="password"  style="width: 100%; max-width: 100%; overflow-x: auto; border-color: #E36262;">
+                
+            </div>
+            <div class="form-check">
+                <label class="form-check-label mt-3">
+                    <input type="checkbox" class="form-check-input">
+                    <small>Recuérdame</small>
+                </label>
+            </div>
+            <div class="btn-group">
+                <button type="submit" class="btn btn-login float-right">
+                    <img width="24" height="24" src="https://img.icons8.com/parakeet-line/48/ffffff/enter-2.png" alt="enter-2"/>
+                    Entrar
+                </button>
+            </div>
+            <input type="hidden" name="next" value="{{ next }}">
+        </form>
+        </div>
+  
+        <div class="col-md-8 order-md-2">
+          <img class="d-block img-fluid" src="{% static 'undraw_nature_on_screen_xkli.png' %}" alt="Imagen">
+          <div class="text-center">
             <h2>This is Heaven</h2>
             <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation</p>
-        </div>	
-  </div>
+          </div>
+        </div>
+      </div>
     </div>
-    
-  </div>
-            </div>	   
-		    
-		</div>
-	</div>
-</div>
-</section>
+  </section>
+  
+  <script>
+    // Script para mostrar u ocultar la etiqueta <label> basado en la entrada de texto
+    document.querySelectorAll('.box_input input').forEach(input => {
+      const label = input.previousElementSibling;
+      input.addEventListener('input', () => {
+        label.style.display = input.value ? 'none' : 'block';
+      });
+    });
+  </script>
+  
+  </body>
+  </html>

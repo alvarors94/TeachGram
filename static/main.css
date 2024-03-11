@@ -13,7 +13,7 @@ body{
   }
 
 
-
+ 
 
   .no-link-style {
     text-decoration: none;
@@ -189,6 +189,8 @@ body{
   background: linear-gradient(to left, #2ab55f, #38ef7d);
 }
 
+
+
 .list-group-item {
   border: 20px solid #3bc075; /* Define el grosor y el color del borde */
   border-radius: 0; /* Ajusta el radio de los bordes si es necesario */
@@ -206,7 +208,6 @@ body{
   height: 100vh; /* Ajusta la altura al 100% del viewport */
 }
 
-.banner-sec{background:url(https://static.pexels.com/photos/33972/pexels-photo.jpg)  no-repeat left bottom; background-size:cover; min-height:500px; border-radius: 0 10px 10px 0; padding:0;}
 .container{background:#fff; border-radius: 10px; box-shadow:15px 20px 0px rgba(0,0,0,0.1);}
 .carousel-inner{border-radius:0 10px 10px 0;}
 .carousel-caption{text-align:left; left:5%;}
