@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block titulo %} Perfiles {% endblock %}
+{% block contenido %} 
+{% if not user.perfil.is_blocked %}
+<div class="container mt-5">
+    <h5>No puedes acceder al contenido de esta página por que actualmente estás bloqueado.
+        Para solucionar el problema, póngase en contacto con el/la maestro/a de la clase
+    </h5>
+</div>
+{% else %}
+<div class="container mt-5"> <!-- Agregando margen superior a la tarjeta -->
+    <div class="card-header" style="background-color: rgb(173, 164, 158);"><h3>Clase</h3></div>
+    <input type="text" id="searchInput" placeholder="Buscar perfil" class="search_box mb-3 mt-3">
+    <br>
+    <div class="row">
+        {% for perfil in perfiles %}
+        <div class="col-md-3 mb-4 perfil-card">
+            <a href="{% url 'ver_perfil' perfil.username %}" class="no-link-style" style="font-size: 14px;">
+                <div class="card hover-bg">
+                    <div class="card-body">
+                        <img src="{{ perfil.profile_pic.url }}" height="100" width="100" style="border-radius: 50%;"/>
+                        {% if perfil.username.is_superuser %}
+                            <strong>{{ perfil.username }}</strong>
+                            <span class="badge edit-gradient" style="color: black; font-size:small;">Docente</span>
+                        {% else %}
+                            <strong>{{ perfil.username }}</strong>
+                        {% endif %}
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+    <div id="noResults" class="text-danger" style="display: none;">
+        <strong>No se encontraron resultados</strong>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function() {
+        $('#searchInput').on('keyup', function() {
+            var searchText = $(this).val().toLowerCase();
+            var found = false;
+            $('.perfil-card').each(function() {
+                var text = $(this).text().toLowerCase();
+                if (text.includes(searchText)) {
+                    $(this).show();
+                    found = true;
+                } else {
+                    $(this).hide();
+                }
+            });
+            if (!found) {
+                $('#noResults').show();
+            } else {
+                $('#noResults').hide();
+            }
+        });
+    });
+</script>
+{%endif%}
+{% endblock %}

@@ -12,6 +12,7 @@ class Perfil(models.Model):
         blank=True,
     )
     is_staff = models.BooleanField(default=False)
+    is_blocked = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = []

@@ -14,38 +14,51 @@ perfiles = Perfil.objects.all()
 
 
 def base(request):
-    perfil_usuario = Perfil.objects.get(username_id=request.user.id)
-    return render(request, 'base.html', {'perfiles': perfiles ,"perfil_usuario":perfil_usuario})
+    user = User.objects.get(id=request.user.id)
+    foto_perfil = user.perfil.profile_pic
+    return render(request, 'base.html', {"foto_perfil":foto_perfil})
 
 def inicio(request):
-    perfil_usuario = Perfil.objects.get(username_id=request.user.id)
-    return render(request, "paginas/inicio.html",{"perfil_usuario":perfil_usuario})
+    user = User.objects.get(id=request.user.id)
+    foto_perfil = user.perfil.profile_pic
+    return render(request, "paginas/inicio.html",{ "foto_perfil":foto_perfil})
 
 def listado_perfiles(request, template_name='perfil/listado_perfiles.html'):
-    perfil_usuario = Perfil.objects.get(username_id=request.user.id)
     datos_de_usuario = []
     publicaciones = Publicacion.objects.all()
     comentarios = Comentario.objects.all()
-    for perfil in perfiles:
-        datos_usuario = {
-            'id': perfil.username.id,
-            'username': perfil.username.username,
-            'full_name': perfil.username.first_name + " " + perfil.username.last_name,
-            'profile_pic': perfil.profile_pic.url,
-            'last_login': perfil.username.last_login.strftime("%d de %B de %Y - %H:%M:%S"),
-            'is_superuser': perfil.username.is_superuser,
-            'is_active': perfil.username.is_active,
-            'total_comentarios': Comentario.objects.filter(user_id=perfil.username.id).count(),
-            'total_publicaciones': Publicacion.objects.filter(user_id=perfil.username.id).count(),
-        }
-        datos_de_usuario.append(datos_usuario)
-
-    return render(request, template_name, {"comentarios":comentarios,"publicaciones":publicaciones,"datos_de_usuario": datos_de_usuario, "perfiles": perfiles, "perfil_usuario": perfil_usuario})
     
+    datos_de_user = []  # Inicializa una lista vacía fuera del bucle
 
+    users = User.objects.all()
+    for user in users:
+        perfil = Perfil.objects.get(id=user.id)
+        last_login = user.last_login
+        if last_login is not None:
+            last_login_str = last_login.strftime("%d/%m/%Y - %H:%M:%S")
+        else:
+            last_login_str = "No ha accedido aún"
+        
+        # Crea un diccionario para cada usuario y agrégalo a la lista
+        datos_usuario = {
+            'id': user.id,
+            'username': user.username,
+            'full_name': user.get_full_name(),
+            'profile_pic': perfil.profile_pic,  # Accede al campo profile_pic a través del objeto Perfil
+            'last_login': last_login_str,
+            'is_superuser': user.is_superuser,
+            'is_active': user.is_active,
+            'is_blocked': perfil.is_blocked,  # Accede al campo is_blocked a través del objeto Perfil
+            'total_comentarios': Comentario.objects.filter(user_id=user.id).count(),
+            'total_publicaciones': Publicacion.objects.filter(user_id=user.id).count(),
+        }
+        datos_de_user.append(datos_usuario)  # Agrega el diccionario a la lista
+
+    return render(request, template_name, {"datos_de_user":datos_de_user,"comentarios":comentarios,"publicaciones":publicaciones,"perfiles": perfiles})
+    
 def editar_perfil(request):
     perfil_usuario = Perfil.objects.get(username=request.user)
-    form_user = UserForm(request.POST or None, instance=perfil_usuario.username)
+    form_user = UserForm(request.POST or None, instance=request.user)
     form_perfil = PerfilForm(request.POST or None, request.FILES or None, instance=perfil_usuario)
 
     if request.method == 'POST':
@@ -54,7 +67,7 @@ def editar_perfil(request):
             form_perfil.save()
             return redirect('feed')  # Redirigir a la página de perfil
 
-    return render(request, "perfil/editar_perfil.html", {"perfil_usuario": perfil_usuario, "form_user": form_user, "form_perfil": form_perfil})
+    return render(request, "perfil/editar_perfil.html", {"form_user": form_user, "form_perfil": form_perfil})
 
 class CambiarPassword(View):
     template_name = "perfil/cambiar_password.html"
@@ -62,11 +75,9 @@ class CambiarPassword(View):
     success_url = reverse_lazy('perfil')
     
     def get(self, request):
-        perfil_usuario = Perfil.objects.get(username_id=request.user.id)
-        return render(request, self.template_name, {'form': self.form_password, 'user': request.user, "perfil_usuario": perfil_usuario})
+        return render(request, self.template_name, {'form': self.form_password, 'user': request.user})
 
     def post(self, request):
-        perfil_usuario = Perfil.objects.get(username_id=request.user.id)
         form = self.form_password(request.POST)
         if form.is_valid():
             user = User.objects.filter(username=request.user)
@@ -83,7 +94,7 @@ class CambiarPassword(View):
                 return redirect('ver_perfil', username=user.username)
             else:
              return render(request, self.template_name, {'form': form})
-        return render(request, self.template_name, {'form': form, 'user': request.user,"perfil_usuario": perfil_usuario})
+        return render(request, self.template_name, {'form': form, 'user': request.user})
 
 
 def crear_publicacion(request):
@@ -102,7 +113,7 @@ def crear_publicacion(request):
             for image in images:
                 Imagen.objects.create(imagen=image, publicacion_id=publicacion.id)
     
-            return redirect("listado_publicaciones")
+            return redirect("feed")
     
     return render(request, "perfil/crear_publicacion.html", {"form_publicacion": form_publicacion})
 
@@ -151,6 +162,14 @@ def editar_comentario(request, id):
         # De lo contrario, redirigir a la página de perfil del usuario que publicó la publicación
     return render(request, "perfil/editar_comentario.html", {"form_comentario": form_comentario, "publicacion": publicacion, "perfiles": perfiles})
 
+def bloquear_perfil(request, id):
+    # Obtener el usuario y su perfil asociado
+    perfil = Perfil.objects.get(username_id=id)
+    # Cambiar el estado de is_blocked
+    perfil.is_blocked = not perfil.is_blocked  # Invierte el valor actual
+    # Guardar los cambio
+    perfil.save()
+    return redirect('listado_perfiles')
 
 def eliminar_publicacion(request, id):
     publicacion = Publicacion.objects.get(id=id)
@@ -177,7 +196,7 @@ def eliminar_publicacion(request, id):
 def eliminar_perfil(request, id):
     usuario = User.objects.get(id=id)
     usuario.delete()
-    return redirect('listado_perfiles' )
+    return redirect('listado_perfiles')
 
 def eliminar_comentario(request,id):
     comentario = Comentario.objects.get(id = id)
@@ -205,20 +224,11 @@ def eliminar_imagen(request, id):
     imagen.delete()
     return redirect(reverse_lazy("editar_publicacion", kwargs={'id': imagen.publicacion_id}))
 
-
-def buscar_perfil(request, username):
-    query = request.GET.get('q')
-    perfiles = None
-    if query:
-        # Filtrar perfiles por nombre que contenga la consulta
-        perfiles = Perfil.objects.filter(usuario__username=username, username__icontains=query)
-    return render(request, 'buscar_perfil.html', {'perfiles': perfiles, 'query': query})
     
 def ver_publicaciones(request, template_name):
     imagenes = Imagen.objects.all()
     publicaciones = Publicacion.objects.all()
     comentarios = Comentario.objects.all()  # Obtener todos los comentarios de la publicación específica
-    perfil_usuario = Perfil.objects.get(username_id=request.user.id)
 
     # Formatear la fecha actual
     ahora = datetime.now().date()
@@ -239,7 +249,7 @@ def ver_publicaciones(request, template_name):
     for publicacion in publicaciones:
         publicacion.numero_de_comentarios = publicacion.comentarios.count()
         publicacion.fecha_publicacion = publicacion.fecha_publicacion.strftime("%d de %B de %Y")
-    return render(request, template_name, {"imagenes":imagenes,"publicaciones": publicaciones, "perfiles": perfiles,"comentarios": comentarios,"perfil_usuario": perfil_usuario})
+    return render(request, template_name, {"imagenes":imagenes,"publicaciones": publicaciones, "perfiles": perfiles,"comentarios": comentarios})
 
 
 def ver_comentarios(request, id):
@@ -248,12 +258,13 @@ def ver_comentarios(request, id):
     return render(request, "perfil/ver_comentarios.html", {"publicacion": publicacion, "comentarios": comentarios,'perfiles': perfiles})
 
 def ver_perfil(request, username):
+    user = User.objects.get(username=username)
+    foto_de_perfil = user.perfil.profile_pic
     ahora = datetime.now().date()
-    perfil_usuario = Perfil.objects.get(username=request.user) 
     # Obtener el usuario correspondiente al nombre de usuario
-    usuario = User.objects.get(username=username)
+    
     # Filtrar las publicaciones por el usuario
-    publicaciones = Publicacion.objects.filter(user_id=usuario.id)
+    publicaciones = Publicacion.objects.filter(user_id=user.id)
     comentarios = Comentario.objects.all()
     imagenes = Imagen.objects.all()
     for publicacion in publicaciones:
@@ -268,7 +279,7 @@ def ver_perfil(request, username):
         else:
             comentario.dias_desde_publicacion = diferencia.days  # Obtener la diferencia en días
 
-    return render(request, "perfil/ver_perfil.html", {"perfil_usuario":perfil_usuario,"publicaciones": publicaciones, "perfiles": perfiles, "usuario": usuario, "imagenes": imagenes, "comentarios":comentarios})
+    return render(request, "perfil/ver_perfil.html", {"publicaciones": publicaciones, "perfiles": perfiles, "user": user, "imagenes": imagenes, "comentarios":comentarios, "foto_de_perfil":foto_de_perfil})
 
 def agregar_comentario(request, id):
     if request.method == 'POST':
@@ -299,10 +310,10 @@ def agregar_comentario(request, id):
 
 
 def recursos(request):
-    perfil_usuario = Perfil.objects.get(username_id=request.user.id)
     recursos = Recursos.objects.all()
-    usuario = User.objects.get(id=request.user.id)
-    
+    user = User.objects.get(id=request.user.id)
+    block = user.perfil.is_blocked
+  
     for recurso in recursos:
         # Obtener la extensión del archivo recurso
         extension = recurso.archivo_recurso.name.split(".")[-1]
@@ -310,9 +321,8 @@ def recursos(request):
         recurso.extension = extension
         recurso.fecha_publicacion_recurso=recurso.fecha_publicacion_recurso.strftime("%d de %B de %Y")
     
-    return render(request, "perfil/recursos.html", {"recursos": recursos, "usuario": usuario, "perfiles" : perfiles, "perfil_usuario": perfil_usuario})
+    return render(request, "perfil/recursos.html", {"block":block,"recursos": recursos, "perfiles" : perfiles})
 def agregar_recurso(request):
-    perfil_usuario = Perfil.objects.get(username_id=request.user.id)
     recursos = Recursos.objects.all()
     form_recurso = RecursosForm(request.POST, request.FILES)
 
@@ -327,7 +337,7 @@ def agregar_recurso(request):
   
     fechas_formateadas = [recurso.fecha_publicacion_recurso.strftime("%d de %B de %Y") for recurso in recursos]
     
-    return render(request, "perfil/agregar_recurso.html", {"form_recurso": form_recurso, "recursos": recursos, "perfiles": perfiles, "fechas_formateadas": fechas_formateadas, "perfil_usuario": perfil_usuario})
+    return render(request, "perfil/agregar_recurso.html", {"form_recurso": form_recurso, "recursos": recursos, "perfiles": perfiles, "fechas_formateadas": fechas_formateadas})
 
 def eliminar_recurso(request,id):
     recurso = Recursos.objects.get(id = id)
@@ -335,12 +345,11 @@ def eliminar_recurso(request,id):
     return redirect("recursos")
 
 def editar_recurso(request,id):
-    perfil_usuario = Perfil.objects.get(username_id=request.user.id)
     recurso = Recursos.objects.get(id = id)
     form_recurso = RecursosForm(request.POST or None, request.FILES or None, instance = recurso)
     if form_recurso.is_valid() and request.POST:
         form_recurso.save()
         return redirect("recursos")
-    return render(request, "perfil/editar_recurso.html", {"form_recurso": form_recurso,'perfiles': perfiles, "recurso": recurso, "perfil_usuario": perfil_usuario})
+    return render(request, "perfil/editar_recurso.html", {"form_recurso": form_recurso,'perfiles': perfiles, "recurso": recurso})
 
 

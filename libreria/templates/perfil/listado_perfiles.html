@@ -7,7 +7,7 @@
     <div class="card">
         <div class="card-header" style="background-color: rgb(173, 164, 158);"><strong>Listado de perfiles</strong></div>
         <div class="table-responsive"> <!-- Ajustando margen superior aquí -->
-            <table class="table table-striped table-bordered table-hover thead-dark">
+            <table id = "miTabla" class="table table-striped table-bordered table-hover thead-dark">
                 <thead>
                     <tr>
                         <th scope="col">ID Usuario</th>
@@ -16,24 +16,47 @@
                         <th scope="col">Nombre completo</th>
                         <th scope="col">Último Acceso</th>
                         <th scope="col">¿Es superusuario?</th>
-                        <th scope="col">¿Está activo?</th>
-                        <th scope="col">Nº de comentarios</th>
-                        <th scope="col">Nº de publicaciones</th>
+                        <th scope="col">¿Está bloqueado?</th>
+                        <th scope="col">Nº de coment.</th>
+                        <th scope="col">Nº de publicac.</th>
+                        <th scope="col">Bloquear perfil</th>
                         <th scope="col">Eliminar perfil</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for dato in datos_de_usuario %}
+                    {% for dato in datos_de_user %}
                         <tr>
                             <td>{{ dato.id }}</td>
-                            <td><a href="{% url 'ver_perfil' dato.username %}" class="no-link-style"><img src="{{ dato.profile_pic }}" height="60" width="60" style="border-radius: 50%;"/></a></td>
+                            <td><a href="{% url 'ver_perfil' dato.username %}" class="no-link-style"><img src="{{ dato.profile_pic.url }}" height="60" width="60" style="border-radius: 50%;"/></a></td>
                             <td><a href="{% url 'ver_perfil' dato.username %}" class="no-link-style">{{ dato.username }}</a></td>
                             <td><a href="{% url 'ver_perfil' dato.username %}" class="no-link-style">{{ dato.full_name }}</a></td>
                             <td>{{ dato.last_login }}</td>
-                            <td>{{ dato.is_superuser }}</td>
-                            <td>{{ dato.is_active }}</td>
+                            <td>
+                            {% if dato.is_superuser %}
+                            <img width="60" height="60" src="https://img.icons8.com/parakeet/60/checked-checkbox.png" alt="checked-checkbox"/> 
+                            {% else %}
+                            <img width="60" height="60" src="https://img.icons8.com/parakeet/60/close-window.png" alt="close-window"/>
+                            {% endif %}
+                        </td>
+                        <td>{% if dato.is_blocked %}
+                            <img width="60" height="60" src="https://img.icons8.com/parakeet/96/checked-checkbox.png" alt="checked-checkbox"/>
+                            {% else %}
+                            <img width="60" height="60" src="https://img.icons8.com/parakeet/96/close-window.png" alt="close-window"/>
+                            {% endif %}
+                        </td>
                             <td>{{ dato.total_comentarios }}</td>
                             <td>{{ dato.total_publicaciones }}</td>
+                            <td>
+                                {% if dato.is_blocked %}
+                                    <a class="btn comment-gradient" href="{% url 'bloquear_perfil' dato.id %}" role="button">
+                                        <span style="color: white; font-weight: bold;">Desbloquear perfil</span>
+                                    </a>
+                                {% else %}
+                                    <a class="btn edit-gradient" href="{% url 'bloquear_perfil' dato.id %}" role="button">
+                                        <span style="color: white; font-weight: bold;">Bloquear perfil</span>
+                                    </a>
+                                {% endif %}
+                            </td>
                             <td><a class="btn danger-gradient" href="{% url 'eliminar_perfil' dato.id %}" role="button"><span style="color: white; font-weight: bold;">Eliminar perfil</span></a></td>
 
                         </tr>
@@ -43,6 +66,19 @@
         </div>
     </div>
 </div>
-
+<script>
+    $(document).ready(function() {
+        $('#miTabla').DataTable({
+            "paging": false, 
+            "info": false, 
+            "language": {
+                "search": "Buscar perfil:" // Cambiar el texto del campo de búsqueda
+            },
+            "columnDefs": [
+                { "width": "100%", "targets": [6,7,8,9] } // Ancho del 5% para las columnas 6, 7, 8 y 9
+            ]
+        });
+    });
+</script>
 {%endif%}
 {% endblock %}

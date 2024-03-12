@@ -6,7 +6,7 @@
 }
 
 body{
-     background: linear-gradient(to bottom, #f7f1ed, #FFB88C); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+     background: linear-gradient(to bottom, #e1dddb, #e1dddb); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
       }
 
 .nav-item {
@@ -35,6 +35,7 @@ body{
     color: inherit;
 }
 
+
 .fixed-bottom-right {
   position: fixed;
   bottom: 20px; /* ajusta según sea necesario */
@@ -44,6 +45,8 @@ body{
 .fixed-bottom-right a {
   position: relative;
 }
+
+
 
 .fixed-bottom-right a .tooltip {
   border: 1px solid #0ce15e;
@@ -63,7 +66,6 @@ body{
   right: 110%; /* Ajusta según sea necesario */
   transform: translateY(-50%);
   transition: opacity 0.3s;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.038); /* Agrega un efecto de desenfoque al fondo */
 }
 
 
@@ -103,6 +105,7 @@ body{
 }
   .grid-container {
     display: grid;
+    grid-template-rows: auto;
     grid-template-columns: repeat(3, 1fr); /* Tres columnas */
     grid-gap: 20px; /* Espacio entre las imágenes */
 }
@@ -111,6 +114,7 @@ body{
     width: 100%;
     height: auto;
 }
+
 
   .my-dropdown-toggle::after {
     content: none;
@@ -216,15 +220,26 @@ body{
 
 .hover-bg:hover {
   background-color: #dadde196; /* Cambia el color de fondo al pasar el mouse sobre el elemento */
-
 }
+
+
+
+.search_box {
+  padding: 10px 14px 10px 40px; /* Ajusta el padding para hacer espacio para el icono */
+  width: 250px;
+  border: 1px solid #2a312c;
+  border-radius: 6px;
+  font-family: "Raleway", sans-serif;
+  background: transparent url('https://img.icons8.com/parakeet-line/24/find-user-male.png') no-repeat 10px center; /* Posiciona el icono a la izquierda */
+  background-size: 24px; /* Tamaño del icono */
+}
+
 @import url("//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css");
 .login-block {
   background: linear-gradient(to bottom, #FFB88C, #DE6262);
   height: 100vh; /* Ajusta la altura al 100% del viewport */
 }
 
-.container{background:#fff; border-radius: 10px; box-shadow:15px 20px 0px rgba(0,0,0,0.1);}
 .carousel-inner{border-radius:0 10px 10px 0;}
 .carousel-caption{text-align:left; left:5%;}
 .login-sec{padding: 50px 30px; position:relative;}

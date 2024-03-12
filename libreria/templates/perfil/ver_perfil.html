@@ -1,21 +1,25 @@
 {% extends "base.html" %}
 {% block titulo %} Tu perfil {% endblock %}
 {% block contenido %} 
+{% if not user.perfil.is_blocked %}
+<div class="container mt-5">
+    <h5>No puedes acceder al contenido de esta página por que actualmente estás bloqueado.
+        Para solucionar el problema, póngase en contacto con el/la maestro/a de la clase
+    </h5>
+</div>
+{% else %}
+
 <body>
     <header>
         <div class="perfil-container mb-3">
             <div class="contenedor-cabecera mt-3">
                 <div>
-                    {% for perfil in perfiles %}
-                        {% if perfil.username_id == usuario.id or user.is_superuser%}
-                            <img src="{{ perfil.profile_pic.url }}" height="150" width="150" style="border-radius: 50%;"/>
-                            <h2>{{ usuario.username }}</h2> 
-                            <h2>{{ usuario.first_name }} {{ usuario.last_name }}</h2> 
-                            {% if perfil.username_id == user.id %}
-                                <a class="btn btn-warning" href="{% url 'editar_perfil' %}" role="button">Editar perfil</a>
-                            {% endif %}
-                        {% endif %}
-                    {% endfor %}
+                            <img src="{{ foto_de_perfil.url }}" height="150" width="150" style="border-radius: 50%;"/>
+                            <h2>{{ user.username }}</h2> 
+                            <h2>{{ user.first_name }} {{ user.last_name }}</h2> 
+                            {% if request.user.id == user.id%}
+                            <a class="btn btn-warning" href="{% url 'editar_perfil' %}" role="button">Editar perfil</a>
+                            {%endif%}
                 </div>
             </div>
         </div>
@@ -78,11 +82,6 @@
                                 {% endif %}
                                 <div class="{% if publicacion.imagenes.count > 0 %}col-md-6{% else %}col-md-12{% endif %}">
                                     <div>
-                                        {% for perfil in perfiles %}
-                                        {% if perfil.username_id == usuario.id %}
-                                        <img src="{{ perfil.profile_pic.url }}" height="32" width="32" style="border-radius: 50%; margin-right: 6px;">
-                                        {% endif %}
-                                        {% endfor %}
                                         <strong>{{ usuario.username }}</strong>
                                         <br>
                                         {{ publicacion.descripcion }}
@@ -212,13 +211,10 @@
                         <a href="#" data-bs-toggle="modal" data-bs-target="#exampleModal{{ publicacion.id }}" style="position: absolute; top: 0; left: 0; width: 420px; height: 420px; border-radius: 20px; z-index: 1;">
                             <div class="card mb-3" style="width: 100%; height: 100%; border-radius: inherit;">
                                 <div class="card-body">
-                                    {% for perfil in perfiles %}
-                                        {% if perfil.username_id == publicacion.user_id %}
+                                    
                                         <a href="{% url 'ver_perfil' publicacion.user %}" class="no-link-style">
-                                            <img src="{{ perfil.profile_pic.url }}" style="border-radius: 50%; height: 60px; width: 60px;"  />
+                                            <img src="{{foto_de_perfil.url }}" style="border-radius: 50%; height: 60px; width: 60px;"  />
                                         </a>
-                                        {% endif %}
-                                    {% endfor %}
                                     <h5>
                                         <a href="{% url 'ver_perfil' publicacion.user %}" class="no-link-style">{{publicacion.user}}</a> · 
                                         <small class="text-body-secondary">{{publicacion.fecha_publicacion }}</small>
@@ -233,4 +229,5 @@
         </div>
     </main>
 </body>
+{%endif%}
 {% endblock %}

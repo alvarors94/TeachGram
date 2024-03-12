@@ -1,7 +1,13 @@
 {% extends "base.html"%}
 {% block titulo %} Ver Comentarios {% endblock %}
 {% block contenido %} 
-
+{% if not user.perfil.is_blocked %}
+<div class="container mt-5">
+    <h5>No puedes acceder al contenido de esta página por que actualmente estás bloqueado.
+        Para solucionar el problema, póngase en contacto con el/la maestro/a de la clase
+    </h5>
+</div>
+{% else %}
 
 <div class="table-responsive mt-5">
     <table class="table table-striped table-bordered table-hover">
@@ -32,4 +38,5 @@
         
     </div>
 </div>
+{%endif%}
 {% endblock %}

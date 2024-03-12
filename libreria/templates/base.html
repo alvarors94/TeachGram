@@ -16,9 +16,13 @@
     <link rel="stylesheet" href="{% static 'main.css' %}">
 
     <!-- jQuery primero, luego Popper.js, luego Bootstrap JS -->
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+    <!-- Incluir DataTables -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
 
 <header>
 
@@ -46,9 +50,9 @@
                     
         
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'recursos' %}">
-                            <img width="24" height="24" src="https://img.icons8.com/parakeet-line/48/video-gallery.png" alt="video-gallery"/>
-                            <strong class="icon-text">Recursos</strong>
+                        <a class="nav-link" href="{% url 'clase' %}">
+                            <img width="24" height="24" src="https://img.icons8.com/parakeet-line/48/classroom.png" alt="classroom"/>
+                            <strong class="icon-text">Clase</strong>
                         </a>
                     </li>
                     <li class="nav-item">
@@ -57,7 +61,14 @@
                             <strong class="icon-text">Calendario de actividades</strong>
                         </a>
                     </li>
-                    {%if user.is_superuser%}
+                    
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'recursos' %}">
+                            <img width="24" height="24" src="https://img.icons8.com/parakeet-line/48/video-gallery.png" alt="video-gallery"/>
+                            <strong class="icon-text">Recursos</strong>
+                        </a>
+                    </li>
+                    {%if request.user.is_superuser%}
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <img width="24" height="24" src="https://img.icons8.com/parakeet-line/48/list.png" alt="group"/>
@@ -76,17 +87,13 @@
                     </li>
                     {%endif%}
                     
-                    
-                    <form class="form-inline" action="{% url 'buscar_perfil' username=user.username %}" method="get">
-                        <input class="form-control mr-sm-2" type="text" placeholder="Buscar perfil" aria-label="Search" name="q">
-                        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
-                    </form>
+                  
                 
                 </ul>
                 <div style="display: flex; align-items: center;">
                                   
-                    <img src="{{ perfil_usuario.profile_pic.url }}" href="{% url 'ver_perfil' user.username %}" height="40" width="40" style="border-radius: 50%; margin-right: 10px;" />
-                    <a class="nav-link me-3" href="{% url 'ver_perfil' user.username %}"><strong>{{ user.username }}</strong></a>
+                    <img src="{{ foto_perfil }}" href="{% url 'ver_perfil' request.user.username %}" height="40" width="40" style="border-radius: 50%; margin-right: 10px;" />
+                    <a class="nav-link me-3" href="{% url 'ver_perfil' request.user.username %}"><strong>{{ request.user }}</strong></a>
                     
                 </div>
               
@@ -106,7 +113,7 @@
         <div class="row">
             <div class="col-12">
                 {% block contenido %} {% endblock %}
-                <h1 class="display-4">Este es el contehththtnido de base.html</h1>
+              
 
             </div>
         </div>
@@ -120,6 +127,7 @@
                         <span class="tooltip">Crear publicación</span>
         </a>
     </div>
+    
 </body>
 
 </html>
