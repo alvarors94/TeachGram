@@ -4,11 +4,11 @@
 {%if user.is_superuser%}
 <div class="container mt-5"> <!-- Agregando margen superior a la tarjeta -->
     <div class="card">
-        <div class="card-header" style="background-color: rgb(173, 164, 158);"><strong>Listado de perfiles</strong></div>
+        <div class="card-header"><strong>Listado de publicaciones</strong></div>
 <div class="table-responsive">
     <table class="table table-striped table-bordered table-hover">
         <thead class="thead-dark">
-            <tr>
+            <tr style="text-align: center;">
                 <th scope="col">ID Publicación</th>
                 <th scope="col">Foto de perfil</th>
                 <th scope="col">Nombre Usuario</th>
@@ -16,16 +16,13 @@
                 <th scope="col">Descripción</th>
                 <th scope="col">Fecha de publicación</th>
                 <th scope="col">Comentarios</th>
-                <th scope="col">Agregar comentarios</th>
-                <th scope="col">Ver comentarios</th>
-                <th scope="col">Editar publicación</th>
-                <th scope="col">Eliminar publicación</th>
+                <th scope="col">Ver publicación</th>
             </tr>
         </thead>
         <tbody> 
             {% for publicacion in publicaciones %}
-            <tr>
-                <td>{{ publicacion.id }}</td>
+            <tr style="text-align: center;">
+                <td>{{ publicacion.id }}</a></td>
                 {% for perfil in perfiles %}
                     {% if perfil.username_id == publicacion.user_id %}
                         <td><a href="{% url 'ver_perfil' publicacion.user %}" class="no-link-style"><img src="{{ perfil.profile_pic.url }}" height="60" width="60" style="border-radius: 50%;"/></a></td>
@@ -36,10 +33,8 @@
                 <td>{{ publicacion.descripcion }}</td>
                 <td>{{ publicacion.fecha_publicacion }}</td>
                 <td>{{ publicacion.numero_de_comentarios }}</td>
-                <td><a class="btn btn-secondary btn-sm" href="{% url 'agregar_comentario' publicacion.id %}" role="button">Agregar Comentarios</a></td>
-                <td><a class="btn btn-primary btn-sm" href="{% url 'ver_comentarios' publicacion.id %}" role="button">Ver Comentarios</a></td>
-                <td><a class="btn btn-warning btn-sm" href="{% url 'editar_publicacion' publicacion.id %}" role="button">Editar Publicación</a></td>
-                <td><a class="btn btn-danger btn-sm" href="{% url 'eliminar_publicacion' publicacion.id %}" role="button">Eliminar Publicación</a></td>
+                <td><a class="btn comment-gradient btn-sm" href="#" data-bs-toggle="modal" data-bs-target="#exampleModal{{ publicacion.id }}" role="button" style="color: white; font-weight: bold;">Ver Publicación</a></td>
+               
             </tr>
         {% endfor %}
 
@@ -48,6 +43,171 @@
     </table>
 </div>
 </div>
+{% for publicacion in publicaciones %}
+            <div class="modal fade" id="exampleModal{{ publicacion.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-xl">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            {% if publicacion.user_id == user.id or user.is_superuser %}
+                                        <div class="col">
+                                            <a class="btn edit-gradient btn-me my-dropdown-toggle mb-2" href="{% url 'editar_publicacion' publicacion.id %}" role="button"> 
+                                                <img width="24" height="24" src="https://img.icons8.com/cotton/64/create-new--v1.png" alt="create-new--v1"/> <span style="color: white; font-weight: bold;">Editar publicación</span>
+                                            </a>
+                                            <a class="btn danger-gradient btn-me my-dropdown-toggle mb-2" href="{% url 'eliminar_publicacion' publicacion.id %}" role="button">
+                                                <img width="24" height="24" src="https://img.icons8.com/parakeet/24/000000/trash.png" alt="trash"/> <span style="color: white; font-weight: bold;">Eliminar publicación</span>
+                                            </a>
+                                        </div>
+                                        {% endif %}
+                            <h5 class="modal-title" id="exampleModalLabel">{{ publicacion.titulo }}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                {% if publicacion.imagenes.count > 0 %}
+                                <div class="col-md-6">
+                                    <!-- Columna para la imagen -->
+                                    {% if publicacion.imagenes.count > 1 %}
+                                    <div id="carouselExampleControls_{{ publicacion.id }}" class="carousel slide" data-bs-ride="false">
+                                        <div class="carousel-indicators">
+                                            {% for imagen in publicacion.imagenes.all %}
+                                            <button type="button" class="carousel-indicator {% if forloop.first %}active{% endif %}" data-bs-target="#carouselExampleControls_{{ publicacion.id }}" data-bs-slide-to="{{ forloop.counter0 }}" aria-label="Slide {{ forloop.counter }}"></button>
+                                            {% endfor %}
+                                        </div>
+                                        <div class="carousel-inner">
+                                            {% for imagen in publicacion.imagenes.all %}
+                                            <div class="carousel-item {% if forloop.first %} active {% endif %}">
+                                                <img class="d-block w-100" src="{{ imagen.imagen.url }}" style=" border-radius: 12px">
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls_{{ publicacion.id }}" data-bs-slide="prev">
+                                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                            <span class="visually-hidden">Previous</span>
+                                        </button>
+                                        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls_{{ publicacion.id }}" data-bs-slide="next">
+                                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                            <span class="visually-hidden">Next</span>
+                                        </button>
+                                    </div>
+                                    {% else %}
+                                    <img class="d-block w-100" src="{{ publicacion.imagenes.first.imagen.url }}" style="border-radius: 12px;">
+                                    {% endif %}
+                                </div>
+                                {% endif %}
+                                <div class="{% if publicacion.imagenes.count > 0 %}col-md-6{% else %}col-md-12{% endif %}">
+                                    <div>
+                                        <strong>{{ usuario.username }}</strong>
+                                        <br>
+                                        {{ publicacion.descripcion }}
+                                        <br>
+                                        <br>
+                                        <small style="float: right;">Fecha de publicación: {{ publicacion.fecha_publicacion }}</small>
+                                    </div>
+                                    <br>
+                                    <hr class="card-divider"/>
+                                    <h4>Comentarios:</h4>
+                                    <ul class="list-group list-group-flush" style="max-height: 320px; overflow-y: auto;">
+                                        {% for comentario in comentarios %}
+                                            {% if comentario.publicacion_id == publicacion.id %}
+                                                <li class="list-group-item list-group-item-action hover-bg rounded-4 mt-2">
+                                                    <div class="d-flex align-items-start hovered">
+                                                        <div class="mr-3">
+                                                            {% for perfil in perfiles %}
+                                                            {% if perfil.username_id == comentario.user_id %}
+                                                            <a href="{% url 'ver_perfil' comentario.user %}" class="no-link-style">
+                                                                <img src="{{ perfil.profile_pic.url }}" height="32" width="32" style="border-radius: 50%;"/>
+                                                            </a>
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </div>
+                                                        <div class="flex-grow-1 ms-2">
+                                                            <a href="{% url 'ver_perfil' comentario.user %}" class="no-link-style">
+                                                                <strong>{{ comentario.user }}:</strong>
+                                                            </a>
+                                                            <div style="max-width: 950px; overflow-x: auto; word-wrap: break-word;">
+                                                                {{ comentario.comentario }}
+                                                            </div>
+                                                            <small class="text-body-secondary">
+                                                                {% if comentario.dias_desde_publicacion == "hoy" %}
+                                                                Hoy
+                                                                {% elif comentario.dias_desde_publicacion == "ayer" %}
+                                                                Ayer
+                                                                {% else %}
+                                                                Hace {{ comentario.dias_desde_publicacion }} días
+                                                                {% endif %}
+                                                            </small>
+                                                        </div>
+                                                        {% if comentario.user_id == user.id or user.is_superuser == True %}
+                                                        <div class="ml-auto">
+                                                            <a class="dropdown-toggle" href="#" role="button" id="editarComentarioDropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Editar comentario">
+                                                                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAAAsTAAALEwEAmpwYAAAEcElEQVR4nO1YX2hbVRi/nX/Bh62XzdW2qKB2tNuanHM7HxwYtnwnKYKgQuaLXb6T6t1wzg4fZhVmfNBRn+oYCjqciIPuwSnMOWS2WrtaV+qU+ZLczj/kZjIFmXWiA2cbOTf33N5kSZq2iQl4PzgPOff77vn9vr+5R1E88cQTTzzxJE9WTZsBNWl+qBrpS6qRztR4XVKT5vFVhnm/Uo40JtP9atKcqwPgmZyVNOcak+be0uATZrguwRvzJNTpFCtOwDCHaw7SKL0ak+lTpQj8UfcEDPNyUQK1BqeWuTwCqheBtJdCBaXWqaF6RWz8T9po67GRjC/SZ62WDz6tqo5aDQLiQMq4tTq37amqjuoRMK71ggi38J7wWrHQV0pHrUYEar0Uj4BROW+u/np6pvnkRKL1yImplvdHvr11/NyF+o9AIjV758F3xzsf3vUNAf6P7ERy+bt7U+19+0fXfJX4te4IrB2ePE8e0I180IThDGH4d+4ev3zXwFtjdUOgdejjswKUDfgqZXiYMtx6d/fum2wIDZ3BnjYC+Cxh/KIk0rHzhc/VRGqupgTWDp/5XoKngOc1wI1FgSiK0skeu4UAvi1JtPUPjtaOQCI166SNAB/QVytlCgE8YNvNNp08nShJQHwwV4OAKFiZNm7Pa2H9Ng30lXkwGrrCsXXyRyAQv54ATgp73yNPnW1Mpn//z69VRLfJpgIedoMngH+KXCfQ227tafoNlOF7Qldj/GlHNxTbYqfSXNPI1FBRAup0KlTpiy3R57MFyzMCiAMK9JWyUAnDnzXQN1LGjzldCPg2d1QIcNPaf3DnnqIErCgkzb2FSKzX45mOHS8uXKzj5zIb8DlHV+St9F4gEL3ZfVZXOLaOMvwp+zx2RYLXgPfn46LAj9qt9VVlIREXqeJCVTVMZ5DIl5cC33x8NON7aJelt/6JfdnWeeTElG37W6Gz7u3mHRT4Xw74YGywkJ4AbkfmqLIUkQcUfR7iuhxEhPGPZHFqLLpZFrASj69w20Qikeso8KGcoQb8ly4W23ANAdlSAd+oKIGOSORGwvghmSaU8QE3ULIldofz0RLsaXMM4/EVsmCtvw+Ar4hakDXhB7wnhwDjX9rFva9iBEQ/J4x/Znv9CoFoTyFbwvh3to5zPS7I0Pm/Ec9YetDbPk+Cvyx1fVu3t4g5kCUQ3VwRAv4Q91HgP9r7F/xB3FTCdsAGdVFMWGcfsI+E8FG3rvA8Ab6fQKzZcQDw1+z0Seen4ZIIaAwjoofbOfvFpkC0qZRtNlI4Y8+CdxZzrhZCJtuwn/HeJYF3E6AMX7JzXXj0kKiBcuwJwx1OygAeEBNWWQg8i4UkcQJ8TBT90gkA/uDK2askGN296HcwftBFYtIebA35eiLnCcPX5beCqCF/N1+jLEf8IbyPMpwggGfcE3WR0kABn5cFSbOeNUUrJQwHs60SJ/Kejy0bfKVFCyOlDD/J/6jJnQeY1gAfX1baVFs06LmdMnzSmrJWFPibos9brbLMbvMvPcdfltZuhDUAAAAASUVORK5CYII=" height="25px" width="25px">
+                                                            </a>
+                                                            <div class="dropdown-menu" aria-labelledby="editarComentarioDropdown" data-bs-auto-close="false">
+                                                                <form action="{% url 'editar_comentario' comentario.id %}" method="POST">
+                                                                    {% csrf_token %}
+                                                                    <div class="form-group ms-3 me-3">
+                                                                        <label for="comentarioEdit"><h5>Editar Comentario:</h5></label>
+                                                                        <textarea class="form-control mt-3 mr-3" id="comentarioEdit" name="comentario" rows="4" style="min-width: 500px; overflow-x: auto;">{{ comentario.comentario }}</textarea>
+                                                                    </div>
+                                                                    <div class="container mt-2 ms-1">
+                                                                        <button type="submit" class="btn comment-gradient ms-2" style="color: white; font-weight: bold;">Guardar Cambios</button>
+                                                                        <button type="button" class="btn danger-gradient ms-2" style="color: white; font-weight: bold;">Cancelar</button>
+                                                                    </div>
+                                                                </form>
+                                                            </div>
+                                                            <a class="dropdown-item" href="{% url 'eliminar_comentario' comentario.id %}" data-toggle="tooltip" title="Eliminar comentario">
+                                                                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAAAsTAAALEwEAmpwYAAAEcElEQVR4nO1YX2hbVRi/nX/Bh62XzdW2qKB2tNuanHM7HxwYtnwnKYKgQuaLXb6T6t1wzg4fZhVmfNBRn+oYCjqciIPuwSnMOWS2WrtaV+qU+ZLczj/kZjIFmXWiA2cbOTf33N5kSZq2iQl4PzgPOff77vn9vr+5R1E88cQTTzzxJE9WTZsBNWl+qBrpS6qRztR4XVKT5vFVhnm/Uo40JtP9atKcqwPgmZyVNOcak+be0uATZrguwRvzJNTpFCtOwDCHaw7SKL0ak+lTpQj8UfcEDPNyUQK1BqeWuTwCqheBtJdCBaXWqaF6RWz8T9po67GRjC/SZ62WDz6tqo5aDQLiQMq4tTq37amqjuoRMK71ggi38J7wWrHQV0pHrUYEar0Uj4BROW+u/np6pvnkRKL1yImplvdHvr11/NyF+o9AIjV758F3xzsf3vUNAf6P7ERy+bt7U+19+0fXfJX4te4IrB2ePE8e0I180IThDGH4d+4ev3zXwFtjdUOgdejjswKUDfgqZXiYMtx6d/fum2wIDZ3BnjYC+Cxh/KIk0rHzhc/VRGqupgTWDp/5XoKngOc1wI1FgSiK0skeu4UAvi1JtPUPjtaOQCI166SNAB/QVytlCgE8YNvNNp08nShJQHwwV4OAKFiZNm7Pa2H9Ng30lXkwGrrCsXXyRyAQv54ATgp73yNPnW1Mpn//z69VRLfJpgIedoMngH+KXCfQ227tafoNlOF7Qldj/GlHNxTbYqfSXNPI1FBRAup0KlTpiy3R57MFyzMCiAMK9JWyUAnDnzXQN1LGjzldCPg2d1QIcNPaf3DnnqIErCgkzb2FSKzX45mOHS8uXKzj5zIb8DlHV+St9F4gEL3ZfVZXOLaOMvwp+zx2RYLXgPfn46LAj9qt9VVlIREXqeJCVTVMZ5DIl5cC33x8NON7aJelt/6JfdnWeeTElG37W6Gz7u3mHRT4Xw74YGywkJ4AbkfmqLIUkQcUfR7iuhxEhPGPZHFqLLpZFrASj69w20Qikeso8KGcoQb8ly4W23ANAdlSAd+oKIGOSORGwvghmSaU8QE3ULIldofz0RLsaXMM4/EVsmCtvw+Ar4hakDXhB7wnhwDjX9rFva9iBEQ/J4x/Znv9CoFoTyFbwvh3to5zPS7I0Pm/Ec9YetDbPk+Cvyx1fVu3t4g5kCUQ3VwRAv4Q91HgP9r7F/xB3FTCdsAGdVFMWGcfsI+E8FG3rvA8Ab6fQKzZcQDw1+z0Seen4ZIIaAwjoofbOfvFpkC0qZRtNlI4Y8+CdxZzrhZCJtuwn/HeJYF3E6AMX7JzXXj0kKiBcuwJwx1OygAeEBNWWQg8i4UkcQJ8TBT90gkA/uDK2askGN296HcwftBFYtIebA35eiLnCcPX5beCqCF/N1+jLEf8IbyPMpwggGfcE3WR0kABn5cFSbOeNUUrJQwHs60SJ/Kejy0bfKVFCyOlDD/J/6jJnQeY1gAfX1baVFs06LmdMnzSmrJWFPibos9brbLMbvMvPcdfltZuhDUAAAAASUVORK5CYII=" height="25px" width="25px">                                                            </a>
+                                                        </div>
+                                                        {% endif %}
+                                                    </div>
+                                                </li>
+                                                {% endif %}
+                                            {% endfor %}
+                                            {% if publicacion.comentarios.count == 0 %}
+                                                <li class="list-group-item">Esta publicación no tiene comentarios</li>
+                                            {% endif %}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div> 
+                            
+                            <div class="modal-footer">
+                                <div class="container">
+                                    <div class="row">
+                                        
+                                        <div class="col">
+                                            <form id="comment-form" method="post" action="{% url 'agregar_comentario' publicacion.id %}">
+                                                {% csrf_token %}
+                                                <div class="btn-group">
+                                                    <div class="container">
+                                                        <div class="box_input">
+                                                            <div style="position: relative;">
+                                                                <input class="form-control" id="inputdefault" name="comentario" type="text" style="width: 100%; max-width: 100%; min-width: 1025px; overflow-x: auto;">
+                                                                <label class="label_input" for="">Escribe tu comentario...</label>
+                                                            </div>
+                                                            <div>
+                                                                <button type="submit" class="send">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20px" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
+                                                                    </svg>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                
+                            </div>
+                           
+                        </div>
+                    </div>
+                </div>
+               
+            {% endfor %}
 </div>
 {%endif%}
 {% endblock %}

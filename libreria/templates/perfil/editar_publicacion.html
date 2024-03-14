@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block titulo %} Editar publicaciones {% endblock %}
 {% block contenido %} 
-{% if not user.perfil.is_blocked %}
+{% if user.perfil.is_blocked %}
 <div class="container mt-5">
     <h5>No puedes acceder al contenido de esta página por que actualmente estás bloqueado.
         Para solucionar el problema, póngase en contacto con el/la maestro/a de la clase

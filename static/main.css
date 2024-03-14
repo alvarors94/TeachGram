@@ -10,26 +10,50 @@ body{
       }
 
 .nav-item {
-    position: relative;
+  font-size: 17px;
+  background: transparent;
+  color: #ffedd3;
+  position: relative;
+  transition: 0.5s ease;
+  cursor: pointer;
+}
+
+.nav-item::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 2px;
+  width: 0;
+  background-color: #dc9f9f;
+  transition: 0.5s ease;
+}
+
+.nav-item:hover {
+  color: #1e1e2b;
+  transition-delay: 0.5s;
+}
+
+.nav-item:hover::before {
+  width: 100%;
 }
 
 .nav-item::after {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 0;
-    height: 3px; /* Altura de la barra */
-    background-color: transparent; /* Color de la barra inicial */
-    transition: width 0.3s ease, background-color 0.3s ease; /* Transición suave */
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 0;
+  width: 100%;
+  background-color: #dc9f9f;
+  transition: 0.4s ease;
+  z-index: -1;
 }
 
 .nav-item:hover::after {
-    width: 100%; /* Ancho completo de la barra al pasar el ratón por encima */
-    background-color: #e7afaf; /* Color de la barra al pasar el ratón por encima */
+  height: 100%;
+  transition-delay: 0.4s;
 }
-
-
   .no-link-style {
     text-decoration: none;
     color: inherit;
@@ -209,7 +233,10 @@ body{
   background: linear-gradient(to left, #2ab55f, #38ef7d);
 }
 
-
+.card-header {
+  background-color: rgb(173, 164, 158);
+  font-weight: bold;
+}
 
 .list-group-item {
   border: 20px solid #3bc075; /* Define el grosor y el color del borde */

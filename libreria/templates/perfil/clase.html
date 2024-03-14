@@ -1,18 +1,18 @@
 {% extends "base.html" %}
 {% block titulo %} Perfiles {% endblock %}
 {% block contenido %} 
-{% if not user.perfil.is_blocked %}
+{% if user.perfil.is_blocked %}
 <div class="container mt-5">
     <h5>No puedes acceder al contenido de esta página por que actualmente estás bloqueado.
         Para solucionar el problema, póngase en contacto con el/la maestro/a de la clase
     </h5>
 </div>
 {% else %}
-<div class="container mt-5"> <!-- Agregando margen superior a la tarjeta -->
-    <div class="card-header" style="background-color: rgb(173, 164, 158);"><h3>Clase</h3></div>
-    <input type="text" id="searchInput" placeholder="Buscar perfil" class="search_box mb-3 mt-3">
+<div class="card mt-5" style="border-radius: 20px; background-color: rgb(255, 255, 255)"> <!-- Agregando margen superior a la tarjeta y borde rojo -->
+    <div class="card-header"><strong>Clase</strong></div>
+    <input type="text" id="searchInput" placeholder="Buscar perfil" class="search_box mb-3 mt-3" style="margin: 10px;">
     <br>
-    <div class="row">
+    <div class="row" style="margin: 10px;">
         {% for perfil in perfiles %}
         <div class="col-md-3 mb-4 perfil-card">
             <a href="{% url 'ver_perfil' perfil.username %}" class="no-link-style" style="font-size: 14px;">
@@ -21,7 +21,7 @@
                         <img src="{{ perfil.profile_pic.url }}" height="100" width="100" style="border-radius: 50%;"/>
                         {% if perfil.username.is_superuser %}
                             <strong>{{ perfil.username }}</strong>
-                            <span class="badge edit-gradient" style="color: black; font-size:small;">Docente</span>
+                            <span class="badge edit-gradient" style="color: black; font-size:smaller;">Docente</span>
                         {% else %}
                             <strong>{{ perfil.username }}</strong>
                         {% endif %}

@@ -2,7 +2,6 @@ from django import forms
 from .models import Publicacion, Comentario, Perfil, Recursos, Imagen
 from django.contrib.auth.models import User
 import re
-from django.contrib.auth.forms import AuthenticationForm, UsernameField
 
 
 class PublicacionForm(forms.ModelForm):
@@ -33,16 +32,18 @@ class PerfilForm(forms.ModelForm):
 class UserForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ['username', 'first_name', 'last_name']
+        fields = ['username', 'first_name', 'last_name', 'password']
         labels = {
             'username': 'Nombre de usuario',
             'first_name': 'Nombre',
             'last_name': 'Apellido',
+            'password': 'Contraseña',
         }
         widgets = {
             'username': forms.TextInput(attrs={'class': 'form-control'}),
             'first_name': forms.TextInput(attrs={'class': 'form-control'}),
-            'last_name': forms.TextInput(attrs={'class': 'form-control'})
+            'last_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'password': forms.PasswordInput(attrs={'class': 'form-control'})
         }
 
        

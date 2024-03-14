@@ -1,82 +1,52 @@
 {% extends "base.html" %}
 {% block titulo %} Crear publicaciones {% endblock %}
 {% block contenido %} 
-{% if not user.perfil.is_blocked %}
-<div class="container mt-5">
-    <h5>No puedes acceder al contenido de esta página por que actualmente estás bloqueado.
-        Para solucionar el problema, póngase en contacto con el/la maestro/a de la clase
-    </h5>
-</div>
-{% else %}
-<div class="card">
-    <div class="card-header">Crear una publicación</div>
-    <div class="card-body">
-        <h4 class="card-title">Descripción</h4>
-        <form enctype="multipart/form-data" method="post">
-            {% csrf_token %}
-            
-            {% for campo in form_publicacion %}
-                <div class="mb-3">
-                    <label for="{{ campo.id }}" class="form-label">{{ campo.label }}:</label>
+{% if user.perfil.is_blocked %}
+        <div class="container mt-5">
+            <h5>No puedes acceder al contenido de esta página porque actualmente estás bloqueado. Para solucionar el problema, ponte en contacto con el maestro de la clase.</h5>
+        </div>
+    {% else %}
+        <div class="card mt-5">
+            <div class="card-header">Crear una publicación</div>
+            <div class="card-body">
+                <form enctype="multipart/form-data" method="post">
+                    {% csrf_token %}
+                    {% for campo in form_publicacion %}
+                        <div class="mb-3">
+                            <label for="{{ campo.id }}" class="form-label">{{ campo.label }}:</label>
+                            <input type="{{ campo.field.widget.input_type }}" class="form-control" name="{{ campo.name }}" id="{{ campo.id }}" aria-describedby="helpId" placeholder="{{ campo.label }}" value="{{ campo.value | default_if_none:'' }}" />
+                            <div class="col-12 help-text">{{ campo.errors }}</div>
+                        </div>
+                    {% endfor %}
+
+                    <!-- Aquí se muestra la vista previa de la imagen -->
+                    <div class="mb-3">
+                        <label for="imagePreview" class="form-label">Vista previa de la imagen:</label>
+                        <img id="imagePreview" src="#" alt="" style="max-width: 468px; max-height: 468px; border-radius: 12px;">
+                    </div>
+
+                    <input type="file" name="images" id="imageInput" accept="image/*" multiple onchange="previewImage(event)">
                     
-                    {% if campo.field.widget.input_type == 'file' and campo.value %}
-                        <br/>
-                        <img src="{{ campo.value.url }}" height="200" width="200" />
-                    {% endif %}
-        
-                    <input
-                        type="{{ campo.field.widget.input_type }}" 
-                        class="form-control"
-                        name="{{ campo.name }}"
-                        id="{{ campo.id }}"
-                        aria-describedby="helpId"
-                        placeholder="{{ campo.label }}"
-                        value="{{ campo.value | default_if_none:'' }}"
-                    />
-                    <div class="col-12 help-text">{{ campo.errors }}</div>
-                </div>
-            {% endfor %}
-            
-        {{form_imagen}}
-            {% for campo in form_imagen %}
-            <div class="mb-3">
-                <label for="{{ campo.id }}" class="form-label">{{ campo.label }}:</label>
-                
-                {% if campo.field.widget.input_type == 'file' and campo.value %}
-                    <br/>
-                    <img src="{{ campo.value.url }}" height="200" width="200" />
-                {% endif %}
-    
-                <input
-                    type="{{ campo.field.widget.input_type }}" 
-                    class="form-control"
-                    name="{{ campo.name }}"
-                    id="{{ campo.id }}"
-                    aria-describedby="helpId"
-                    placeholder="{{ campo.label }}"
-                    value="{{ campo.value | default_if_none:'' }}"
-                    multiple
-                />
-                <div class="col-12 help-text">{{ campo.errors }}</div>
+                    <!-- Botones de acción -->
+                    <button type="submit" class="btn btn-success">Subir publicación</button>
+                    <a class="btn btn-danger" href="{% url 'feed' %}" role="button">Cancelar</a>
+                </form>
+               
+                  
             </div>
-        {% endfor %}
-        <form
-            action="{% url 'crear_publicacion' %}"
-            method="POST"
-            enctype="multipart/form-data">
-            {% csrf_token %}
-            <input type="file" name="images" multiple />
-            <button type="submit" class="btn btn-success">Subir publicación</button>
-            <a class="btn btn-danger" href="{% url 'listado_publicaciones' %}" role="button" >Cancelar</a>
-          </form>
-        
-           
-        
-            
-        </form>
-        
-    </div>
- 
-</div>
-{%endif%}
-{% endblock %}
+        </div>
+    {% endif %}
+
+    <script>
+        function previewImage(event) {
+            var reader = new FileReader();
+            reader.onload = function() {
+                var output = document.getElementById('imagePreview');
+                output.src = reader.result;
+            }
+            reader.readAsDataURL(event.target.files[0]);
+        }
+    </script>
+</body>
+</html>
+{%endblock%}

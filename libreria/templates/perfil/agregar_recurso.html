@@ -44,7 +44,7 @@
     <div class="table-responsive mt-5">
         <table class="table table-striped table-bordered table-hover thead-dark">
                 <thead>
-                    <tr>
+                    <tr style="text-align: center;">
                         <th scope="col">ID recurso</th>
                         <th scope="col">Descripción</th>
                         <th scope="col">Fecha publicación</th>
@@ -57,7 +57,7 @@
                     
                     {%for recurso in recursos%}
                    
-                    <tr>
+                    <tr style="text-align: center;">
                         <td>{{recurso.id}}</td>
                         <td>{{recurso.descripcion}}</td>
                         <td>{{recurso.fecha_publicacion_recurso}}</td>

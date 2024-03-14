@@ -35,6 +35,7 @@ def listado_perfiles(request, template_name='perfil/listado_perfiles.html'):
         perfil = Perfil.objects.get(id=user.id)
         last_login = user.last_login
         if last_login is not None:
+            last_login = last_login + timedelta(hours=1)  # Sumar una hora al tiempo de inicio de sesión
             last_login_str = last_login.strftime("%d/%m/%Y - %H:%M:%S")
         else:
             last_login_str = "No ha accedido aún"
@@ -305,14 +306,43 @@ def agregar_comentario(request, id):
     # Si el método de solicitud no es POST o si hay errores en el formulario, simplemente redirige de nuevo a la página de feed
     return redirect('feed')
                         
+def crear_usuario(request):
+
+    form_usuario = UserForm()
+    form_perfil = PerfilForm()
     
+    if request.method == 'POST':
+        form_usuario = UserForm(request.POST)
+        form_perfil = PerfilForm(request.POST)
+        if form_usuario.is_valid() and form_perfil.is_valid():
+            usuario = form_usuario.save(commit=False)
+            password = request.POST.get('password')  # Obtener la contraseña del formulario
+            usuario.set_password(password)
+            perfil = form_perfil.save(commit=False)
+            perfil.is_staff = False
+            perfil.is_blocked = False
+            usuario.save()
+            perfil.user = usuario  # Asignar el usuario al perfil
+            perfil.id = usuario.id
+            perfil.username_id = usuario.id
+            perfil.save()
+            # Aquí verificar si se ha enviado el campo de superusuario en el formulario
+            if 'superusuario' in request.POST:
+                usuario.is_superuser = True  # O False si deseas desactivarlo
+                usuario.save()
+                
+            return redirect("feed")
+    else:
+        form_usuario = UserForm()  # Inicializar el formulario sin datos
+        form_perfil = PerfilForm()  # Inicializar el formulario sin datos
+    
+    return render(request, "perfil/crear_usuario.html", {"form_usuario": form_usuario, "form_perfil": form_perfil})
 
 
 
 def recursos(request):
     recursos = Recursos.objects.all()
-    user = User.objects.get(id=request.user.id)
-    block = user.perfil.is_blocked
+    
   
     for recurso in recursos:
         # Obtener la extensión del archivo recurso
@@ -321,7 +351,7 @@ def recursos(request):
         recurso.extension = extension
         recurso.fecha_publicacion_recurso=recurso.fecha_publicacion_recurso.strftime("%d de %B de %Y")
     
-    return render(request, "perfil/recursos.html", {"block":block,"recursos": recursos, "perfiles" : perfiles})
+    return render(request, "perfil/recursos.html", {"recursos": recursos, "perfiles" : perfiles})
 def agregar_recurso(request):
     recursos = Recursos.objects.all()
     form_recurso = RecursosForm(request.POST, request.FILES)

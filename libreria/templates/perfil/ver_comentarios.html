@@ -1,7 +1,7 @@
 {% extends "base.html"%}
 {% block titulo %} Ver Comentarios {% endblock %}
 {% block contenido %} 
-{% if not user.perfil.is_blocked %}
+{% if user.perfil.is_blocked %}
 <div class="container mt-5">
     <h5>No puedes acceder al contenido de esta página por que actualmente estás bloqueado.
         Para solucionar el problema, póngase en contacto con el/la maestro/a de la clase
@@ -12,7 +12,7 @@
 <div class="table-responsive mt-5">
     <table class="table table-striped table-bordered table-hover">
                 <thead>
-                    <tr>
+                    <tr style="text-align: center;">
                         <th scope="col">ID Comentario</th>
                         <th scope="col">Nombre Usuario</th>
                         <th scope="col">ID Usuario</th>
@@ -23,7 +23,7 @@
                 </thead>
                 <tbody> 
                     {% for comentario in comentarios %}
-                    <tr>
+                    <tr style="text-align: center;">
                         <td>{{ comentario.id }}</td>
                         <td>{{ comentario.user }}</td>
                         <td>{{ comentario.user_id }}</td>

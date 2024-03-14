@@ -1,7 +1,7 @@
 {% extends "base.html"%}
 {% block titulo %} Editar perfil {% endblock %}
 {% block contenido %} 
-{% if not user.perfil.is_blocked %}
+{% if user.perfil.is_blocked %}
 <div class="container mt-5">
     <h5>No puedes acceder al contenido de esta página por que actualmente estás bloqueado.
         Para solucionar el problema, póngase en contacto con el/la maestro/a de la clase
@@ -35,6 +35,7 @@
                             {% endfor %}
              
                         {% for campo in form_user %}
+                        {% if campo.name != 'password' %}
                         <div class="mb-3">
                             <label for="" class="form-label">{{campo.label}}:</label>
                             <input
@@ -47,6 +48,7 @@
                                 value="{{ campo.value | default_if_none:'' }}"/>         
                         </div>
                         <div class="col-12 help-text">{{campo.errors}}</div>
+                        {% endif %}
                         {% endfor %}
                         <input class="btn btn-success" type="submit" value="Actualizar información"/>
                         <a class="btn btn-danger" href="{% url 'ver_perfil' user.username %}" role="button" >Cancelar</a>
