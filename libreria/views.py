@@ -24,7 +24,6 @@ def inicio(request):
     return render(request, "paginas/inicio.html",{ "foto_perfil":foto_perfil})
 
 def listado_perfiles(request, template_name='perfil/listado_perfiles.html'):
-    datos_de_usuario = []
     publicaciones = Publicacion.objects.all()
     comentarios = Comentario.objects.all()
     
@@ -170,6 +169,15 @@ def bloquear_perfil(request, id):
     perfil.is_blocked = not perfil.is_blocked  # Invierte el valor actual
     # Guardar los cambio
     perfil.save()
+    return redirect('listado_perfiles')
+
+def hacer_superusuario(request, id):
+    # Obtener el usuario y su perfil asociado
+    usuario = User.objects.get(id=id)
+    # Cambiar el estado de is_blocked
+    usuario.is_superuser = not usuario.is_superuser  # Invierte el valor actual
+    # Guardar los cambio
+    usuario.save()
     return redirect('listado_perfiles')
 
 def eliminar_publicacion(request, id):
@@ -365,9 +373,10 @@ def agregar_recurso(request):
         else:
             form_recurso = RecursosForm()
   
-    fechas_formateadas = [recurso.fecha_publicacion_recurso.strftime("%d de %B de %Y") for recurso in recursos]
+    for recurso in recursos:
+         recurso.fecha_publicacion_recurso=recurso.fecha_publicacion_recurso.strftime("%d de %B de %Y")
     
-    return render(request, "perfil/agregar_recurso.html", {"form_recurso": form_recurso, "recursos": recursos, "perfiles": perfiles, "fechas_formateadas": fechas_formateadas})
+    return render(request, "perfil/agregar_recurso.html", {"form_recurso": form_recurso, "recursos": recursos, "perfiles": perfiles})
 
 def eliminar_recurso(request,id):
     recurso = Recursos.objects.get(id = id)

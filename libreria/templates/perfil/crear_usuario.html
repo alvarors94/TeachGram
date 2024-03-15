@@ -13,7 +13,9 @@
                         <div class="mb-3">
                             <label for="{{ campo.id }}" class="form-label">{{ campo.label }}:</label>
                             <input type="{{ campo.field.widget.input_type }}" class="form-control" name="{{ campo.name }}" id="{{ campo.id }}" aria-describedby="helpId" placeholder="{{ campo.label }}" value="{{ campo.value | default_if_none:'' }}" />
-                            <div class="col-12 help-text">{{ campo.errors }}</div>
+                            <div class="col-12 help-text" style="color: red; font-weight: bold;">
+                                {{ campo.errors }}
+                            </div>
                         </div>
                     {% endfor %}
                     <div class="help" id="id_password1_helptext" bis_skin_checked="1">
@@ -27,8 +29,8 @@
                         <label class="form-check-label" for="superusuario">¿Es superusuario?</label>
                     </div>
                    <div class="container mt-3">
-                        <button type="submit" class="btn btn-success">Añadir usuario</button>
-                        <a class="btn btn-danger" href="{% url 'feed' %}" role="button">Cancelar</a>
+                        <button type="submit" class="btn comment-gradient">Añadir usuario</button>
+                        <a class="btn danger-gradient" href="{% url 'feed' %}" role="button">Cancelar</a>
                 </div>
                     </form>
                       

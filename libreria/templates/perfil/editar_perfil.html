@@ -8,18 +8,16 @@
     </h5>
 </div>
 {% else %}
-<h1>Editar perfil</h1>
 
 <body>
     <header>
-        <div class="perfil-container mb-3">
-            <div class="contenedor-cabecera mt-3" >
-                <div class="cabecera1">
-                </div>
+        <div class="card mt-5">
+            <div class="card-header">Editar perfil</div>
+            <div class="card-body">
                
-                        <img src="{{ foto_perfil }}" height="150" width="150" style="border-radius: 50%;"/>
-                        <a class="btn btn-outline-danger" href="{% url 'cambiar_password' %}" role="button">Cambiar Contraseña</a>
-                        <form enctype="multipart/form-data" method="post" action="{% url 'editar_perfil' %}">
+                        <img src="{{ foto_perfil }}" height="150" width="150" style="border-radius: 50%;" />
+                        <a class="btn btn-outline-warning" href="{% url 'cambiar_password' %}" role="button">Cambiar Contraseña</a>
+                        <form enctype="multipart/form-data" method="post" action="{% url 'editar_perfil' %}" class="mt-3">
                             {% csrf_token %} 
                             {% for campo in form_perfil %}
                             <div class="mb-3">
@@ -50,8 +48,8 @@
                         <div class="col-12 help-text">{{campo.errors}}</div>
                         {% endif %}
                         {% endfor %}
-                        <input class="btn btn-success" type="submit" value="Actualizar información"/>
-                        <a class="btn btn-danger" href="{% url 'ver_perfil' user.username %}" role="button" >Cancelar</a>
+                        <input class="btn comment-gradient" type="submit" value="Actualizar información"/>
+                        <a class="btn danger-gradient" href="{% url 'ver_perfil' user.username %}" role="button" >Cancelar</a>
                     </form>
 
 

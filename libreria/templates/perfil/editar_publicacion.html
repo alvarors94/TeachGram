@@ -28,7 +28,7 @@
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                <a class="btn btn-danger" href="{% url 'eliminar_imagen' imagen.id %}" style="color: white;">Eliminar</a>
+                                <a class="btn danger-gradient" href="{% url 'eliminar_imagen' imagen.id %}" style="color: white;">Eliminar</a>
                             </div>
                         </div>
                     </div>
@@ -45,7 +45,7 @@
                 </div>
                 {% endfor %}
                 <div class="bg-image hover-zoom">
-                    <label for="file-upload" class="btn btn-success btn-lg zoom-img" style="width: 360px; height: 360px; border-radius: 12px; background-color: #f1f1f1c7; color: black; border-style: dashed; border-color: gray;">
+                    <label for="file-upload" class="btn comment-gradient btn-lg zoom-img" style="width: 360px; height: 360px; border-radius: 12px; background-color: #f1f1f1c7; color: black; border-style: dashed; border-color: gray;">
                         Subir más imágenes
                         <img width="300" height="300" src="https://img.icons8.com/parakeet/300/add-image.png" alt="add-image"/>
                     </label>
@@ -61,8 +61,8 @@
             </div>
             <div class="col-12 help-text">{{campo.errors}}</div>
             {% endfor %}
-            <input class="btn btn-success" type="submit" value="Editar publicación"/>
-            <a class="btn btn-danger" href="{% url 'listado_publicaciones'%}" role="button">Cancelar</a>
+            <input class="btn comment-gradient" type="submit" value="Editar publicación"/>
+            <a class="btn danger-gradient" href="{% url 'listado_publicaciones'%}" role="button">Cancelar</a>
         </form>
     </div>
 </div>

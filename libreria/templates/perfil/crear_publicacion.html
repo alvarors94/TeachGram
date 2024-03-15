@@ -2,51 +2,98 @@
 {% block titulo %} Crear publicaciones {% endblock %}
 {% block contenido %} 
 {% if user.perfil.is_blocked %}
-        <div class="container mt-5">
-            <h5>No puedes acceder al contenido de esta página porque actualmente estás bloqueado. Para solucionar el problema, ponte en contacto con el maestro de la clase.</h5>
-        </div>
-    {% else %}
-        <div class="card mt-5">
-            <div class="card-header">Crear una publicación</div>
-            <div class="card-body">
-                <form enctype="multipart/form-data" method="post">
-                    {% csrf_token %}
-                    {% for campo in form_publicacion %}
-                        <div class="mb-3">
-                            <label for="{{ campo.id }}" class="form-label">{{ campo.label }}:</label>
-                            <input type="{{ campo.field.widget.input_type }}" class="form-control" name="{{ campo.name }}" id="{{ campo.id }}" aria-describedby="helpId" placeholder="{{ campo.label }}" value="{{ campo.value | default_if_none:'' }}" />
-                            <div class="col-12 help-text">{{ campo.errors }}</div>
-                        </div>
-                    {% endfor %}
-
-                    <!-- Aquí se muestra la vista previa de la imagen -->
-                    <div class="mb-3">
-                        <label for="imagePreview" class="form-label">Vista previa de la imagen:</label>
-                        <img id="imagePreview" src="#" alt="" style="max-width: 468px; max-height: 468px; border-radius: 12px;">
-                    </div>
-
-                    <input type="file" name="images" id="imageInput" accept="image/*" multiple onchange="previewImage(event)">
-                    
-                    <!-- Botones de acción -->
-                    <button type="submit" class="btn btn-success">Subir publicación</button>
-                    <a class="btn btn-danger" href="{% url 'feed' %}" role="button">Cancelar</a>
-                </form>
-               
-                  
+<div class="container mt-5">
+    <h5>No puedes acceder al contenido de esta página porque actualmente estás bloqueado. Para solucionar el problema, ponte en contacto con el maestro de la clase.</h5>
+</div>
+{% else %}
+<div class="card mt-5">
+    <div class="card-header">Crear una publicación</div>
+    <div class="card-body">
+        <form enctype="multipart/form-data" method="post" id="publicacionForm">
+            {% csrf_token %}
+            {% for campo in form_publicacion %}
+            <div class="mb-3">
+                <label for="{{ campo.id }}" class="form-label">{{ campo.label }}:</label>
+                <input type="{{ campo.field.widget.input_type }}" class="form-control" name="{{ campo.name }}" id="{{ campo.id }}" aria-describedby="helpId" placeholder="{{ campo.label }}" value="{{ campo.value | default_if_none:'' }}" />
+                <div class="col-12 help-text">{{ campo.errors }}</div>
             </div>
-        </div>
-    {% endif %}
+            {% endfor %}
 
-    <script>
-        function previewImage(event) {
+            <div class="mb-3" id="imagePreviews" style="display: flex; flex-wrap: wrap;">
+            </div>
+
+            <input type="file" name="images" id="imageInput" accept="image/*" multiple onchange="previewImages(event)">
+            
+            <!-- Botones de acción -->
+            <div class="mb-3 mt-3">
+                <button type="submit" class="btn comment-gradient">Subir publicación</button>
+                <a class="btn danger-gradient" href="{% url 'feed' %}" role="button">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endif %}
+<script>
+    var images = []; // Lista para almacenar las imágenes seleccionadas
+
+    function previewImages(event) {
+        var files = event.target.files;
+        var imagePreviews = document.getElementById('imagePreviews');
+
+        // Limpiar las vistas previas anteriores
+        imagePreviews.innerHTML = '';
+
+        // Iterar sobre los archivos seleccionados
+        for (var i = 0; i < files.length; i++) {
             var reader = new FileReader();
-            reader.onload = function() {
-                var output = document.getElementById('imagePreview');
-                output.src = reader.result;
-            }
-            reader.readAsDataURL(event.target.files[0]);
+            reader.onload = (function(file) {
+                return function(e) {
+                    var imgContainer = document.createElement('div');
+                    imgContainer.style.margin = '5px'; // Espacio entre las imágenes
+
+                    var img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.style.maxWidth = '300px'; // Ajusta el ancho máximo según sea necesario
+                    img.style.maxHeight = '300px'; // Ajusta la altura máxima según sea necesario
+                    img.style.borderRadius = '12px';
+
+                    var deleteButton = document.createElement('button');
+                    deleteButton.textContent = 'Eliminar';
+                    deleteButton.style.marginTop = '5px'; // Espacio entre el botón y la imagen
+
+                    deleteButton.addEventListener('click', function() {
+                        imgContainer.remove(); // Eliminar la vista previa de la imagen
+                        removeFromList(file); // Eliminar la imagen de la lista
+                    });
+
+                    imgContainer.appendChild(img);
+                    imgContainer.appendChild(deleteButton);
+                    imagePreviews.appendChild(imgContainer);
+
+                    // Agregar la imagen a la lista de imágenes seleccionadas
+                    images.push(file);
+                };
+            })(files[i]);
+            reader.readAsDataURL(files[i]);
         }
-    </script>
-</body>
-</html>
-{%endblock%}
+    }
+
+    function removeFromList(file) {
+        var index = images.indexOf(file);
+        if (index !== -1) {
+            images.splice(index, 1);
+        }
+    }
+
+    document.getElementById('publicacionForm').addEventListener('submit', function(event) {
+        // Adjuntar las imágenes seleccionadas al formulario antes de enviarlo
+        images.forEach(function(image) {
+            var input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'images';
+            input.value = image.name;
+            document.getElementById('publicacionForm').appendChild(input);
+        });
+    });
+</script>
+{% endblock %}

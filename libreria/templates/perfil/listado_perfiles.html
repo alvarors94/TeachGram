@@ -19,6 +19,7 @@
                         <th scope="col">¿Está bloqueado?</th>
                         <th scope="col">Nº de coment.</th>
                         <th scope="col">Nº de publicac.</th>
+                        <th scope="col">Hacer superusuario</th>
                         <th scope="col">Bloquear perfil</th>
                         <th scope="col">Eliminar perfil</th>
                     </tr>
@@ -47,17 +48,28 @@
                             <td>{{ dato.total_comentarios }}</td>
                             <td>{{ dato.total_publicaciones }}</td>
                             <td>
+                                {% if dato.is_superuser %}
+                                <a class="btn btn-secondary" href="{% url 'hacer_superusuario' dato.id %}" role="button">
+                                    <span ">Deshacer superusuario</span>
+                                </a>
+                                {% else %}
+                                <a class="btn comment-gradient" href="{% url 'hacer_superusuario' dato.id %}" role="button">
+                                    <span ">Hacer superusuario</span>
+                                </a>
+                                {% endif %}
+                            </td>
+                            <td>
                                 {% if dato.is_blocked %}
                                     <a class="btn comment-gradient" href="{% url 'bloquear_perfil' dato.id %}" role="button">
-                                        <span style="color: white; font-weight: bold;">Desbloquear perfil</span>
+                                        <span ">Desbloquear perfil</span>
                                     </a>
                                 {% else %}
                                     <a class="btn edit-gradient" href="{% url 'bloquear_perfil' dato.id %}" role="button">
-                                        <span style="color: white; font-weight: bold;">Bloquear perfil</span>
+                                        <span ">Bloquear perfil</span>
                                     </a>
                                 {% endif %}
                             </td>
-                            <td><a class="btn danger-gradient" href="{% url 'eliminar_perfil' dato.id %}" role="button"><span style="color: white; font-weight: bold;">Eliminar perfil</span></a></td>
+                            <td><a class="btn danger-gradient" href="{% url 'eliminar_perfil' dato.id %}" role="button"><span ">Eliminar perfil</span></a></td>
 
                         </tr>
                     {% endfor %}

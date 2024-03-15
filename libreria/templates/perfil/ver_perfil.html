@@ -11,24 +11,34 @@
 
 <body>
     <header>
-        <div class="perfil-container mb-3">
-            <div class="contenedor-cabecera mt-3">
+        <div class="card mt-5 profile">
+            <div class="container" style="margin: 10px; min-height: 180px; display: flex; align-items: center;">
+                <img src="{{ foto_de_perfil.url }}" height="150" width="150" style="border-radius: 50%; margin-right: 10px;">
                 <div>
-                            <img src="{{ foto_de_perfil.url }}" height="150" width="150" style="border-radius: 50%;"/>
-                            <h2>{{ user.username }}</h2> 
-                            <h2>{{ user.first_name }} {{ user.last_name }}</h2> 
-                            {% if request.user.id == user.id%}
-                            <a class="btn btn-warning" href="{% url 'editar_perfil' %}" role="button">Editar perfil</a>
-                            {%endif%}
+                    <h2>{{ user.first_name }} {{ user.last_name }}</h2> 
+                    <small style="color:rgb(93, 93, 93); font-size: medium;">{{ user.username }}</small>
+                </div>
+                <div style="margin-left: auto; margin-top: -135px; margin-right: 10px;">
+                    {% if request.user.id == user.id %}
+                    <a class="btn edit-gradient" href="{% url 'editar_perfil' %}" role="button" style="display: flex; align-items: center;">
+                        <img width="24" height="24" src="https://img.icons8.com/parakeet-line/48/settings.png" alt="settings" style="margin-right: 5px;">
+                        <span style="margin-left: 5px;">Editar perfil</span>
+                    </a>
+                   {% endif %}
                 </div>
             </div>
         </div>
+        
     </header>
     <main>
-        <div class="main-nav">
+        <br>
+        <div class="main-nav" style="display: flex; justify-content: center; align-items: center;">
             <h3>PUBLICACIONES</h3>
         </div>
+        <hr class="divider">
         <div class="grid-container">
+            <!-- Contenido de tu cuadrícula aquí -->
+        
             {% for publicacion in publicaciones %}
             <div class="modal fade" id="exampleModal{{ publicacion.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-xl">
@@ -37,10 +47,10 @@
                             {% if publicacion.user_id == user.id or user.is_superuser %}
                                         <div class="col">
                                             <a class="btn edit-gradient btn-me my-dropdown-toggle mb-2" href="{% url 'editar_publicacion' publicacion.id %}" role="button"> 
-                                                <img width="24" height="24" src="https://img.icons8.com/cotton/64/create-new--v1.png" alt="create-new--v1"/> <span style="color: white; font-weight: bold;">Editar publicación</span>
+                                                 <span ">Editar publicación</span>
                                             </a>
                                             <a class="btn danger-gradient btn-me my-dropdown-toggle mb-2" href="{% url 'eliminar_publicacion' publicacion.id %}" role="button">
-                                                <img width="24" height="24" src="https://img.icons8.com/parakeet/24/000000/trash.png" alt="trash"/> <span style="color: white; font-weight: bold;">Eliminar publicación</span>
+                                                 <span ">Eliminar publicación</span>
                                             </a>
                                         </div>
                                         {% endif %}
@@ -136,8 +146,8 @@
                                                                         <textarea class="form-control mt-3 mr-3" id="comentarioEdit" name="comentario" rows="4" style="min-width: 500px; overflow-x: auto;">{{ comentario.comentario }}</textarea>
                                                                     </div>
                                                                     <div class="container mt-2 ms-1">
-                                                                        <button type="submit" class="btn comment-gradient ms-2" style="color: white; font-weight: bold;">Guardar Cambios</button>
-                                                                        <button type="button" class="btn danger-gradient ms-2" style="color: white; font-weight: bold;">Cancelar</button>
+                                                                        <button type="submit" class="btn comment-gradient ms-2">Guardar Cambios</button>
+                                                                        <button type="button" class="btn danger-gradient ms-2">Cancelar</button>
                                                                     </div>
                                                                 </form>
                                                             </div>

@@ -107,8 +107,8 @@
                                                             <textarea class="form-control mt-3 mr-3" id="comentarioEdit" name="comentario" rows="4" style="min-width: 500px; overflow-x: auto;">{{ comentario.comentario }}</textarea>
                                                         </div>
                                                         <div class="container mt-2 ms-1">
-                                                            <button type="submit" class="btn comment-gradient" style="color: white; font-weight: bold;">Guardar Cambios</button>
-                                                            <button type="button" class="btn danger-gradient ms-2" style="color: white; font-weight: bold;">Cancelar</button>
+                                                            <button type="submit" class="btn comment-gradient" ">Guardar Cambios</button>
+                                                            <button type="button" class="btn danger-gradient ms-2" ">Cancelar</button>
                                                         </div>
                                                     </form>
                                                 </div>
@@ -156,14 +156,14 @@
                                         <!-- Botón de editar publicación -->
                                         <a class="btn edit-gradient btn-me my-dropdown-toggle w-100 mb-2" style="width: 40px; height: 40px; border-radius: 5px;" href="{% url 'editar_publicacion' publicacion.id  %}" role="button"> 
                                             <!-- Contenido del botón de editar publicación -->
-                                            <img width="24" height="24" src="https://img.icons8.com/cotton/64/create-new--v1.png" alt="create-new--v1"/> <span style="color: white; font-weight: bold;">Editar publicación</span>
+                                            <span >Editar publicación</span>
                                         </a>
                                     </div>
                                     <div class="col text-center">
                                         <!-- Botón de eliminar publicación -->
                                         <a class="btn danger-gradient btn-me my-dropdown-toggle w-100 mb-2" style="width: 40px; height: 40px; border-radius: 5px;"  href="{% url 'eliminar_publicacion' publicacion.id %}" role="button">
                                             <!-- Contenido del botón de eliminar publicación -->
-                                            <img width="30" height="30" src="https://img.icons8.com/cotton/64/000000/trash--v1.png" alt="trash--v1"/> <span style="color: white; font-weight: bold;">Eliminar publicación</span>
+                                           <span>Eliminar publicación</span>
                                         </a>
                                     </div>
                                 </div>
@@ -177,17 +177,7 @@
         </div>
     </div>
 </div>
-        <div class="modal fade" id="exampleModal{{ comentario.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-xl">
-                 <div class="modal-content">
-                     <div class="modal-header">
-                            eeeeeeee
-                            </div>
-                        </div>
-                    </div>
-                    
-                    
-                </div>
+        
                 
 {%endif%}
 {% endblock %}

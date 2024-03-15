@@ -33,7 +33,7 @@
                 <td>{{ publicacion.descripcion }}</td>
                 <td>{{ publicacion.fecha_publicacion }}</td>
                 <td>{{ publicacion.numero_de_comentarios }}</td>
-                <td><a class="btn comment-gradient btn-sm" href="#" data-bs-toggle="modal" data-bs-target="#exampleModal{{ publicacion.id }}" role="button" style="color: white; font-weight: bold;">Ver Publicación</a></td>
+                <td><a class="btn comment-gradient btn-sm" href="#" data-bs-toggle="modal" data-bs-target="#exampleModal{{ publicacion.id }}" role="button" ">Ver Publicación</a></td>
                
             </tr>
         {% endfor %}
@@ -51,10 +51,10 @@
                             {% if publicacion.user_id == user.id or user.is_superuser %}
                                         <div class="col">
                                             <a class="btn edit-gradient btn-me my-dropdown-toggle mb-2" href="{% url 'editar_publicacion' publicacion.id %}" role="button"> 
-                                                <img width="24" height="24" src="https://img.icons8.com/cotton/64/create-new--v1.png" alt="create-new--v1"/> <span style="color: white; font-weight: bold;">Editar publicación</span>
+                                                 <span ">Editar publicación</span>
                                             </a>
                                             <a class="btn danger-gradient btn-me my-dropdown-toggle mb-2" href="{% url 'eliminar_publicacion' publicacion.id %}" role="button">
-                                                <img width="24" height="24" src="https://img.icons8.com/parakeet/24/000000/trash.png" alt="trash"/> <span style="color: white; font-weight: bold;">Eliminar publicación</span>
+                                                 <span ">Eliminar publicación</span>
                                             </a>
                                         </div>
                                         {% endif %}
@@ -150,8 +150,8 @@
                                                                         <textarea class="form-control mt-3 mr-3" id="comentarioEdit" name="comentario" rows="4" style="min-width: 500px; overflow-x: auto;">{{ comentario.comentario }}</textarea>
                                                                     </div>
                                                                     <div class="container mt-2 ms-1">
-                                                                        <button type="submit" class="btn comment-gradient ms-2" style="color: white; font-weight: bold;">Guardar Cambios</button>
-                                                                        <button type="button" class="btn danger-gradient ms-2" style="color: white; font-weight: bold;">Cancelar</button>
+                                                                        <button type="submit" class="btn comment-gradient ms-2" ">Guardar Cambios</button>
+                                                                        <button type="button" class="btn danger-gradient ms-2" ">Cancelar</button>
                                                                     </div>
                                                                 </form>
                                                             </div>
