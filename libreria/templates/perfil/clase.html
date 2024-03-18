@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block titulo %} Perfiles {% endblock %}
 {% block contenido %} 
-{% if user.perfil.is_blocked %}
+{% if request.user.perfil.is_blocked %}
 <div class="container mt-5">
     <h5>No puedes acceder al contenido de esta página por que actualmente estás bloqueado.
         Para solucionar el problema, póngase en contacto con el/la maestro/a de la clase
@@ -13,17 +13,17 @@
     <input type="text" id="searchInput" placeholder="Buscar perfil" class="search_box mb-3 mt-3" style="margin: 10px;">
     <br>
     <div class="row" style="margin: 10px;">
-        {% for perfil in perfiles %}
+        {% for dato in datos_de_user %}
         <div class="col-md-3 mb-4 perfil-card">
-            <a href="{% url 'ver_perfil' perfil.username %}" class="no-link-style" style="font-size: 14px;">
+            <a href="{% url 'ver_perfil' dato.username %}" class="no-link-style" style="font-size: 14px;">
                 <div class="card hover-bg">
                     <div class="card-body">
-                        <img src="{{ perfil.profile_pic.url }}" height="100" width="100" style="border-radius: 50%;"/>
-                        {% if perfil.username.is_superuser %}
-                            <strong>{{ perfil.username }}</strong>
+                        <img src="{{ dato.profile_pic.url }}" height="100" width="100" style="border-radius: 50%;"/>
+                        {% if dato.is_superuser %}
+                            <strong>{{ dato.username }}</strong>
                             <span class="badge edit-gradient" style="color: black; font-size:smaller;">Docente</span>
                         {% else %}
-                            <strong>{{ perfil.username }}</strong>
+                            <strong>{{ dato.username }}</strong>
                         {% endif %}
                     </div>
                 </div>

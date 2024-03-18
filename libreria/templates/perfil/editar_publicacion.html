@@ -1,14 +1,14 @@
 {% extends "base.html" %}
 {% block titulo %} Editar publicaciones {% endblock %}
 {% block contenido %} 
-{% if user.perfil.is_blocked %}
+{% if request.user.perfil.is_blocked %}
 <div class="container mt-5">
     <h5>No puedes acceder al contenido de esta página por que actualmente estás bloqueado.
         Para solucionar el problema, póngase en contacto con el/la maestro/a de la clase
     </h5>
 </div>
 {% else %}
-<div class="card">
+<div class="card mt-5">
     <div class="card-header">Editar información</div>
     <div class="card-body">
         <h4 class="card-title"></h4>
@@ -27,25 +27,25 @@
                                 ¿Seguro que desea eliminar esta imagen?
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                <button type="button" class="btn secondary-gradient" data-bs-dismiss="modal">Cancelar</button>
                                 <a class="btn danger-gradient" href="{% url 'eliminar_imagen' imagen.id %}" style="color: white;">Eliminar</a>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="bg-image hover-zoom" style="position: relative;">
-                    <div class="special-overlay" style="position: absolute; top: 10px; right: 60px; background-color: rgba(227, 13, 13, 0);z-index: 1;">
+                    <div class="special-overlay" style="position: absolute; top: 0px; right: 0px; background-color: rgba(227, 13, 13, 0);z-index: 1;">
                         <div class="dropdown-container">
                             <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#exampleModal{{ imagen.id }}">
                                 <img width="25" height="25" src="https://img.icons8.com/parakeet/25/delete-sign.png" alt="delete-sign"/>
                             </button>
                         </div>
                     </div>
-                    <img src="{{ imagen.imagen.url }}" style="width: 360px; height: 360px; border-radius: 12px; z-index: 0;" class="zoom-img" />
+                    <img src="{{ imagen.imagen.url }}" style="width: 408px; height: 408px; border-radius: 12px" class="zoom-img" />
                 </div>
                 {% endfor %}
                 <div class="bg-image hover-zoom">
-                    <label for="file-upload" class="btn comment-gradient btn-lg zoom-img" style="width: 360px; height: 360px; border-radius: 12px; background-color: #f1f1f1c7; color: black; border-style: dashed; border-color: gray;">
+                    <label for="file-upload" class="btn  btn-lg zoom-img" style="width: 408px; height: 408px; border-radius: 12px; background-color: #f1f1f1c7; color: black; border-style: dashed; border-color: gray;">
                         Subir más imágenes
                         <img width="300" height="300" src="https://img.icons8.com/parakeet/300/add-image.png" alt="add-image"/>
                     </label>
@@ -55,7 +55,7 @@
             <form action="{% url 'crear_publicacion' %}" method="POST" enctype="multipart/form-data">
             {% csrf_token %}
             {% for campo in form_publicacion %}
-            <div class="mb-3">
+            <div class="mb-3 mt-3">
                 <label for="" class="form-label">{{campo.label}}:</label>
                 <input type="{{campo.field.widget.input_type}}" class="form-control" name="{{campo.name}}" id="" aria-describedby="helpId" placeholder="{{campo.label}}" value="{{ campo.value | default_if_none:'' }}"/>
             </div>

@@ -1,36 +1,43 @@
 {% extends "base.html" %}
 {% block titulo %} Crear publicaciones {% endblock %}
 {% block contenido %} 
-{% if user.perfil.is_blocked %}
+{% if request.user.perfil.is_blocked %}
 <div class="container mt-5">
-    <h5>No puedes acceder al contenido de esta página porque actualmente estás bloqueado. Para solucionar el problema, ponte en contacto con el maestro de la clase.</h5>
+  <h5>No puedes acceder al contenido de esta página porque actualmente estás bloqueado. Para solucionar el problema, ponte en contacto con el maestro de la clase.</h5>
 </div>
 {% else %}
 <div class="card mt-5">
-    <div class="card-header">Crear una publicación</div>
-    <div class="card-body">
-        <form enctype="multipart/form-data" method="post" id="publicacionForm">
-            {% csrf_token %}
-            {% for campo in form_publicacion %}
-            <div class="mb-3">
-                <label for="{{ campo.id }}" class="form-label">{{ campo.label }}:</label>
-                <input type="{{ campo.field.widget.input_type }}" class="form-control" name="{{ campo.name }}" id="{{ campo.id }}" aria-describedby="helpId" placeholder="{{ campo.label }}" value="{{ campo.value | default_if_none:'' }}" />
-                <div class="col-12 help-text">{{ campo.errors }}</div>
-            </div>
-            {% endfor %}
+  <div class="card-header">Crear una publicación</div>
+  <div class="card-body">
+    
+    <form enctype="multipart/form-data" method="post" id="form_publicacion">
+      {% csrf_token %}
+      {% for campo in form_publicacion %}
+      <div class="mb-3">
+        <label for="{{ campo.id }}" class="form-label">{{ campo.label }}:</label>
+        <input type="{{ campo.field.widget.input_type }}" class="form-control" name="{{ campo.name }}" id="{{ campo.id }}" aria-describedby="helpId" placeholder="{{ campo.label }}" value="{{ campo.value | default_if_none:'' }}" />
+        <div class="col-12 help-text">{{ campo.errors }}</div>
+      </div>
+      {% endfor %}
 
-            <div class="mb-3" id="imagePreviews" style="display: flex; flex-wrap: wrap;">
-            </div>
-
-            <input type="file" name="images" id="imageInput" accept="image/*" multiple onchange="previewImages(event)">
-            
-            <!-- Botones de acción -->
-            <div class="mb-3 mt-3">
-                <button type="submit" class="btn comment-gradient">Subir publicación</button>
-                <a class="btn danger-gradient" href="{% url 'feed' %}" role="button">Cancelar</a>
-            </div>
-        </form>
+      <div class="mb-3 hover-zoom" id="imagePreviews" style="display: flex; flex-wrap: wrap;"> 
+      </div>
+      
+      <div class="bg-image hover-zoom">
+        <label for="file-upload" class="btn  btn-lg zoom-img" style="width: 408px; height: 408px; border-radius: 12px; background-color: #f1f1f1c7; color: black; border-style: dashed; border-color: gray;">
+            Subir imágenes
+            <img width="300" height="300" src="https://img.icons8.com/parakeet/300/add-image.png" alt="add-image"/>
+        </label>
+        <input type="file" name="images" id="file-upload" accept="image/*" multiple style="display: none;" onchange="previewImages(event)">
     </div>
+
+      <div class="mb-3 mt-3">
+        <button type="submit" class="btn comment-gradient">Subir publicación</button>
+        <a class="btn danger-gradient" href="{% url 'feed' %}" role="button">Cancelar</a>
+      </div>
+    </form>
+   
+  </div>
 </div>
 {% endif %}
 <script>
@@ -53,35 +60,18 @@
 
                     var img = document.createElement('img');
                     img.src = e.target.result;
-                    img.style.maxWidth = '300px'; // Ajusta el ancho máximo según sea necesario
-                    img.style.maxHeight = '300px'; // Ajusta la altura máxima según sea necesario
+                    img.style.width = '408px'; // Ajusta el ancho máximo según sea necesario
+                    img.style.height = '408px'; // Ajusta la altura máxima según sea necesario
                     img.style.borderRadius = '12px';
 
-                    var deleteButton = document.createElement('button');
-                    deleteButton.textContent = 'Eliminar';
-                    deleteButton.style.marginTop = '5px'; // Espacio entre el botón y la imagen
-
-                    deleteButton.addEventListener('click', function() {
-                        imgContainer.remove(); // Eliminar la vista previa de la imagen
-                        removeFromList(file); // Eliminar la imagen de la lista
-                    });
-
                     imgContainer.appendChild(img);
-                    imgContainer.appendChild(deleteButton);
                     imagePreviews.appendChild(imgContainer);
 
                     // Agregar la imagen a la lista de imágenes seleccionadas
-                    images.push(file);
+                    images.push({file: file, container: imgContainer});
                 };
             })(files[i]);
             reader.readAsDataURL(files[i]);
-        }
-    }
-
-    function removeFromList(file) {
-        var index = images.indexOf(file);
-        if (index !== -1) {
-            images.splice(index, 1);
         }
     }
 
@@ -89,9 +79,9 @@
         // Adjuntar las imágenes seleccionadas al formulario antes de enviarlo
         images.forEach(function(image) {
             var input = document.createElement('input');
-            input.type = 'hidden';
+            input.type = 'file';
             input.name = 'images';
-            input.value = image.name;
+            input.files = [image.file];
             document.getElementById('publicacionForm').appendChild(input);
         });
     });

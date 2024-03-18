@@ -13,7 +13,6 @@
                         <th scope="col">ID Usuario</th>
                         <th scope="col">Foto de Perfil</th>
                         <th scope="col">Nombre Usuario</th>
-                        <th scope="col">Nombre completo</th>
                         <th scope="col">Último Acceso</th>
                         <th scope="col">¿Es superusuario?</th>
                         <th scope="col">¿Está bloqueado?</th>
@@ -30,7 +29,6 @@
                             <td>{{ dato.id }}</td>
                             <td><a href="{% url 'ver_perfil' dato.username %}" class="no-link-style"><img src="{{ dato.profile_pic.url }}" height="60" width="60" style="border-radius: 50%;"/></a></td>
                             <td><a href="{% url 'ver_perfil' dato.username %}" class="no-link-style">{{ dato.username }}</a></td>
-                            <td><a href="{% url 'ver_perfil' dato.username %}" class="no-link-style">{{ dato.full_name }}</a></td>
                             <td>{{ dato.last_login }}</td>
                             <td>
                             {% if dato.is_superuser %}
@@ -49,18 +47,20 @@
                             <td>{{ dato.total_publicaciones }}</td>
                             <td>
                                 {% if dato.is_superuser %}
-                                <a class="btn btn-secondary" href="{% url 'hacer_superusuario' dato.id %}" role="button">
-                                    <span ">Deshacer superusuario</span>
+                                <a class="btn secondary-gradient" href="{% url 'hacer_superusuario' dato.id %}" role="button">
+                                    <span>Deshacer superusuario</span>
                                 </a>
+                                {% elif dato.id == '1' %}
+                                    <span>No puedes deshacer este superusuario</span>
                                 {% else %}
                                 <a class="btn comment-gradient" href="{% url 'hacer_superusuario' dato.id %}" role="button">
-                                    <span ">Hacer superusuario</span>
+                                    <span >Hacer superusuario</span>
                                 </a>
                                 {% endif %}
                             </td>
                             <td>
                                 {% if dato.is_blocked %}
-                                    <a class="btn comment-gradient" href="{% url 'bloquear_perfil' dato.id %}" role="button">
+                                    <a class="btn secondary-gradient" href="{% url 'bloquear_perfil' dato.id %}" role="button">
                                         <span ">Desbloquear perfil</span>
                                     </a>
                                 {% else %}

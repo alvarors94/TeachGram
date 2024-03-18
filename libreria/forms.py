@@ -117,9 +117,30 @@ class CambiarPasswordForm(forms.Form):
         return cleaned_data
     
 class RecursosForm(forms.ModelForm):
+    archivo_recurso = forms.FileField(required=False)
+    nombre = forms.CharField(required=False)
+    descripcion = forms.CharField(required=False)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        archivo_recurso = cleaned_data.get('archivo_recurso')
+        nombre = cleaned_data.get('nombre')
+        descripcion = cleaned_data.get('descripcion')
+
+        if not archivo_recurso:
+            self.add_error('archivo_recurso', 'Este campo no puede estar vacío')
+            
+        if not nombre:
+            self.add_error('nombre', 'Este campo no puede estar vacío')
+            
+        if not descripcion:
+            self.add_error('descripcion', 'Este campo no puede estar vacío')
+
+        return cleaned_data
+
     class Meta:
         model = Recursos
-        fields = ['archivo_recurso', 'nombre','descripcion'] 
+        fields = ['archivo_recurso', 'nombre','descripcion']
         
 
 

@@ -117,6 +117,7 @@ def crear_publicacion(request):
     
     return render(request, "perfil/crear_publicacion.html", {"form_publicacion": form_publicacion})
 
+
 def editar_publicacion(request, id):
     publicacion = Publicacion.objects.get(id=id)
     imagenes_publicacion = Imagen.objects.filter(publicacion_id=publicacion.id)
@@ -362,16 +363,15 @@ def recursos(request):
     return render(request, "perfil/recursos.html", {"recursos": recursos, "perfiles" : perfiles})
 def agregar_recurso(request):
     recursos = Recursos.objects.all()
-    form_recurso = RecursosForm(request.POST, request.FILES)
-
     
     if request.method == 'POST':
+        form_recurso = RecursosForm(request.POST, request.FILES)
         if form_recurso.is_valid():
             recurso = form_recurso.save(commit=False)
             recurso.save()
             return redirect("recursos")
-        else:
-            form_recurso = RecursosForm()
+    else:
+        form_recurso = RecursosForm()
   
     for recurso in recursos:
          recurso.fecha_publicacion_recurso=recurso.fecha_publicacion_recurso.strftime("%d de %B de %Y")
@@ -381,14 +381,14 @@ def agregar_recurso(request):
 def eliminar_recurso(request,id):
     recurso = Recursos.objects.get(id = id)
     recurso.delete()
-    return redirect("recursos")
+    return redirect("agregar_recurso")
 
 def editar_recurso(request,id):
     recurso = Recursos.objects.get(id = id)
     form_recurso = RecursosForm(request.POST or None, request.FILES or None, instance = recurso)
     if form_recurso.is_valid() and request.POST:
         form_recurso.save()
-        return redirect("recursos")
+        return redirect("agregar_recurso")
     return render(request, "perfil/editar_recurso.html", {"form_recurso": form_recurso,'perfiles': perfiles, "recurso": recurso})
 
 

@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block titulo %} Tu perfil {% endblock %}
 {% block contenido %} 
-{% if user.perfil.is_blocked %}
+{% if request.user.perfil.is_blocked %}
 <div class="container mt-5">
     <h5>No puedes acceder al contenido de esta página por que actualmente estás bloqueado.
         Para solucionar el problema, póngase en contacto con el/la maestro/a de la clase
@@ -47,10 +47,10 @@
                             {% if publicacion.user_id == user.id or user.is_superuser %}
                                         <div class="col">
                                             <a class="btn edit-gradient btn-me my-dropdown-toggle mb-2" href="{% url 'editar_publicacion' publicacion.id %}" role="button"> 
-                                                 <span ">Editar publicación</span>
+                                                 <span>Editar publicación</span>
                                             </a>
                                             <a class="btn danger-gradient btn-me my-dropdown-toggle mb-2" href="{% url 'eliminar_publicacion' publicacion.id %}" role="button">
-                                                 <span ">Eliminar publicación</span>
+                                                 <span>Eliminar publicación</span>
                                             </a>
                                         </div>
                                         {% endif %}
