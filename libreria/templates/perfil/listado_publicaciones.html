@@ -4,10 +4,11 @@
 {%if user.is_superuser%}
 <div class="container mt-5"> <!-- Agregando margen superior a la tarjeta -->
     <div class="card">
-        <div class="card-header mb-3"><strong>Listado de publicaciones</strong></div>
+        <div class="card-header mb-3">Listado de publicaciones</div>
         <div class="table-responsive"> <!-- Ajustando margen superior aquí -->
-            <table id = "miTabla" class="table table-striped table-bordered table-hover thead-dark">
-                <thead>
+            <table id = "miTabla" class="table table-striped table-bordered table-hover">
+                <input type="text" id="searchInput" placeholder="Buscar perfil" class="search_box mb-3 mt-3" style="margin: 10px;">
+                <thead class="table-dark">
             <tr style="text-align: center;">
                 <th scope="col">ID Publicación</th>
                 <th scope="col">Foto de perfil</th>
@@ -112,13 +113,11 @@
                                                 <li class="list-group-item list-group-item-action hover-bg rounded-4 mt-2">
                                                     <div class="d-flex align-items-start hovered">
                                                         <div class="mr-3">
-                                                            {% for perfil in perfiles %}
-                                                            {% if perfil.username_id == comentario.user_id %}
+                                                            
                                                             <a href="{% url 'ver_perfil' comentario.user %}" class="no-link-style">
-                                                                <img src="{{ perfil.profile_pic.url }}" height="32" width="32" style="border-radius: 50%;"/>
+                                                                <img src="{{ comentario.user.perfil.profile_pic.url }}" height="32" width="32" style="border-radius: 50%;"/>
                                                             </a>
-                                                            {% endif %}
-                                                            {% endfor %}
+                                                            
                                                         </div>
                                                         <div class="flex-grow-1 ms-2">
                                                             <a href="{% url 'ver_perfil' comentario.user %}" class="no-link-style">
@@ -183,7 +182,7 @@
                                                         <div class="box_input">
                                                             <div style="position: relative;">
                                                                 <input class="form-control" id="inputdefault" name="comentario" type="text" style="width: 100%; max-width: 100%; min-width: 1025px; overflow-x: auto;">
-                                                                <label class="label_input" for="">Escribe tu comentario...</label>
+                                                                <label class="label_input" for="">Escribe tu comentario...(máx. 400 caracteres)</label>
                                                             </div>
                                                             <div>
                                                                 <button type="submit" class="send">
@@ -211,14 +210,17 @@
 </div>
 {%endif%}
 <script>
-    $(document).ready(function() {
+ $(document).ready(function() {
         $('#miTabla').DataTable({
-            "paging": false, 
-            "info": false, 
-            "language": {
-                "search": "Buscar:" // Cambiar el texto del campo de búsqueda
-            },
-            
+            "paging": false, // Desactiva la paginación
+            "searching": false, // Desactiva la búsqueda
+            "info": false // Desactiva la información de entradas y resultados
+        });
+        $('#searchInput').on('keyup', function() {
+            var value = $(this).val().toLowerCase();
+            $('#miTabla tbody tr').filter(function() {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
         });
     });
 </script>

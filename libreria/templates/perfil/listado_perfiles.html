@@ -1,17 +1,18 @@
-{% extends "base.html"%}
+{% extends "base.html" %}
 {% block titulo %} Perfiles {% endblock %}
 {% block contenido %} 
 
-{%if user.is_superuser%}
+{% if user.is_superuser %}
 <div class="container mt-5"> <!-- Agregando margen superior a la tarjeta -->
     <div class="card">
-        <div class="card-header mb-3"><strong>Listado de perfiles</strong></div>
+        <div class="card-header mb-3">Listado de perfiles</div>
         <div class="table-responsive"> <!-- Ajustando margen superior aquí -->
-            <table id = "miTabla" class="table table-striped table-bordered table-hover thead-dark">
-                <thead>
+            <table id="miTabla" class="table table-striped table-bordered table-hover">
+                <input type="text" id="searchInput" placeholder="Buscar perfil" class="search_box mb-3 mt-3" style="margin: 10px;">
+                <thead class="table-dark">
                     <tr style="text-align: center;">
                         <th scope="col">ID Usuario</th>
-                        <th scope="col">Foto de Perfil</th>
+                        <th scope="col">Foto Perfil</th>
                         <th scope="col">Nombre Usuario</th>
                         <th scope="col">Último Acceso</th>
                         <th scope="col">¿Es superusuario?</th>
@@ -31,18 +32,19 @@
                             <td><a href="{% url 'ver_perfil' dato.username %}" class="no-link-style">{{ dato.username }}</a></td>
                             <td>{{ dato.last_login }}</td>
                             <td>
-                            {% if dato.is_superuser %}
-                            <img width="60" height="60" src="https://img.icons8.com/parakeet/60/checked-checkbox.png" alt="checked-checkbox"/> 
-                            {% else %}
-                            <img width="60" height="60" src="https://img.icons8.com/parakeet/60/close-window.png" alt="close-window"/>
-                            {% endif %}
-                        </td>
-                        <td>{% if dato.is_blocked %}
-                            <img width="60" height="60" src="https://img.icons8.com/parakeet/96/checked-checkbox.png" alt="checked-checkbox"/>
-                            {% else %}
-                            <img width="60" height="60" src="https://img.icons8.com/parakeet/96/close-window.png" alt="close-window"/>
-                            {% endif %}
-                        </td>
+                                {% if dato.is_superuser %}
+                                <img width="60" height="60" src="https://img.icons8.com/parakeet/60/checked-checkbox.png" alt="checked-checkbox"/> 
+                                {% else %}
+                                <img width="60" height="60" src="https://img.icons8.com/parakeet/60/close-window.png" alt="close-window"/>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if dato.is_blocked %}
+                                <img width="60" height="60" src="https://img.icons8.com/parakeet/96/checked-checkbox.png" alt="checked-checkbox"/>
+                                {% else %}
+                                <img width="60" height="60" src="https://img.icons8.com/parakeet/96/close-window.png" alt="close-window"/>
+                                {% endif %}
+                            </td>
                             <td>{{ dato.total_comentarios }}</td>
                             <td>{{ dato.total_publicaciones }}</td>
                             <td>
@@ -51,44 +53,47 @@
                                     <span>Deshacer superusuario</span>
                                 </a>
                                 {% elif dato.id == '1' %}
-                                    <span>No puedes deshacer este superusuario</span>
+                                <span>No puedes deshacer este superusuario</span>
                                 {% else %}
                                 <a class="btn comment-gradient" href="{% url 'hacer_superusuario' dato.id %}" role="button">
-                                    <span >Hacer superusuario</span>
+                                    <span>Hacer superusuario</span>
                                 </a>
                                 {% endif %}
                             </td>
                             <td>
                                 {% if dato.is_blocked %}
-                                    <a class="btn secondary-gradient" href="{% url 'bloquear_perfil' dato.id %}" role="button">
-                                        <span ">Desbloquear perfil</span>
-                                    </a>
+                                <a class="btn secondary-gradient" href="{% url 'bloquear_perfil' dato.id %}" role="button">
+                                    <span>Desbloquear perfil</span>
+                                </a>
                                 {% else %}
-                                    <a class="btn edit-gradient" href="{% url 'bloquear_perfil' dato.id %}" role="button">
-                                        <span ">Bloquear perfil</span>
-                                    </a>
+                                <a class="btn edit-gradient" href="{% url 'bloquear_perfil' dato.id %}" role="button">
+                                    <span>Bloquear perfil</span>
+                                </a>
                                 {% endif %}
                             </td>
-                            <td><a class="btn danger-gradient" href="{% url 'eliminar_perfil' dato.id %}" role="button"><span ">Eliminar perfil</span></a></td>
-
+                            <td><a class="btn danger-gradient" href="{% url 'eliminar_perfil' dato.id %}" role="button"><span>Eliminar perfil</span></a></td>
                         </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
+        
     </div>
 </div>
 <script>
     $(document).ready(function() {
-        $('#miTabla').DataTable({
-            "paging": false, 
-            "info": false, 
-            "language": {
-                "search": "Buscar perfil:" // Cambiar el texto del campo de búsqueda
-            },
-            
-        });
-    });
-</script>
-{%endif%}
+           $('#miTabla').DataTable({
+               "paging": false, // Desactiva la paginación
+               "searching": false, // Desactiva la búsqueda
+               "info": false // Desactiva la información de entradas y resultados
+           });
+           $('#searchInput').on('keyup', function() {
+               var value = $(this).val().toLowerCase();
+               $('#miTabla tbody tr').filter(function() {
+                   $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+               });
+           });
+       });
+   </script>
+{% endif %}
 {% endblock %}

@@ -30,6 +30,14 @@ class ImagenForm(forms.ModelForm):
         
         
 class ComentarioForm(forms.ModelForm):
+    comentario = forms.CharField(required=False)
+
+    def clean_comentario(self):
+        comentario = self.cleaned_data.get('comentario')
+        if len(comentario) > 400:
+            raise forms.ValidationError('El comentario no puede tener más de 400 caracteres')
+        return comentario
+
     class Meta:
         model = Comentario
         fields = ['comentario']  # Campos del formulario
@@ -41,8 +49,8 @@ class PerfilForm(forms.ModelForm):
 
 
 class UserForm(forms.ModelForm):
-    username = forms.CharField(required=False)
-    password = forms.CharField(widget=forms.PasswordInput, required=False)
+    username = forms.CharField(required=False, label="Nombre de usuario")
+    password = forms.CharField(widget=forms.PasswordInput, required=False, label="Contraseña")
 
     def clean(self):
         cleaned_data = super().clean()
@@ -56,13 +64,10 @@ class UserForm(forms.ModelForm):
             self.add_error('password', 'La contraseña no puede estar vacía')
 
         # Llamar al método para verificar si el nombre de usuario ya existe
-        self.check_username(username)
-
+       
         return cleaned_data
     
-    def check_username(self, username):
-        if User.objects.filter(username=username).exists():
-            self.add_error('username', 'El nombre de usuario ya existe')
+
 
     class Meta:
         model = User
@@ -117,7 +122,7 @@ class CambiarPasswordForm(forms.Form):
         return cleaned_data
     
 class RecursosForm(forms.ModelForm):
-    archivo_recurso = forms.FileField(required=False)
+    archivo_recurso = forms.FileField(required=False, label="Archivo")
     nombre = forms.CharField(required=False)
     descripcion = forms.CharField(required=False)
 
@@ -143,4 +148,5 @@ class RecursosForm(forms.ModelForm):
         fields = ['archivo_recurso', 'nombre','descripcion']
         
 
-
+class RecursoExternoForm(forms.Form):
+    codigo_iframe = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Inserta tu código iframe aquí'}))

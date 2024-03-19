@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy, reverse
 from django.views import View
 from .models import  Publicacion, Comentario, Perfil, Recursos, Imagen #Importamos las clases
-from .forms import PublicacionForm, ComentarioForm, PerfilForm, UserForm, CambiarPasswordForm, RecursosForm
+from .forms import PublicacionForm, ComentarioForm, PerfilForm, UserForm, CambiarPasswordForm, RecursosForm, forms, RecursoExternoForm
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 import locale
@@ -56,18 +56,7 @@ def listado_perfiles(request, template_name='perfil/listado_perfiles.html'):
 
     return render(request, template_name, {"datos_de_user":datos_de_user,"comentarios":comentarios,"publicaciones":publicaciones,"perfiles": perfiles})
     
-def editar_perfil(request):
-    perfil_usuario = Perfil.objects.get(username=request.user)
-    form_user = UserForm(request.POST or None, instance=request.user)
-    form_perfil = PerfilForm(request.POST or None, request.FILES or None, instance=perfil_usuario)
 
-    if request.method == 'POST':
-        if form_user.is_valid() and form_perfil.is_valid():
-            form_user.save()
-            form_perfil.save()
-            return redirect('feed')  # Redirigir a la página de perfil
-
-    return render(request, "perfil/editar_perfil.html", {"form_user": form_user, "form_perfil": form_perfil})
 
 class CambiarPassword(View):
     template_name = "perfil/cambiar_password.html"
@@ -122,22 +111,17 @@ def editar_publicacion(request, id):
     publicacion = Publicacion.objects.get(id=id)
     imagenes_publicacion = Imagen.objects.filter(publicacion_id=publicacion.id)
     form_publicacion = PublicacionForm(request.POST or None, request.FILES or None, instance=publicacion)
-
+    
+    
     if request.method == 'POST':
         if form_publicacion.is_valid():
             form_publicacion.save()
             images = request.FILES.getlist('images')
             for image in images:
                 Imagen.objects.create(imagen=image, publicacion_id=publicacion.id)
-            
-            # Verificar si el usuario estaba en la página de feed antes de editar la publicación
-            if 'feed' in request.META.get('HTTP_REFERER', ''):
-                # Si estaba en la página de feed, redirigir de vuelta a esa página
-                return redirect('feed')
-            
-            # De lo contrario, redirigir a la página de perfil del usuario que publicó la publicación
-            return redirect(reverse('ver_perfil', kwargs={'username': publicacion.user.username}))
 
+            return redirect(reverse('ver_perfil', kwargs={'username': publicacion.user.username}))
+            
     return render(request, "perfil/editar_publicacion.html", {"form_publicacion": form_publicacion, 'perfiles': perfiles, "imagenes_publicacion": imagenes_publicacion})
 
         
@@ -151,17 +135,16 @@ def editar_comentario(request, id):
     if request.method == 'POST':
         if form_comentario.is_valid() and request.POST:
             form_comentario.save()  # El formulario ya contiene el comentario a editar, no es necesario modificarlo manualmente
-           
-        
-        if 'feed' in request.META.get('HTTP_REFERER', ''):
+
+        if 'perfil' in request.META.get('HTTP_REFERER', ''):
                 # Si estaba en la página de feed, redirigir de vuelta a esa página
-                return redirect('feed')
+                return redirect(reverse('ver_perfil', kwargs={'username': usuario_publicacion.username}))
             
             # De lo contrario, redirigir a la página de perfil del usuario que publicó la publicación
-        return redirect(reverse('ver_perfil', kwargs={'username': usuario_publicacion.username}))
+        return redirect('feed')
         
         # De lo contrario, redirigir a la página de perfil del usuario que publicó la publicación
-    return render(request, "perfil/editar_comentario.html", {"form_comentario": form_comentario, "publicacion": publicacion, "perfiles": perfiles})
+    return redirect('feed')
 
 def bloquear_perfil(request, id):
     # Obtener el usuario y su perfil asociado
@@ -196,12 +179,15 @@ def eliminar_publicacion(request, id):
     # Eliminar la publicación
     publicacion.delete()
 
-    if 'feed' in request.META.get('HTTP_REFERER', ''):
+    if 'perfil' in request.META.get('HTTP_REFERER', ''):
         # Si estaba en la página de feed, redirigir de vuelta a esa página
-        return redirect('feed')
-    
+        return redirect(reverse('ver_perfil', kwargs={'username': usuario_publicacion.username}))
+    elif 'listado_publicaciones' in request.META.get('HTTP_REFERER', ''):
+        # Si estaba en la página de feed, redirigir de vuelta a esa página
+        return redirect("listado_publicaciones")
+        
     # De lo contrario, redirigir a la página de perfil del usuario que publicó la publicación
-    return redirect(reverse('ver_perfil', kwargs={'username': usuario_publicacion.username}))
+    return redirect('feed')
 
 def eliminar_perfil(request, id):
     usuario = User.objects.get(id=id)
@@ -213,14 +199,15 @@ def eliminar_comentario(request,id):
     publicacion = Publicacion.objects.get(id=comentario.publicacion_id)
     usuario_publicacion = publicacion.user
     comentario.delete()
-    if 'feed' in request.META.get('HTTP_REFERER', ''):
+    if 'perfil' in request.META.get('HTTP_REFERER', ''):
         # Si estaba en la página de feed, redirigir de vuelta a esa página
-        return redirect('feed')
-    
+        return redirect(reverse('ver_perfil', kwargs={'username': usuario_publicacion.username}))
+    elif 'listado_publicaciones' in request.META.get('HTTP_REFERER', ''):
+        # Si estaba en la página de feed, redirigir de vuelta a esa página
+        return redirect("listado_publicaciones")
+        
     # De lo contrario, redirigir a la página de perfil del usuario que publicó la publicación
-    return redirect(reverse('ver_perfil', kwargs={'username': usuario_publicacion.username}))
-    
-    # Si el método de solicitud no es POST o si hay errores en el formulario, simplemente redirige de nuevo a la página de feed
+    return redirect('feed')
 
 
 def eliminar_imagen(request, id):
@@ -243,8 +230,6 @@ def ver_publicaciones(request, template_name):
     # Formatear la fecha actual
     ahora = datetime.now().date()
 
-
-
     # Calcular la diferencia en días para cada comentario
     for comentario in comentarios:
         diferencia = ahora - comentario.fecha_publicacion_comentario
@@ -262,10 +247,6 @@ def ver_publicaciones(request, template_name):
     return render(request, template_name, {"imagenes":imagenes,"publicaciones": publicaciones, "perfiles": perfiles,"comentarios": comentarios})
 
 
-def ver_comentarios(request, id):
-    publicacion = Publicacion.objects.get(id=id)
-    comentarios = publicacion.comentarios.all()  # Obtener todos los comentarios de la publicación específica
-    return render(request, "perfil/ver_comentarios.html", {"publicacion": publicacion, "comentarios": comentarios,'perfiles': perfiles})
 
 def ver_perfil(request, username):
     user = User.objects.get(username=username)
@@ -304,16 +285,17 @@ def agregar_comentario(request, id):
             # Obtener el usuario asociado a la publicación
             usuario_publicacion = publicacion.user
             
-            # Verificar si el usuario estaba en la página de feed antes de agregar el comentario
-            if 'feed' in request.META.get('HTTP_REFERER', ''):
+            if 'perfil' in request.META.get('HTTP_REFERER', ''):
+        # Si estaba en la página de feed, redirigir de vuelta a esa página
+                 return redirect(reverse('ver_perfil', kwargs={'username': usuario_publicacion.username}))
+            elif 'listado_publicaciones' in request.META.get('HTTP_REFERER', ''):
                 # Si estaba en la página de feed, redirigir de vuelta a esa página
-                return redirect('feed')
-            
-            # De lo contrario, redirigir a la página de perfil del usuario que publicó la publicación
-            return redirect(reverse('ver_perfil', kwargs={'username': usuario_publicacion.username}))
-    
-    # Si el método de solicitud no es POST o si hay errores en el formulario, simplemente redirige de nuevo a la página de feed
+                return redirect("listado_publicaciones")
+        
+    # De lo contrario, redirigir a la página de perfil del usuario que publicó la publicación
     return redirect('feed')
+    
+    
                         
 def crear_usuario(request):
 
@@ -347,6 +329,36 @@ def crear_usuario(request):
     
     return render(request, "perfil/crear_usuario.html", {"form_usuario": form_usuario, "form_perfil": form_perfil})
 
+class UserForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['username', 'first_name', 'last_name']  # Excluir 'password' del formulario
+        labels = {
+            'username': 'Nombre de usuario',
+            'first_name': 'Nombre',
+            'last_name': 'Apellido',
+        }
+        widgets = {
+            'username': forms.TextInput(attrs={'class': 'form-control'}),
+            'first_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'last_name': forms.TextInput(attrs={'class': 'form-control'}),
+        }
+
+def editar_perfil(request):
+    perfil_usuario = Perfil.objects.get(username=request.user)
+
+    if request.method == 'POST':
+        form_user = UserForm(request.POST, instance=request.user)
+        form_perfil = PerfilForm(request.POST, request.FILES, instance=perfil_usuario)
+        if form_user.is_valid() and form_perfil.is_valid():
+            form_user.save()
+            form_perfil.save()
+            return redirect('feed')  # Redirigir a la página de perfil
+    else:
+        form_user = UserForm(instance=request.user)
+        form_perfil = PerfilForm(instance=perfil_usuario)
+
+    return render(request, "perfil/editar_perfil.html", {"form_user": form_user, "form_perfil": form_perfil})
 
 
 def recursos(request):
@@ -363,20 +375,42 @@ def recursos(request):
     return render(request, "perfil/recursos.html", {"recursos": recursos, "perfiles" : perfiles})
 def agregar_recurso(request):
     recursos = Recursos.objects.all()
+    codigo_iframe = None  # Inicializa la variable fuera del condicional
+    
+    form_recurso = RecursosForm()
+    form_recurso_externo = RecursoExternoForm()
     
     if request.method == 'POST':
         form_recurso = RecursosForm(request.POST, request.FILES)
+        form_recurso_externo = RecursoExternoForm(request.POST)
+        
         if form_recurso.is_valid():
             recurso = form_recurso.save(commit=False)
             recurso.save()
-            return redirect("recursos")
-    else:
-        form_recurso = RecursosForm()
-  
-    for recurso in recursos:
-         recurso.fecha_publicacion_recurso=recurso.fecha_publicacion_recurso.strftime("%d de %B de %Y")
+        
+        if form_recurso_externo.is_valid():
+            codigo_iframe = form_recurso_externo.cleaned_data['codigo_iframe']
+            return render(request, 'perfil/recurso.html')
     
-    return render(request, "perfil/agregar_recurso.html", {"form_recurso": form_recurso, "recursos": recursos, "perfiles": perfiles})
+    for recurso in recursos:
+        recurso.fecha_publicacion_recurso = recurso.fecha_publicacion_recurso.strftime("%d de %B de %Y")
+    
+    return render(request, 'perfil/agregar_recurso.html', {"form_recurso_externo": form_recurso_externo,'codigo_iframe': codigo_iframe,"form_recurso": form_recurso,"recursos": recursos})
+
+def agregar_recurso(request):
+    codigo_iframe = None  # Inicializa la variable fuera del condicional
+    form_recurso_externo = RecursoExternoForm()
+
+    if request.method == 'POST':
+        form_recurso_externo = RecursoExternoForm(request.POST)
+        if form_recurso_externo.is_valid():
+            codigo_iframe = form_recurso_externo.cleaned_data['codigo_iframe']
+
+    for recurso in recursos:
+        recurso.fecha_publicacion_recurso = recurso.fecha_publicacion_recurso.strftime("%d de %B de %Y")
+    
+    return render(request, 'perfil/recurso.html', {"form_recurso_externo": form_recurso_externo,'codigo_iframe': codigo_iframe})
+
 
 def eliminar_recurso(request,id):
     recurso = Recursos.objects.get(id = id)

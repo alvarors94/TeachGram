@@ -12,7 +12,7 @@
 
 <div class="container mt-5"> <!-- Agregando margen superior a la tarjeta -->
     <div class="card">
-        <div class="card-header mb-3"><strong>Editar recurso</strong></div>
+        <div class="card-header mb-3">Editar recurso</div>
 
 
     <div class="card-body">
@@ -22,7 +22,7 @@
             
             {% for campo in form_recurso %}
             <div class="mb-3">
-                <label for="" class="form-label">{{campo.label}}:</label>
+                <strong><label for="" class="form-label">{{campo.label}}:</label></strong>
                 <input
                     type="{{campo.field.widget.input_type}}" 
                     class="form-control"

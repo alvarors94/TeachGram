@@ -70,9 +70,9 @@
                     </li>
                     {%if request.user.is_superuser%}
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <a class="nav-link dropdown" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <img width="24" height="24" src="https://img.icons8.com/parakeet-line/48/control-panel.png" alt="control-panel"/>
-                            <strong class="icon-text">Panel de control</strong>
+                            <strong class="icon-text">Panel de control </strong><small>▼</small>
                         </a>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
                             <a class="dropdown-item" href="{% url 'crear_usuario' %}">
@@ -93,26 +93,35 @@
                     
                   
                 
-                </ul>
+                
+                <li class="nav-item">
                 <div style="display: flex; align-items: center;">
                                   
                     <img src="{{ foto_perfil }}" href="{% url 'ver_perfil' request.user.username %}" height="40" width="40" style="border-radius: 50%; margin-right: 10px;" />
                     <a class="nav-link me-3" href="{% url 'ver_perfil' request.user.username %}"><strong>{{ request.user }}</strong></a>
                     
                 </div>
+            </li>   
+            <li class="nav-item">
               {% if not user.is_authenticated %}
                 <form method="post" action="{% url 'login' %}">
                     {% csrf_token %}
                     <button type="submit">Login</button>
                 </form>
                 {% endif %}
+            </li>
+            <li >
                 <form method="post" action="{% url 'logout'%}?next={{LOGOUT_REDIRECT_URL}}">
                     {% csrf_token %}
+                    
+                    
                     <button type="submit" class="nav-item">
                         <img width="24" height="24" src="https://img.icons8.com/parakeet-line/48/exit.png" alt="exit"/>
                         <strong class="no-link-style">Salir</strong>
                     </button>
                 </form>
+            </li>
+        </ul>
             </div>
         </div>
     </nav>
@@ -136,7 +145,13 @@
             <span class="blob"></span>
         </a>
     </div>
-    
+    <footer>
+
+       
+            Copyright © 2023 Football History Archives. All Rights Reserved.
+         por aqui tambien iria el logo, mi github?
+    </footer>  
 </body>
+
 
 </html>

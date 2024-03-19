@@ -3,7 +3,7 @@
 {% block contenido %} 
 <div class="container mt-5"> <!-- Agregando margen superior a la tarjeta -->
     <div class="card">
-        <div class="card-header mb-3"><strong>Agregar recurso</strong></div>
+        <div class="card-header mb-3">Agregar recurso</div>
 
         <div class="card-body">
             <form enctype="multipart/form-data" method="post">
@@ -11,25 +11,27 @@
                 <div style="margin-top: 3px;"> <!-- Add a margin-top of 3px -->
                     {% for campo in form_recurso %}
                     <div class="mb-3">
-                        <label for="" class="form-label">{{ campo.label }}:</label>
+                        <strong><label for="" class="form-label">{{ campo.label }}:</label></strong>
                         <input type="{{ campo.field.widget.input_type }}" class="form-control" name="{{ campo.name }}" value="{{ campo.value|default_if_none:'' }}">
                         <!-- Muestra el valor del campo para editarlo o por defecto '' -->            
                     </div>
                     <div class="col-12 help-text">{{ campo.errors }}</div>
                     {% endfor %}
                 </div>
-                <input class="btn comment-gradient" type="submit" value="Enviar información"/>
+                <input class="btn comment-gradient" type="submit" value="Añadir recurso"/>
                 <a class="btn danger-gradient" href="{% url 'recursos' %}" role="button">Cancelar</a>  
             </form>
         </div>
     </div>
+
         
     <div class="container mt-5"> <!-- Agregando margen superior a la tarjeta -->
         <div class="card">
-            <div class="card-header mb-3"><strong>Listado de publicaciones</strong></div>
+            <div class="card-header mb-3">Listado de recursos</div>
             <div class="table-responsive"> <!-- Ajustando margen superior aquí -->
-                <table id="miTabla" class="table table-striped table-bordered table-hover thead-dark">
-                    <thead>
+                <table id="miTabla" class="table table-striped table-bordered table-hover">
+                    <input type="text" id="searchInput" placeholder="Buscar recurso" class="search_box mb-3 mt-3" style="margin: 10px;">
+                    <thead class="table-dark">
                         <tr style="text-align: center;">
                             <th scope="col">ID recurso</th>
                             <th scope="col">Descripción</th>
@@ -62,15 +64,18 @@
 </div>
 <script>
     $(document).ready(function() {
-        $('#miTabla').DataTable({
-            "paging": false, 
-            "info": false, 
-            "language": {
-                "search": "Buscar:", // Cambiar el texto del campo de búsqueda
-            },
-            "order": [[0, "desc"]] // Ordenar por la primera columna (ID recurso) de forma descendente
-        });
-    });
-</script>
+           $('#miTabla').DataTable({
+               "paging": false, // Desactiva la paginación
+               "searching": false, // Desactiva la búsqueda
+               "info": false // Desactiva la información de entradas y resultados
+           });
+           $('#searchInput').on('keyup', function() {
+               var value = $(this).val().toLowerCase();
+               $('#miTabla tbody tr').filter(function() {
+                   $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+               });
+           });
+       });
+   </script>
 
 {%endblock%}

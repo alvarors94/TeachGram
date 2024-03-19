@@ -11,7 +11,7 @@
 {% else %}
 </div>
 {% if user.is_superuser == True %}
-    <div class="mt-" style="top: 20px; right: 20px;">
+    <div class="mt-5" style="top: 20px; right: 20px;">
         <div>
             <a class="btn btn-lg edit-gradient" href="{% url 'agregar_recurso' %}" role="button">Añadir recurso</a>
         </div>
@@ -64,8 +64,39 @@
             {% endfor %}
         </div>
 
-
+        <div class="container mt-5"> <!-- Agregando margen superior a la tarjeta -->
+            <div class="card">
+                <div class="card-header mb-3">Agregar recurso</div>
+        
+                <div class="card-body">
+                    <form enctype="multipart/form-data" method="post">
+                        {% csrf_token %}
+                        {{ form_recurso_externo.as_p }}
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    </form>
+                    
+                    {% if codigo_iframe %}
+                    <div class="card mt-3">
+                        <div class="card-body">
+                            <!-- Aquí se renderiza el código iframe -->
+                            {{ codigo_iframe|safe }}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
         <div class="col-md-6">
+            <div class="container mt-3">
+                <div class="card mb-3" style="width: 100%; border-radius: 12px;">
+                    <iframe width="100%" height="315" style="border-radius:12px" src="https://www.youtube.com/embed/jjHOS3PNEoU?si=5v89kNkW-v99ATUt" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                    <div class="card-body">
+                        <hr class="card-divider" width="100%">
+                        <p class="card-text">descripcion</p>
+                        <ul class="list-group list-group-flush">
+                        </ul>
+                    </div>
+                </div>
+            </div>
             
             <div class="container mt-3">
                 <div class="card mb-3" style="width: 100%; border-radius: 12px;">

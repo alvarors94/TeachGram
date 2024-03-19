@@ -11,7 +11,8 @@
 <div class="container mt-5">
     <div class="row">
         <div class="col-md-5">
-            <div class="card mb-3" style="width: 468px; border-radius: 20px">
+            
+            <div class="card border-primary mb-3" style="width: 468px; border-radius: 20px">
                 <script src="https://static.elfsight.com/platform/platform.js" data-use-service-core defer></script>
                 <div class="elfsight-app-c5378aa2-1c8a-48fb-b51a-f5797442ac3e" data-elfsight-app-lazy></div>
             </div>
@@ -54,11 +55,9 @@
                             {% endfor %}
                             {% endif %}
                             <div class="card-body">
-                                {% for perfil in perfiles %}
-                                {% if perfil.username_id == publicacion.user_id %}
-                                <a href="{% url 'ver_perfil' publicacion.user %}" class="no-link-style"><img src="{{ perfil.profile_pic.url }}" height="60" width="60" style="border-radius: 50%;"/></a>
-                                {% endif %}
-                                {% endfor %}
+                               
+                                <a href="{% url 'ver_perfil' publicacion.user %}" class="no-link-style"><img src="{{ publicacion.user.perfil.profile_pic.url }}" height="60" width="60" style="border-radius: 50%;"/></a>
+                                
                                 <h5>
                                     <a href="{% url 'ver_perfil' publicacion.user %}" class="no-link-style">{{publicacion.user}}</a> · 
                                     <small class="text-body-secondary">{{publicacion.fecha_publicacion }}</small>
@@ -71,13 +70,11 @@
                                     <li class="list-group-item list-group-item-action hover-bg rounded-4 mt-2">
                                         <div class="d-flex align-items-start hovered">
                                             <div class="mr-3">
-                                                {% for perfil in perfiles %}
-                                                {% if perfil.username_id == comentario.user_id %}
+                                                
                                                 <a href="{% url 'ver_perfil' comentario.user %}" class="no-link-style">
-                                                    <img src="{{ perfil.profile_pic.url }}" height="32" width="32" style="border-radius: 50%;"/>
+                                                    <img src="{{ comentario.user.perfil.profile_pic.url }}" height="32" width="32" style="border-radius: 50%;"/>
                                                 </a>
-                                                {% endif %}
-                                                {% endfor %}
+                                               
                                             </div>
                                             <div class="flex-grow-1 ms-2">
                                                 <a href="{% url 'ver_perfil' comentario.user %}" class="no-link-style">
@@ -107,8 +104,8 @@
                                                             <textarea class="form-control mt-3 mr-3" id="comentarioEdit" name="comentario" rows="4" style="min-width: 500px; overflow-x: auto;">{{ comentario.comentario }}</textarea>
                                                         </div>
                                                         <div class="container mt-2 ms-1">
-                                                            <button type="submit" class="btn comment-gradient" ">Guardar Cambios</button>
-                                                            <button type="button" class="btn danger-gradient ms-2" ">Cancelar</button>
+                                                            <button type="submit" class="btn comment-gradient">Guardar Cambios</button>
+                                                            <button type="button" class="btn danger-gradient ms-2">Cancelar</button>
                                                         </div>
                                                     </form>
                                                 </div>
@@ -122,7 +119,7 @@
                                     {% endfor %}
                                 </ul>
                                 <div class="row mt-3">
-                                    <div class="col">
+                                    <div class="col mt-2">
                                         <!-- Formulario de comentario -->
                                         <form id="comment-form" method="post" action="{% url 'agregar_comentario' publicacion.id %}">
                                             {% csrf_token %}
@@ -130,15 +127,14 @@
                                                 <div class="container">
                                                     <div class="box_input">
                                                         <!-- Contenido del formulario de comentario -->
-                                                        <div style="position: relative;">
-                                                            <input class="form-control" id="inputdefault" name="comentario" type="text" style="width: 380px; max-width: 100%; overflow-x: auto;">
-                                                            <label class="label_input" for="">Comentario</label>
-                                                            <svg class="icon_input emoji" xmlns="http://www.w3.org/2000/svg" width="20px" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                                                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.182 15.182a4.5 4.5 0 01-6.364 0M21 12a9 9 0 11-18 0 9 9 0 0118 0zM9.75 9.75c0 .414-.168.75-.375.75S9 10.164 9 9.75 9.168 9 9.375 9s.375.336.375.75zm-.375 0h.008v.015h-.008V9.75zm5.625 0c0 .414-.168.75-.375.75s-.375-.336-.375-.75.168-.75.375-.75.375.336.375.75zm-.375 0h.008v.015h-.008V9.75z" />
-                                                            </svg>
+                                                        <div style="position: relative; height: 100px;">
+                                                            <textarea class="form-control" id="inputdefault" name="comentario" style="height: 100px; overflow-y: auto; width: 380px;"></textarea>
+                                                            <label class="label_input" for="">Escribe tu comentario...  <span id="char-count">0/400 caracteres</span></label>
+                                                            <!-- Aquí se mostrará el contador de caracteres -->
                                                         </div>
+                                                        <br>
                                                         <div>
-                                                            <button type="submit" class="send">
+                                                            <button id="submit-comment" type="submit" class="send">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" width="20px" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                                                                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
                                                                 </svg>
@@ -180,4 +176,22 @@
         
                 
 {%endif%}
+<script>
+    document.getElementById('submit-comment').addEventListener('click', function() {
+        document.getElementById('comment-form').submit(); // Envía el formulario
+        window.location.href = "{% url 'feed' %}"; // Redirige a la página de feed
+    })
+    // Selecciona el textarea
+    const textarea = document.querySelector('#inputdefault');
+    // Selecciona el elemento donde se mostrará el contador de caracteres
+    const charCount = document.querySelector('#char-count');
+
+    // Agrega un evento de escucha al textarea para detectar cambios en su contenido
+    textarea.addEventListener('input', function() {
+        // Obtiene la longitud del texto actual en el textarea
+        const textLength = textarea.value.length;
+        // Actualiza el contador de caracteres
+        charCount.textContent = `${textLength}/400`;
+    });
+</script>
 {% endblock %}
