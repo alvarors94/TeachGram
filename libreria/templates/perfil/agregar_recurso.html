@@ -10,11 +10,19 @@
                 {% csrf_token %}
                 <div style="margin-top: 3px;"> <!-- Add a margin-top of 3px -->
                     {% for campo in form_recurso %}
+                    {% if campo.name == 'descripcion' %}
                     <div class="mb-3">
                         <strong><label for="" class="form-label">{{ campo.label }}:</label></strong>
-                        <input type="{{ campo.field.widget.input_type }}" class="form-control" name="{{ campo.name }}" value="{{ campo.value|default_if_none:'' }}">
+                        <textarea class="form-control" name="{{ campo.name }}" placeholder="{{ campo.help_text }}">{{ campo.value|default_if_none:'' }}</textarea>
                         <!-- Muestra el valor del campo para editarlo o por defecto '' -->            
                     </div>
+                    {% else %}
+                    <div class="mb-3">
+                        <strong><label for="" class="form-label">{{ campo.label }}:</label></strong>
+                        <input type="{{ campo.field.widget.input_type }}" class="form-control" name="{{ campo.name }}" value="{{ campo.value|default_if_none:'' }}" placeholder="{{campo.help_text}}">
+                        <!-- Muestra el valor del campo para editarlo o por defecto '' -->            
+                    </div>
+                    {% endif %}
                     <div class="col-12 help-text">{{ campo.errors }}</div>
                     {% endfor %}
                 </div>

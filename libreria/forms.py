@@ -5,7 +5,7 @@ import re
 
 
 class PublicacionForm(forms.ModelForm):
-    descripcion = forms.CharField(required=False)
+    descripcion = forms.CharField(required=False, help_text = 'Añada una descripción... (máx. 200 caracteres)')
 
     def clean(self):
         cleaned_data = super().clean()
@@ -13,6 +13,9 @@ class PublicacionForm(forms.ModelForm):
 
         if not descripcion:
             self.add_error('descripcion', 'Este campo no puede estar vacío')
+            
+        if descripcion and len(descripcion) > 200:
+            self.add_error('descripcion', f'El límite de caracteres para este campo es de 200 y tiene {len(descripcion)}')
 
         return cleaned_data
     
@@ -24,13 +27,14 @@ class ImagenForm(forms.ModelForm):
     
     widgets = {'imagen': forms.ImageField(widget=forms.ClearableFileInput(attrs={'allow_multiple_selected': True}))}
     required = False
+    help_text = 'Puede añadir una o varias imágenes'
     class Meta:
         model = Imagen
         fields = ['imagen']
         
         
 class ComentarioForm(forms.ModelForm):
-    comentario = forms.CharField(required=False)
+    comentario = forms.CharField(required=False ,help_text = 'Escriba su comentario)')
 
     def clean_comentario(self):
         comentario = self.cleaned_data.get('comentario')
@@ -122,9 +126,11 @@ class CambiarPasswordForm(forms.Form):
         return cleaned_data
     
 class RecursosForm(forms.ModelForm):
-    archivo_recurso = forms.FileField(required=False, label="Archivo")
+    archivo_recurso = forms.FileField(required=False, label="Archivo", help_text = "Puedes subir cualquier archivo, como 'pdf', 'word', imágenes ... ")
     nombre = forms.CharField(required=False)
-    descripcion = forms.CharField(required=False)
+    descripcion = forms.CharField(required=False,help_text = "Añada una descripción... (máx. 400 caracteres) ")
+   
+                                                                                                                                  
 
     def clean(self):
         cleaned_data = super().clean()
@@ -138,8 +144,14 @@ class RecursosForm(forms.ModelForm):
         if not nombre:
             self.add_error('nombre', 'Este campo no puede estar vacío')
             
+        if nombre and len(nombre) > 200:
+            self.add_error('nombre', f'El límite de caracteres para este campo es de 200 y tiene {len(nombre)}')
+            
         if not descripcion:
             self.add_error('descripcion', 'Este campo no puede estar vacío')
+        
+        if descripcion and len(descripcion) > 400:
+            self.add_error('descripcion', f'El límite de caracteres para este campo es de 400 y tiene {len(descripcion)}')
 
         return cleaned_data
 
@@ -149,18 +161,22 @@ class RecursosForm(forms.ModelForm):
         
 
 class IframeForm(forms.ModelForm):
-    
-    codigo_iframe = forms.CharField(required=False)
-    descripcion = forms.CharField(required=False)
+    codigo_iframe = forms.CharField(required=False, label="Código Iframe", help_text = 'Por ejemplo <iframe width="560" height="315" src="https://www.youtube.com/embed/...></iframe>')
+    descripcion = forms.CharField(required=False, help_text = 'Añada una descripción... (máx. 400 caracteres)')
     
     def clean(self):
         cleaned_data = super().clean()
         codigo_iframe = cleaned_data.get('codigo_iframe')
+        descripcion = cleaned_data.get('descripcion')
 
         if not codigo_iframe:
             self.add_error('codigo_iframe', 'Este campo no puede estar vacío')
             
+        if descripcion and len(descripcion) > 400:
+            self.add_error('descripcion', f'El límite de caracteres para este campo es de 400 y tiene {len(descripcion)}')
+            
         return cleaned_data
+
     class Meta:
         model = Iframe
         fields = ['codigo_iframe', 'descripcion']

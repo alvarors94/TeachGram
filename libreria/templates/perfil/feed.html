@@ -21,6 +21,23 @@
         <div class="col-md-5">
             <div class="row">
                 {% for publicacion in publicaciones %}
+                <div class="modal fade" id="exampleModal{{ publicacion.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Eliminar publicación</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                ¿Seguro que desea eliminar esta publicación?
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn secondary-gradient" data-bs-dismiss="modal">Cancelar</button>
+                                <a class="btn danger-gradient" href="{% url 'eliminar_publicacion' publicacion.id %}">Eliminar</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="row justify-content-end" style="width: 100%; border-radius: 12px">
                     <div class="col-md-6 mt-0" style="width: 100%;">
                         <div class="card mb-3" style="border-radius: 12px">
@@ -66,6 +83,23 @@
                                 <hr class="card-divider">
                                 <ul class="list-group list-group-flush" style="max-height: 320px; overflow-y: auto;">
                                     {% for comentario in comentarios %}
+                                    <div class="modal fade" id="exampleModal{{ comentario.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLabel">Eliminar comentario</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    ¿Seguro que desea eliminar este comentario?
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn secondary-gradient" data-bs-dismiss="modal">Cancelar</button>
+                                                    <a class="btn danger-gradient" href="{% url 'eliminar_comentario' comentario.id %}">Eliminar</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                     {% if comentario.publicacion_id == publicacion.id %}
                                     <li class="list-group-item list-group-item-action hover-bg rounded-4 mt-2">
                                         <div class="d-flex align-items-start hovered">
@@ -91,11 +125,13 @@
                                                     {% endif %}
                                                 </small>
                                             </div>
-                                            {% if comentario.user_id == user.id or user.is_superuser == True %}
+                                            {% if comentario.user_id == request.user.id or request.user.is_superuser == True %}
                                             <div class="ml-auto">
-                                                <a class="dropdown-toggle" href="#" role="button" id="editarComentarioDropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Editar comentario">
-                                                    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAAAsTAAALEwEAmpwYAAADlElEQVR4nO2Y20sUURzHh4iguzuWbblBEBRpunvOWkhUm3nOrKhIL9tDpXuO1UpFGBFWD7E9RJf/oIiIHiKILmAkId4IrUjNS6AzWl5mCyrKBzWDit04406t5uxutNOONF/4wbLnd2Y+3/P7zZ7Zw3GmTJkyZcrUNKX0yS5elB/wUmCElwKhJMcIL8rVKZK8nYtHFjFwihfloAHAQ1NClIMWUa6KDt8ruw0JL/0ywfcNY20DklyXdEgpeljEQG00A2OGNyDJo5oGkg3HxxmmAd6sQMBsoRmV7NbgzYdY+k9+Rm1360N2T6US6fcbdM3h9TDAbggxVSJ79zFdc3jTgPT7KrBys9Vjq6ZV+kTl8HpUINnBmQYk/Vc5tWfo+8qa5p70e/Xd/MvXE7OqAmkNrYOOIl+v+gvlcO9/a7tT1zkrDFibWgeBQN8zcIDIKETkg/IZ0wnbrZp2QxuwRsBDRPpzBLI6w3V4EcC0cdIQHU1r6Ro2pAFrY9sAEOg7FT6r4IBN5crG+xZCTJ+zsQ2V55sMZ8AaBV4VwOQCG88qO9msaYD9YTYiPMRkJ0DkM8tZe+larWGOVax/CG/fdeRFas/QI+0W6hsW/tXBVlpj6y94TPtmhHeTbRCTMQW+5FB3alf/OC+9QZoGlCqIctVMJjJ9/lBGxdmYYCuau0IbyemoudPh7TvL0mPCd/aPWST5BBeP2EEqO1DlJfmjelN1U4kGv6q6iZVZycs8eCYh8I7iio7l7dJtizi8lfsbqQY0xwXqA5h8DW86D53It3R6TnZ+6TqIyVuW48TkVSx4gGjzlpLyxX8FHstAhsczD2B6NTwehJhe5Pz+OdPzXC7/XIjIgHodKJC2zQV7l0TmOIXyPPWBBYg+ZptYQuC1DDhdvmU/d0lMvwDkLdWcj4g7DDYOEFVWGCLallW0x6I7/EwGHAK1Q0QHw9+/ceSTTdHmA0SuT+aSGw6BbFHec/CkCUdBaaEubaNlwImJR10tiGjLJpfXGm0uazOI6IjS+4gUKtdAdKsKDTH9rit8pAGIyblwr7O2ucrgYs0FqLwk/Hb5Sc135pWthYhcgYgEdWubKQYiHkCAyTeQ7z0a71yA6c3wblsDMDmuvphB9Xp6wzOxvoWYPAGIPGMPXLzznMW+BRGtEhlBgOlTiEhlbq5nPmdUOfO9O6aAI9oBEDlpd3vXJJstLikVQPQyRMSf4y5fn+gb/ADzzq3bCt2E/QAAAABJRU5ErkJggg==" height="25px" width="25px">
-                                                </a>
+                                                <div class="dropdown-container ml-auto">
+                                                    <a class="dropdown-toggle" href="#" role="button" id="editarComentarioDropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Editar comentario">
+                                                        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAAAsTAAALEwEAmpwYAAADlElEQVR4nO2Y20sUURzHh4iguzuWbblBEBRpunvOWkhUm3nOrKhIL9tDpXuO1UpFGBFWD7E9RJf/oIiIHiKILmAkId4IrUjNS6AzWl5mCyrKBzWDit04406t5uxutNOONF/4wbLnd2Y+3/P7zZ7Zw3GmTJkyZcrUNKX0yS5elB/wUmCElwKhJMcIL8rVKZK8nYtHFjFwihfloAHAQ1NClIMWUa6KDt8ruw0JL/0ywfcNY20DklyXdEgpeljEQG00A2OGNyDJo5oGkg3HxxmmAd6sQMBsoRmV7NbgzYdY+k9+Rm1360N2T6US6fcbdM3h9TDAbggxVSJ79zFdc3jTgPT7KrBys9Vjq6ZV+kTl8HpUINnBmQYk/Vc5tWfo+8qa5p70e/Xd/MvXE7OqAmkNrYOOIl+v+gvlcO9/a7tT1zkrDFibWgeBQN8zcIDIKETkg/IZ0wnbrZp2QxuwRsBDRPpzBLI6w3V4EcC0cdIQHU1r6Ro2pAFrY9sAEOg7FT6r4IBN5crG+xZCTJ+zsQ2V55sMZ8AaBV4VwOQCG88qO9msaYD9YTYiPMRkJ0DkM8tZe+larWGOVax/CG/fdeRFas/QI+0W6hsW/tXBVlpj6y94TPtmhHeTbRCTMQW+5FB3alf/OC+9QZoGlCqIctVMJjJ9/lBGxdmYYCuau0IbyemoudPh7TvL0mPCd/aPWST5BBeP2EEqO1DlJfmjelN1U4kGv6q6iZVZycs8eCYh8I7iio7l7dJtizi8lfsbqQY0xwXqA5h8DW86D53It3R6TnZ+6TqIyVuW48TkVSx4gGjzlpLyxX8FHstAhsczD2B6NTwehJhe5Pz+OdPzXC7/XIjIgHodKJC2zQV7l0TmOIXyPPWBBYg+ZptYQuC1DDhdvmU/d0lMvwDkLdWcj4g7DDYOEFVWGCLallW0x6I7/EwGHAK1Q0QHw9+/ceSTTdHmA0SuT+aSGw6BbFHec/CkCUdBaaEubaNlwImJR10tiGjLJpfXGm0uazOI6IjS+4gUKtdAdKsKDTH9rit8pAGIyblwr7O2ucrgYs0FqLwk/Hb5Sc135pWthYhcgYgEdWubKQYiHkCAyTeQ7z0a71yA6c3wblsDMDmuvphB9Xp6wzOxvoWYPAGIPGMPXLzznMW+BRGtEhlBgOlTiEhlbq5nPmdUOfO9O6aAI9oBEDlpd3vXJJstLikVQPQyRMSf4y5fn+gb/ADzzq3bCt2E/QAAAABJRU5ErkJggg==" height="25px" width="25px"  style="margin-left: 13px;">
+                                                    </a>
+                                                </div>
                                                 <div class="dropdown-menu" aria-labelledby="editarComentarioDropdown" data-bs-auto-close="false">
                                                     <form action="{% url 'editar_comentario' comentario.id %}" method="POST">
                                                         {% csrf_token %}
@@ -109,8 +145,12 @@
                                                         </div>
                                                     </form>
                                                 </div>
-                                                <a class="dropdown-item" href="{% url 'eliminar_comentario' comentario.id %}" data-toggle="tooltip" title="Eliminar comentario">
-                                                    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAAAsTAAALEwEAmpwYAAAEcElEQVR4nO1YX2hbVRi/nX/Bh62XzdW2qKB2tNuanHM7HxwYtnwnKYKgQuaLXb6T6t1wzg4fZhVmfNBRn+oYCjqciIPuwSnMOWS2WrtaV+qU+ZLczj/kZjIFmXWiA2cbOTf33N5kSZq2iQl4PzgPOff77vn9vr+5R1E88cQTTzzxJE9WTZsBNWl+qBrpS6qRztR4XVKT5vFVhnm/Uo40JtP9atKcqwPgmZyVNOcak+be0uATZrguwRvzJNTpFCtOwDCHaw7SKL0ak+lTpQj8UfcEDPNyUQK1BqeWuTwCqheBtJdCBaXWqaF6RWz8T9po67GRjC/SZ62WDz6tqo5aDQLiQMq4tTq37amqjuoRMK71ggi38J7wWrHQV0pHrUYEar0Uj4BROW+u/np6pvnkRKL1yImplvdHvr11/NyF+o9AIjV758F3xzsf3vUNAf6P7ERy+bt7U+19+0fXfJX4te4IrB2ePE8e0I180IThDGH4d+4ev3zXwFtjdUOgdejjswKUDfgqZXiYMtx6d/fum2wIDZ3BnjYC+Cxh/KIk0rHzhc/VRGqupgTWDp/5XoKngOc1wI1FgSiK0skeu4UAvi1JtPUPjtaOQCI166SNAB/QVytlCgE8YNvNNp08nShJQHwwV4OAKFiZNm7Pa2H9Ng30lXkwGrrCsXXyRyAQv54ATgp73yNPnW1Mpn//z69VRLfJpgIedoMngH+KXCfQ227tafoNlOF7Qldj/GlHNxTbYqfSXNPI1FBRAup0KlTpiy3R57MFyzMCiAMK9JWyUAnDnzXQN1LGjzldCPg2d1QIcNPaf3DnnqIErCgkzb2FSKzX45mOHS8uXKzj5zIb8DlHV+St9F4gEL3ZfVZXOLaOMvwp+zx2RYLXgPfn46LAj9qt9VVlIREXqeJCVTVMZ5DIl5cC33x8NON7aJelt/6JfdnWeeTElG37W6Gz7u3mHRT4Xw74YGywkJ4AbkfmqLIUkQcUfR7iuhxEhPGPZHFqLLpZFrASj69w20Qikeso8KGcoQb8ly4W23ANAdlSAd+oKIGOSORGwvghmSaU8QE3ULIldofz0RLsaXMM4/EVsmCtvw+Ar4hakDXhB7wnhwDjX9rFva9iBEQ/J4x/Znv9CoFoTyFbwvh3to5zPS7I0Pm/Ec9YetDbPk+Cvyx1fVu3t4g5kCUQ3VwRAv4Q91HgP9r7F/xB3FTCdsAGdVFMWGcfsI+E8FG3rvA8Ab6fQKzZcQDw1+z0Seen4ZIIaAwjoofbOfvFpkC0qZRtNlI4Y8+CdxZzrhZCJtuwn/HeJYF3E6AMX7JzXXj0kKiBcuwJwx1OygAeEBNWWQg8i4UkcQJ8TBT90gkA/uDK2askGN296HcwftBFYtIebA35eiLnCcPX5beCqCF/N1+jLEf8IbyPMpwggGfcE3WR0kABn5cFSbOeNUUrJQwHs60SJ/Kejy0bfKVFCyOlDD/J/6jJnQeY1gAfX1baVFs06LmdMnzSmrJWFPibos9brbLMbvMvPcdfltZuhDUAAAAASUVORK5CYII=" height="25px" width="25px">                                                </a>
+                                                <div class="dropdown-container ml-auto">
+                                                    <!-- Botón de eliminar publicación -->
+                                                    <button type="button" class="btn ml-auto" data-bs-toggle="modal" data-bs-target="#exampleModal{{ comentario.id }}" style="width: 40px; height: 40px;" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Eliminar comentario">
+                                                        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAAAsTAAALEwEAmpwYAAAEcElEQVR4nO1YX2hbVRi/nX/Bh62XzdW2qKB2tNuanHM7HxwYtnwnKYKgQuaLXb6T6t1wzg4fZhVmfNBRn+oYCjqciIPuwSnMOWS2WrtaV+qU+ZLczj/kZjIFmXWiA2cbOTf33N5kSZq2iQl4PzgPOff77vn9vr+5R1E88cQTTzzxJE9WTZsBNWl+qBrpS6qRztR4XVKT5vFVhnm/Uo40JtP9atKcqwPgmZyVNOcak+be0uATZrguwRvzJNTpFCtOwDCHaw7SKL0ak+lTpQj8UfcEDPNyUQK1BqeWuTwCqheBtJdCBaXWqaF6RWz8T9po67GRjC/SZ62WDz6tqo5aDQLiQMq4tTq37amqjuoRMK71ggi38J7wWrHQV0pHrUYEar0Uj4BROW+u/np6pvnkRKL1yImplvdHvr11/NyF+o9AIjV758F3xzsf3vUNAf6P7ERy+bt7U+19+0fXfJX4te4IrB2ePE8e0I180IThDGH4d+4ev3zXwFtjdUOgdejjswKUDfgqZXiYMtx6d/fum2wIDZ3BnjYC+Cxh/KIk0rHzhc/VRGqupgTWDp/5XoKngOc1wI1FgSiK0skeu4UAvi1JtPUPjtaOQCI166SNAB/QVytlCgE8YNvNNp08nShJQHwwV4OAKFiZNm7Pa2H9Ng30lXkwGrrCsXXyRyAQv54ATgp73yNPnW1Mpn//z69VRLfJpgIedoMngH+KXCfQ227tafoNlOF7Qldj/GlHNxTbYqfSXNPI1FBRAup0KlTpiy3R57MFyzMCiAMK9JWyUAnDnzXQN1LGjzldCPg2d1QIcNPaf3DnnqIErCgkzb2FSKzX45mOHS8uXKzj5zIb8DlHV+St9F4gEL3ZfVZXOLaOMvwp+zx2RYLXgPfn46LAj9qt9VVlIREXqeJCVTVMZ5DIl5cC33x8NON7aJelt/6JfdnWeeTElG37W6Gz7u3mHRT4Xw74YGywkJ4AbkfmqLIUkQcUfR7iuhxEhPGPZHFqLLpZFrASj69w20Qikeso8KGcoQb8ly4W23ANAdlSAd+oKIGOSORGwvghmSaU8QE3ULIldofz0RLsaXMM4/EVsmCtvw+Ar4hakDXhB7wnhwDjX9rFva9iBEQ/J4x/Znv9CoFoTyFbwvh3to5zPS7I0Pm/Ec9YetDbPk+Cvyx1fVu3t4g5kCUQ3VwRAv4Q91HgP9r7F/xB3FTCdsAGdVFMWGcfsI+E8FG3rvA8Ab6fQKzZcQDw1+z0Seen4ZIIaAwjoofbOfvFpkC0qZRtNlI4Y8+CdxZzrhZCJtuwn/HeJYF3E6AMX7JzXXj0kKiBcuwJwx1OygAeEBNWWQg8i4UkcQJ8TBT90gkA/uDK2askGN296HcwftBFYtIebA35eiLnCcPX5beCqCF/N1+jLEf8IbyPMpwggGfcE3WR0kABn5cFSbOeNUUrJQwHs60SJ/Kejy0bfKVFCyOlDD/J/6jJnQeY1gAfX1baVFs06LmdMnzSmrJWFPibos9brbLMbvMvPcdfltZuhDUAAAAASUVORK5CYII=" height="25px" width="25px">
+                                                    </button>
+                                                </div>
                                             </div>
                                             {% endif %}
                                         </div>
@@ -169,12 +209,12 @@
                                             <span >Editar publicación</span>
                                         </a>
                                     </div>
-                                    <div class="col text-center">
+                                    
+                                    <div class="dropdown-container col text-center">
                                         <!-- Botón de eliminar publicación -->
-                                        <a class="btn danger-gradient btn-me my-dropdown-toggle w-100 mb-2" style="width: 40px; height: 40px; border-radius: 5px;"  href="{% url 'eliminar_publicacion' publicacion.id %}" role="button">
-                                            <!-- Contenido del botón de eliminar publicación -->
-                                           <span>Eliminar publicación</span>
-                                        </a>
+                                        <button type="button" class="btn danger-gradient btn-me my-dropdown-toggle w-100 mb-2" data-bs-toggle="modal" data-bs-target="#exampleModal{{ publicacion.id }}" style="width: 40px; height: 40px; border-radius: 5px;">
+                                            <span>Eliminar publicación</span>
+                                        </button>
                                     </div>
                                 </div>
                                 {% endif %}

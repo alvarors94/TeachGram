@@ -93,35 +93,32 @@
                     
                   
                 
-                
-                <li class="nav-item">
-                <div style="display: flex; align-items: center;">
-                                  
-                    <img src="{{ foto_perfil }}" href="{% url 'ver_perfil' request.user.username %}" height="40" width="40" style="border-radius: 50%; margin-right: 10px;" />
-                    <a class="nav-link me-3" href="{% url 'ver_perfil' request.user.username %}"><strong>{{ request.user }}</strong></a>
-                    
-                </div>
-            </li>   
-            <li class="nav-item">
-              {% if not user.is_authenticated %}
-                <form method="post" action="{% url 'login' %}">
-                    {% csrf_token %}
-                    <button type="submit">Login</button>
-                </form>
-                {% endif %}
-            </li>
-            <li >
-                <form method="post" action="{% url 'logout'%}?next={{LOGOUT_REDIRECT_URL}}">
-                    {% csrf_token %}
-                    
-                    
-                    <button type="submit" class="nav-item">
-                        <img width="24" height="24" src="https://img.icons8.com/parakeet-line/48/exit.png" alt="exit"/>
-                        <strong class="no-link-style">Salir</strong>
-                    </button>
-                </form>
-            </li>
-        </ul>
+                </ul>
+                    <ul class="navbar-nav ml-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <div style="display: flex; align-items: center;">
+                                <img src="{{ foto_perfil }}" href="{% url 'ver_perfil' request.user.username %}" height="40" width="40" style="border-radius: 50%; margin-right: 10px; margin-top: 3px;" />
+                                <a class="nav-link me-3" href="{% url 'ver_perfil' request.user.username %}"><strong>{{ request.user }}</strong></a>
+                            </div>
+                        </li>   
+                        <li class="nav-item">
+                            {% if not user.is_authenticated %}
+                            <form method="post" action="{% url 'login' %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-link">Login</button>
+                            </form>
+                            {% endif %}
+                        </li>
+                        <li class="nav-item no-link-style">
+                            <form method="post" action="{% url 'logout'%}?next={{LOGOUT_REDIRECT_URL}}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-link no-link-style">
+                                    <img width="24" height="24" src="https://img.icons8.com/parakeet-line/48/exit.png" alt="exit"/>
+                                    <strong class="no-link-style">Salir</strong>
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
             </div>
         </div>
     </nav>
@@ -145,13 +142,13 @@
             <span class="blob"></span>
         </a>
     </div>
-    <footer>
+    
+</body>
+<footer>
 
        
-            Copyright © 2023 Football History Archives. All Rights Reserved.
-         por aqui tambien iria el logo, mi github?
-    </footer>  
-</body>
-
+    Copyright © 2023 Football History Archives. All Rights Reserved.
+ por aqui tambien iria el logo, mi github?
+</footer>  
 
 </html>

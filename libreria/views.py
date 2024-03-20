@@ -339,6 +339,7 @@ class UserForm(forms.ModelForm):
             'first_name': 'Nombre',
             'last_name': 'Apellido',
         }
+        
         widgets = {
             'username': forms.TextInput(attrs={'class': 'form-control'}),
             'first_name': forms.TextInput(attrs={'class': 'form-control'}),

@@ -57,7 +57,7 @@
             {% for campo in form_publicacion %}
             <div class="mb-3 mt-3">
                 <strong><label for="" class="form-label">{{campo.label}}:</label></strong>
-                <input type="{{campo.field.widget.input_type}}" class="form-control" name="{{campo.name}}" id="" aria-describedby="helpId" placeholder="{{campo.label}}" value="{{ campo.value | default_if_none:'' }}"/>
+                <input type="{{campo.field.widget.input_type}}" class="form-control" name="{{campo.name}}" id="" aria-describedby="helpId" placeholder="{{campo.help_text}}" value="{{ campo.value | default_if_none:'' }}"/>
             </div>
             <div class="col-12 help-text">{{campo.errors}}</div>
             {% endfor %}

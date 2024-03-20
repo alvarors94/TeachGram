@@ -192,11 +192,11 @@ body{
 }
 
 .carousel-indicators .carousel-indicator {
-  background-color: #1c7047;
+  background-color: #14c2d2;
   width: 15px; /* Ajusta el ancho del indicador */
   height: 15px; /* Ajusta la altura del indicador */
   border-radius: 50%; /* Hace que el indicador sea redondeado */
-  border: 2px solid #fff; /* Grosor y color del borde del indicador */
+  border: 3px solid #fff; /* Grosor y color del borde del indicador */
 }
 
 

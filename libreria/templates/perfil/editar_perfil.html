@@ -41,7 +41,7 @@
                             name="{{campo.name}}"
                             id=""
                             aria-describedby="helpId"
-                            placeholder="{{campo.label}}"
+                            placeholder="{{campo.help_text}}"
                             value="{{ campo.value | default_if_none:'' }}"/>         
                     </div>
                     <div class="col-12 help-text">{{campo.errors}}</div>
