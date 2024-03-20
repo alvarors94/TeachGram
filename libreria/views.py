@@ -1,12 +1,13 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy, reverse
 from django.views import View
-from .models import  Publicacion, Comentario, Perfil, Recursos, Imagen #Importamos las clases
-from .forms import PublicacionForm, ComentarioForm, PerfilForm, UserForm, CambiarPasswordForm, RecursosForm, forms, RecursoExternoForm
+from .models import  Publicacion, Comentario, Perfil, Recursos, Imagen, Iframe #Importamos las clases
+from .forms import PublicacionForm, ComentarioForm, PerfilForm, UserForm, CambiarPasswordForm, RecursosForm, forms, IframeForm
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 import locale
 from datetime import datetime, timedelta
+import re
 import os
 from django.conf import settings
 locale.setlocale(locale.LC_ALL, 'es_ES')
@@ -363,59 +364,73 @@ def editar_perfil(request):
 
 def recursos(request):
     recursos = Recursos.objects.all()
+    iframes = Iframe.objects.all()
+    src_value = ""
     
-  
     for recurso in recursos:
         # Obtener la extensión del archivo recurso
         extension = recurso.archivo_recurso.name.split(".")[-1]
         # Asignar la extensión al recurso actual
         recurso.extension = extension
-        recurso.fecha_publicacion_recurso=recurso.fecha_publicacion_recurso.strftime("%d de %B de %Y")
+        recurso.fecha_publicacion_recurso = recurso.fecha_publicacion_recurso.strftime("%d de %B de %Y")
+   
     
-    return render(request, "perfil/recursos.html", {"recursos": recursos, "perfiles" : perfiles})
+        if iframes:  # Verifica si hay registros de iframes
+            # Modifica cada iframe para extraer solo el contenido del atributo src y convertir el código a mayúsculas
+            for iframe in iframes:
+                codigo = iframe.codigo_iframe
+                
+                # Utiliza una expresión regular para encontrar el valor de src en el código del iframe
+                match = re.search(r'src="([^"]+)"', codigo)
+                
+                # Verifica si se encontró un match y obtiene el contenido de src en minúsculas
+                if match:
+                    src_value = match.group(1)
+                    iframe.codigo_iframe = src_value  # Actualiza el código del iframe
+                else:
+                    print("No hay coincidencias")
+    
+    return render(request, "perfil/recursos.html", {"recursos": recursos, "perfiles": perfiles, "iframes": iframes, "src_value": src_value})
+
 def agregar_recurso(request):
     recursos = Recursos.objects.all()
-    codigo_iframe = None  # Inicializa la variable fuera del condicional
-    
+   
     form_recurso = RecursosForm()
-    form_recurso_externo = RecursoExternoForm()
     
     if request.method == 'POST':
         form_recurso = RecursosForm(request.POST, request.FILES)
-        form_recurso_externo = RecursoExternoForm(request.POST)
         
         if form_recurso.is_valid():
             recurso = form_recurso.save(commit=False)
             recurso.save()
         
-        if form_recurso_externo.is_valid():
-            codigo_iframe = form_recurso_externo.cleaned_data['codigo_iframe']
-            return render(request, 'perfil/recurso.html')
     
     for recurso in recursos:
         recurso.fecha_publicacion_recurso = recurso.fecha_publicacion_recurso.strftime("%d de %B de %Y")
     
-    return render(request, 'perfil/agregar_recurso.html', {"form_recurso_externo": form_recurso_externo,'codigo_iframe': codigo_iframe,"form_recurso": form_recurso,"recursos": recursos})
+    return render(request, 'perfil/agregar_recurso.html', {"form_recurso": form_recurso,"recursos": recursos})
 
-def agregar_recurso(request):
-    codigo_iframe = None  # Inicializa la variable fuera del condicional
-    form_recurso_externo = RecursoExternoForm()
-
+def agregar_recurso_externo(request):
+    recursos_externos = Iframe.objects.all()
     if request.method == 'POST':
-        form_recurso_externo = RecursoExternoForm(request.POST)
+        form_recurso_externo = IframeForm(request.POST)
         if form_recurso_externo.is_valid():
-            codigo_iframe = form_recurso_externo.cleaned_data['codigo_iframe']
+            form_recurso_externo.save()
+            return redirect('recursos')
+    else:
+        form_recurso_externo = IframeForm()
 
-    for recurso in recursos:
-        recurso.fecha_publicacion_recurso = recurso.fecha_publicacion_recurso.strftime("%d de %B de %Y")
-    
-    return render(request, 'perfil/recurso.html', {"form_recurso_externo": form_recurso_externo,'codigo_iframe': codigo_iframe})
+    return render(request, 'perfil/agregar_recurso_externo.html', {"form_recurso_externo": form_recurso_externo, "recursos_externos":recursos_externos})
 
+def eliminar_recurso_externo(request,id):
+    recurso_externo = Iframe.objects.get(id = id)
+    recurso_externo.delete()
+    return redirect("recursos")
 
 def eliminar_recurso(request,id):
     recurso = Recursos.objects.get(id = id)
     recurso.delete()
-    return redirect("agregar_recurso")
+    return redirect("recursos")
 
 def editar_recurso(request,id):
     recurso = Recursos.objects.get(id = id)
@@ -424,5 +439,13 @@ def editar_recurso(request,id):
         form_recurso.save()
         return redirect("agregar_recurso")
     return render(request, "perfil/editar_recurso.html", {"form_recurso": form_recurso,'perfiles': perfiles, "recurso": recurso})
+
+def editar_recurso_externo(request,id):
+    recurso_externo = Iframe.objects.get(id = id)
+    form_recurso_externo = IframeForm(request.POST or None, instance = recurso_externo)
+    if form_recurso_externo.is_valid() and request.POST:
+        form_recurso_externo.save()
+        return redirect("recursos")
+    return render(request, "perfil/editar_recurso_externo.html", {"form_recurso_externo": form_recurso_externo, "recurso_externo": recurso_externo})
 
 

@@ -55,3 +55,11 @@ class Recursos(models.Model):
 
     class Meta:
         ordering = ['-id']
+        
+class Iframe(models.Model):
+    codigo_iframe = models.TextField(verbose_name="Iframe")
+    descripcion = models.CharField(max_length=200, verbose_name="Descripción")
+    
+    class Meta:
+        ordering = ['-id']
+

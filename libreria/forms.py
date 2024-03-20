@@ -1,5 +1,5 @@
 from django import forms
-from .models import Publicacion, Comentario, Perfil, Recursos, Imagen
+from .models import Publicacion, Comentario, Perfil, Recursos, Imagen, Iframe
 from django.contrib.auth.models import User
 import re
 
@@ -148,5 +148,19 @@ class RecursosForm(forms.ModelForm):
         fields = ['archivo_recurso', 'nombre','descripcion']
         
 
-class RecursoExternoForm(forms.Form):
-    codigo_iframe = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Inserta tu código iframe aquí'}))
+class IframeForm(forms.ModelForm):
+    
+    codigo_iframe = forms.CharField(required=False)
+    descripcion = forms.CharField(required=False)
+    
+    def clean(self):
+        cleaned_data = super().clean()
+        codigo_iframe = cleaned_data.get('codigo_iframe')
+
+        if not codigo_iframe:
+            self.add_error('codigo_iframe', 'Este campo no puede estar vacío')
+            
+        return cleaned_data
+    class Meta:
+        model = Iframe
+        fields = ['codigo_iframe', 'descripcion']

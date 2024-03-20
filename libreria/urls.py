@@ -17,15 +17,19 @@ urlpatterns = [
     path("listado_publicaciones", views.ver_publicaciones, {"template_name": "perfil/listado_publicaciones.html"}, name="listado_publicaciones"),
     path("agregar_comentario/<int:id>", views.agregar_comentario, name="agregar_comentario"),  
     path("perfil/<str:username>", views.ver_perfil, name="ver_perfil"),
+    path("agregar_recurso_externo", views.agregar_recurso_externo, name="agregar_recurso_externo"),
     path("recursos", views.recursos, name="recursos"),
     path("agregar_recurso", views.agregar_recurso, name="agregar_recurso"),
     path("eliminar_recurso/<int:id>", views.eliminar_recurso, name="eliminar_recurso"),
+    path("eliminar_recurso_externo/<int:id>", views.eliminar_recurso_externo, name="eliminar_recurso_externo"),
     path("editar_recurso/<int:id>", views.editar_recurso, name="editar_recurso"),
+    path("editar_recurso_externo/<int:id>", views.editar_recurso_externo, name="editar_recurso_externo"),
     path("eliminar_imagen/<int:id>", views.eliminar_imagen, name="eliminar_imagen"),
     path("crear_usuario", views.crear_usuario, name="crear_usuario"),
     path("eliminar_perfil/<int:id>", views.eliminar_perfil, name="eliminar_perfil"),
     path("bloquear_perfil/<int:id>", views.bloquear_perfil, name="bloquear_perfil"),
     path("hacer_superusuario/<int:id>", views.hacer_superusuario, name="hacer_superusuario"),
+    
    
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) # así concatenamos el path de la carpeta media y la ruta de la carpeta static

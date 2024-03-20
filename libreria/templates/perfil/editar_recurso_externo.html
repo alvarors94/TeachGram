@@ -1,0 +1,48 @@
+{% extends "base.html"%}
+{% block titulo %} Editar recurso externo {% endblock %}
+{% block contenido %} 
+{% if request.user.perfil.is_blocked %}
+<div class="container mt-5">
+    <h5>No puedes acceder al contenido de esta página por que actualmente estás bloqueado.
+        Para solucionar el problema, póngase en contacto con el/la maestro/a de la clase
+    </h5>
+</div>
+{% else %}
+
+
+<div class="container mt-5"> <!-- Agregando margen superior a la tarjeta -->
+    <div class="card">
+        <div class="card-header mb-3">Editar recurso externo</div>
+
+
+    <div class="card-body">
+       
+        <form enctype="multipart/form-data" method="post" action="{% url 'editar_recurso_externo' recurso_externo.id%}">
+            {% csrf_token %} 
+            
+            {% for campo in form_recurso_externo %}
+            <div class="mb-3">
+                <strong><label for="" class="form-label">{{campo.label}}:</label></strong>
+                <input
+                    type="{{campo.field.widget.input_type}}" 
+                    class="form-control"
+                    name="{{campo.name}}"
+                    value="{{campo.value}}"/>
+                    <!-- Muestra el valor del campo para editarlo o por defecto ''-->            
+            </div>
+            <div class="col-12 help-text">{{campo.errors}}</div>
+            {% endfor %}
+
+        
+        <input class="btn comment-gradient" type="submit" value="Actualizar información"/>
+        <a class="btn danger-gradient" href="{% url 'recursos' %}" role="button" >Cancelar</a>
+    </form>
+
+
+    
+        
+    </div>
+</div>
+</div>
+{%endif%}
+{% endblock %}

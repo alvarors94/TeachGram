@@ -121,29 +121,43 @@
                                 <div class="row mt-3">
                                     <div class="col mt-2">
                                         <!-- Formulario de comentario -->
-                                        <form id="comment-form" method="post" action="{% url 'agregar_comentario' publicacion.id %}">
+                                        <form id="comment-form-{{ publicacion.id }}" method="post" action="{% url 'agregar_comentario' publicacion.id %}">
                                             {% csrf_token %}
                                             <div class="btn-group">
-                                                <div class="container">
-                                                    <div class="box_input">
-                                                        <!-- Contenido del formulario de comentario -->
-                                                        <div style="position: relative; height: 100px;">
-                                                            <textarea class="form-control" id="inputdefault" name="comentario" style="height: 100px; overflow-y: auto; width: 380px;"></textarea>
-                                                            <label class="label_input" for="">Escribe tu comentario...  <span id="char-count">0/400 caracteres</span></label>
-                                                            <!-- Aquí se mostrará el contador de caracteres -->
-                                                        </div>
-                                                        <br>
-                                                        <div>
-                                                            <button id="submit-comment" type="submit" class="send">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" width="20px" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
-                                                                </svg>
-                                                            </button>
-                                                        </div>
-                                                    </div>
+                                              <div class="container">
+                                                <div class="box_input">
+                                                  <div style="position: relative; height: 100px;">
+                                                    <textarea class="form-control" id="inputdefault{{ publicacion.id }}" name="comentario" style="height: 100px; overflow-y: auto; width: 380px;"></textarea>
+                                                    <label class="label_input" for="" >Escribe tu comentario... <span id="char-count-{{ publicacion.id }}">0/400 caracteres</span></label>
+                                                  </div>
+                                                  <br>
+                                                  <div>
+                                                    <button id="submit-comment" type="submit" class="send">
+                                                      <svg xmlns="http://www.w3.org/2000/svg" width="20px" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
+                                                      </svg>
+                                                    </button>
+                                                  </div>
                                                 </div>
+                                              </div>
                                             </div>
-                                        </form>
+                                          </form>
+                                          
+                                          <script>
+                                            // Improved JavaScript for character counting on all publications
+                                            document.addEventListener("DOMContentLoaded", function() {
+                                              const textareas = document.querySelectorAll(".form-control"); // Select all textareas with class "form-control"
+                                          
+                                              for (const textarea of textareas) {
+                                                const charCountElement = document.getElementById(`char-count-${textarea.id.slice(12)}`); // Dynamically match character count element with textarea ID
+                                          
+                                                textarea.addEventListener("input", function() {
+                                                  const textLength = textarea.value.length;
+                                                  charCountElement.textContent = `${textLength}/400 caracteres`;
+                                                });
+                                              }
+                                            });
+                                          </script>
                                     </div>
                                 </div>
                                 {% if publicacion.user_id == user.id or user.is_superuser == True %}
@@ -180,18 +194,6 @@
     document.getElementById('submit-comment').addEventListener('click', function() {
         document.getElementById('comment-form').submit(); // Envía el formulario
         window.location.href = "{% url 'feed' %}"; // Redirige a la página de feed
-    })
-    // Selecciona el textarea
-    const textarea = document.querySelector('#inputdefault');
-    // Selecciona el elemento donde se mostrará el contador de caracteres
-    const charCount = document.querySelector('#char-count');
-
-    // Agrega un evento de escucha al textarea para detectar cambios en su contenido
-    textarea.addEventListener('input', function() {
-        // Obtiene la longitud del texto actual en el textarea
-        const textLength = textarea.value.length;
-        // Actualiza el contador de caracteres
-        charCount.textContent = `${textLength}/400`;
     });
 </script>
 {% endblock %}
