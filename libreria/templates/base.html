@@ -17,6 +17,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 
     <link rel="stylesheet" href="{% static 'main.css' %}">
+    <link rel="icon" href="{% static 'icono_teachgram.ico' %}" type="image/x-icon" style="border-radius: 50%;">
 
     <!-- jQuery primero, luego Popper.js, luego Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
@@ -40,7 +41,9 @@
 
     <nav class="navbar navbar-expand-lg mi-navbar">
         <div class="container-fluid">
-            <a class="navbar-brand text-white" href="/">Inicio</a>
+            <a href="/" class="d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto">
+                <img src="{% static 'teachgram2.png' %}" height="50px" width="120px" class="me-2">
+            </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -129,7 +132,7 @@
             </div>
         </div>
     </div>
-    <div class="fixed-bottom-right">
+    <div class="fixed-bottom-right sticky">
         <a href="{% url 'crear_publicacion' %}" role="button" class="no-link-style">
             <span class="text">     Crear publicación</span>
             <span class="blob"></span>
@@ -149,31 +152,41 @@
                     layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
                     gaTrack: false
                 }, 'google_translate_element');
-    
-                // Mover el navbar hacia abajo al activar el traductor
-                var navbar = document.querySelector('.mi-navbar');
-                var googleTranslateElement = document.querySelector('.VIpgJd-ZVi9od-ORHb');
-                if (navbar && googleTranslateElement) {
-                    googleTranslateElement.addEventListener('mouseover', function () {
-                        navbar.style.transition = 'transform 0.5s ease';
-                        navbar.style.transform = 'translateY(4000px)'; // Puedes ajustar el valor de acuerdo a tu diseño
-                    });
-    
-                    googleTranslateElement.addEventListener('mouseout', function () {
-                        navbar.style.transition = 'transform 0.5s ease';
-                        navbar.style.transform = 'translateY(0)';
-                    });
-                }
             }
         </script>
         <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
     </div>
     
-    <footer>
-        Copyright © 2023 Football History Archives. All Rights Reserved.
-        por aqui tambien iria el logo, mi github?
+    <footer class="new_footer_area bg_color">
+        <div class="new_footer_top">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-3 col-md-6">
+                        <div class="f_widget social-widget pl_70 wow fadeInLeft" data-wow-delay="0.8s" style="visibility: visible; animation-delay: 0.8s; animation-name: fadeInLeft;">
+                            <h3 class="f-title" style = "font-weight: 600; font-size: 18px; color:#263b5e">Mis redes sociales</h3>
+                            <div class="f_social_icon">
+                                <a href="https://github.com/alvarors94" >
+                                    <img src="{% static 'icons8-github.gif' %}" alt="GitHub" class="fab fa-github gif-image">
+                                </a>
+                                <a href="https://www.linkedin.com/in/%C3%A1lvaro-rueda-49098563/" >
+                                    <img src="{% static 'icons8-linkedin.gif' %}" alt="Linkedin" class="fab fa-linkedin gif-image">
+                                </a>
+                                <a href="#" >
+                                    <img src="{% static 'icons8-facebook.gif' %}" alt="Facebook" class="fab fa-facebook gif-image">
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer_bg">
+                <div class="footer_bg_one"></div>
+                <div class="footer_bg_two"></div>
+            </div>
+        </div>
+       
     </footer>
-
+    
 </body>
 
 </html>

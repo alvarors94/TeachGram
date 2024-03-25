@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block titulo %} Feed {% endblock %}
 {% block contenido %} 
+{% load static %}
 {% if request.user.perfil.is_blocked %}
 <div class="container mt-5">
     <h5>No puedes acceder al contenido de esta página por que actualmente estás bloqueado.
@@ -10,11 +11,9 @@
 {% else %}
 <div class="menu-lateral" id="menu-lateral">
     <div class="d-flex flex-column flex-shrink-0 p-3 no-link-style" style="width: 280px; height: 100%;" bis_skin_checked="1">
-        <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto">
-          <svg class="bi me-2" width="40" height="32"></svg>
-          <span class="fs-4">Teachgram</span>
+        <a href="/" class="d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto">
+            <img src="{% static 'teachgram2.png' %}" height="75px" width="180px" class="ms-4">
         </a>
-        <hr>
         <ul class="nav nav-pills flex-column mb-auto">
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'clase' %}">
@@ -302,28 +301,37 @@
                 
 {%endif%}
 <script>
-  // Variable para controlar si se ha realizado el scroll
-var scrollRealizado = false;
+    // Variable para controlar si se ha realizado el scroll
+    var scrollRealizado = false;
 
-// Función para controlar el evento de scroll
-window.addEventListener('scroll', function() {
-    scrollRealizado = true;
-    var menuLateral = document.getElementById('menu-lateral');
+    // Función para controlar el evento de scroll
+    window.addEventListener('scroll', function() {
+        scrollRealizado = true;
+        var menuLateral = document.querySelector('.menu-lateral');
+        var footer = document.querySelector('footer');
+        var distanciaAlFooter = footer.getBoundingClientRect().top - menuLateral.getBoundingClientRect().bottom;
 
-    if (window.scrollY > 40) {
-        menuLateral.style.opacity = '1'; // Mostrar el menú lateral con opacidad completa
-    } else if (window.scrollY === 0) {
-        if (scrollRealizado) {
-            menuLateral.style.opacity = '0'; // Ocultar el menú lateral con opacidad completa
+        // Establecer opacidad del menú lateral basado en el desplazamiento
+        if (window.scrollY <= 30 || !scrollRealizado) {
+            menuLateral.style.opacity = '0'; // Ocultar el menú lateral
+        } else {
+            menuLateral.style.opacity = '1'; // Mostrar el menú lateral con opacidad completa
         }
-    }
-});
 
-// Función para controlar el evento 'DOMContentLoaded' y establecer la opacidad inicial
+        // Controlar opacidad del menú lateral basado en su posición con respecto al footer
+        if (distanciaAlFooter < 200) {
+            menuLateral.style.opacity = '0'; // Ocultar el menú lateral
+            menuLateral.style.pointerEvents = 'none'; // Evita interacción con el menú lateral
+        } else {
+            menuLateral.style.pointerEvents = 'auto'; // Restaurar interacción con el menú lateral
+        }
+    });
+
+    // Función para controlar el evento 'DOMContentLoaded' y establecer la opacidad inicial
 window.addEventListener('DOMContentLoaded', function() {
-    var menuLateral = document.getElementById('menu-lateral');
-    if (!scrollRealizado) {
-        menuLateral.style.opacity = '0'; // Establecer opacidad inicial
+    var menuLateral = document.querySelector('.menu-lateral');
+    if (!scrollRealizado || window.scrollY <= 30) {
+        menuLateral.classList.add('oculto'); // Ocultar el menú lateral
     }
 });
 
@@ -331,6 +339,5 @@ window.addEventListener('DOMContentLoaded', function() {
         document.getElementById('comment-form').submit(); // Envía el formulario
         window.location.href = "{% url 'feed' %}"; // Redirige a la página de feed
     });
- 
 </script>
 {% endblock %}
