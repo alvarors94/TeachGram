@@ -11,12 +11,12 @@
 
 <body>
     <header>
-        <div class="card mt-5 profile">
-            <div class="container" style="margin: 10px; min-height: 180px; display: flex; align-items: center;">
+        <div class="card profile">
+            <div class="container " style="margin: 10px; min-height: 180px; display: flex; align-items: center;">
                 <img src="{{ foto_de_perfil.url }}" height="150" width="150" style="border-radius: 50%; margin-right: 10px;">
                 <div>
-                    <h2>{{ user.first_name }} {{ user.last_name }}</h2> 
-                    <small style="color:rgb(93, 93, 93); font-size: medium;">{{ user.username }}</small>
+                    <h2 class="notranslate">{{ user.first_name }} {{ user.last_name }}</h2> 
+                    <small style="color:rgb(93, 93, 93); font-size: medium;" class="notranslate">{{ user.username }}</small>
                 </div>
                 <div style="margin-left: auto; margin-top: -135px; margin-right: 10px;">
                     {% if request.user.id == user.id %}
@@ -92,7 +92,7 @@
                                 {% endif %}
                                 <div class="{% if publicacion.imagenes.count > 0 %}col-md-6{% else %}col-md-12{% endif %}">
                                     <div>
-                                        <strong>{{ user.username }}</strong>
+                                        <strong class="notranslate">{{ user.username }}</strong>
                                         <br>
                                         <div style="max-width: 1080px; overflow-x: auto; word-wrap: break-word;">
                                             <p class="card-text">{{ publicacion.descripcion }}</p>
@@ -103,13 +103,13 @@
                                     </div>
                                     <br>
                                     <hr class="card-divider"/>
-                                    <h4>Comentarios:</h4>
+                                    <h4>Comentarios ({{publicacion.numero_de_comentarios}}):</h4>
                                     <ul class="list-group list-group-flush" style="max-height: 320px; overflow-y: auto;">
                                         {% for comentario in comentarios %}
                                             {% if comentario.publicacion_id == publicacion.id %}
                                                 <li class="list-group-item list-group-item-action hover-bg rounded-4 mt-2">
                                                     <div class="d-flex align-items-start hovered">
-                                                        <div class="mr-3">
+                                                        <div class="mr-3 ">
                                                            
                                                             <a href="{% url 'ver_perfil' comentario.user %}" class="no-link-style">
                                                                 <img src="{{ comentario.user.perfil.profile_pic.url }}" height="32" width="32" style="border-radius: 50%;"/>
@@ -117,7 +117,7 @@
                                                            
                                                         </div>
                                                         <div class="flex-grow-1 ms-2">
-                                                            <a href="{% url 'ver_perfil' comentario.user %}" class="no-link-style">
+                                                            <a href="{% url 'ver_perfil' comentario.user %}" class="no-link-style notranslate">
                                                                 <strong>{{ comentario.user }}:</strong>
                                                             </a>
                                                             <div style="max-width: 950px; overflow-x: auto; word-wrap: break-word;">
@@ -138,7 +138,7 @@
                                                             <a class="dropdown-toggle" href="#" role="button" id="editarComentarioDropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Editar comentario">
                                                                 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAAAsTAAALEwEAmpwYAAADlElEQVR4nO2Y20sUURzHh4iguzuWbblBEBRpunvOWkhUm3nOrKhIL9tDpXuO1UpFGBFWD7E9RJf/oIiIHiKILmAkId4IrUjNS6AzWl5mCyrKBzWDit04406t5uxutNOONF/4wbLnd2Y+3/P7zZ7Zw3GmTJkyZcrUNKX0yS5elB/wUmCElwKhJMcIL8rVKZK8nYtHFjFwihfloAHAQ1NClIMWUa6KDt8ruw0JL/0ywfcNY20DklyXdEgpeljEQG00A2OGNyDJo5oGkg3HxxmmAd6sQMBsoRmV7NbgzYdY+k9+Rm1360N2T6US6fcbdM3h9TDAbggxVSJ79zFdc3jTgPT7KrBys9Vjq6ZV+kTl8HpUINnBmQYk/Vc5tWfo+8qa5p70e/Xd/MvXE7OqAmkNrYOOIl+v+gvlcO9/a7tT1zkrDFibWgeBQN8zcIDIKETkg/IZ0wnbrZp2QxuwRsBDRPpzBLI6w3V4EcC0cdIQHU1r6Ro2pAFrY9sAEOg7FT6r4IBN5crG+xZCTJ+zsQ2V55sMZ8AaBV4VwOQCG88qO9msaYD9YTYiPMRkJ0DkM8tZe+larWGOVax/CG/fdeRFas/QI+0W6hsW/tXBVlpj6y94TPtmhHeTbRCTMQW+5FB3alf/OC+9QZoGlCqIctVMJjJ9/lBGxdmYYCuau0IbyemoudPh7TvL0mPCd/aPWST5BBeP2EEqO1DlJfmjelN1U4kGv6q6iZVZycs8eCYh8I7iio7l7dJtizi8lfsbqQY0xwXqA5h8DW86D53It3R6TnZ+6TqIyVuW48TkVSx4gGjzlpLyxX8FHstAhsczD2B6NTwehJhe5Pz+OdPzXC7/XIjIgHodKJC2zQV7l0TmOIXyPPWBBYg+ZptYQuC1DDhdvmU/d0lMvwDkLdWcj4g7DDYOEFVWGCLallW0x6I7/EwGHAK1Q0QHw9+/ceSTTdHmA0SuT+aSGw6BbFHec/CkCUdBaaEubaNlwImJR10tiGjLJpfXGm0uazOI6IjS+4gUKtdAdKsKDTH9rit8pAGIyblwr7O2ucrgYs0FqLwk/Hb5Sc135pWthYhcgYgEdWubKQYiHkCAyTeQ7z0a71yA6c3wblsDMDmuvphB9Xp6wzOxvoWYPAGIPGMPXLzznMW+BRGtEhlBgOlTiEhlbq5nPmdUOfO9O6aAI9oBEDlpd3vXJJstLikVQPQyRMSf4y5fn+gb/ADzzq3bCt2E/QAAAABJRU5ErkJggg==" height="25px" width="25px">
                                                             </a>
-                                                            <div class="dropdown-menu" aria-labelledby="editarComentarioDropdown" data-bs-auto-close="false">
+                                                            <div class="dropdown-menu" aria-labelledby="editarComentarioDropdown" data-bs-auto-close="false" style="z-index: 1050; border: 2px solid black;">
                                                                 <form action="{% url 'editar_comentario' comentario.id %}" method="POST">
                                                                     {% csrf_token %}
                                                                     <div class="form-group ms-3 me-3">
@@ -246,7 +246,7 @@
                                         <img src="{{foto_de_perfil.url }}" style="border-radius: 50%; height: 60px; width: 60px;"  />
                                     </a>
                                     <h5>
-                                        <a href="{% url 'ver_perfil' publicacion.user %}" class="no-link-style">{{publicacion.user}}</a> · 
+                                        <a href="{% url 'ver_perfil' publicacion.user %}" class="no-link-style notranslate">{{publicacion.user}}</a> · 
                                         <small class="text-body-secondary">{{publicacion.fecha_publicacion }}</small>
                                     </h5>
                                     <div style="max-height: 120px; overflow-y: auto;">

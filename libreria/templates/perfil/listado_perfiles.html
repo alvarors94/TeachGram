@@ -3,7 +3,7 @@
 {% block contenido %} 
 
 {% if user.is_superuser %}
-<div class="container mt-5"> <!-- Agregando margen superior a la tarjeta -->
+<div class="container"> <!-- Agregando margen superior a la tarjeta -->
     <div class="card">
         <div class="card-header mb-3">Listado de perfiles</div>
         <div class="table-responsive"> <!-- Ajustando margen superior aquí -->
@@ -26,6 +26,23 @@
                 </thead>
                 <tbody>
                     {% for dato in datos_de_user %}
+                    <div class="modal fade" id="exampleModal{{ dato.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Eliminar usuario</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    ¿Seguro que desea eliminar al usuario <strong>{{dato.username}}</strong>?
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn secondary-gradient" data-bs-dismiss="modal">Cancelar</button>
+                                    <a class="btn danger-gradient" href="{% url 'eliminar_perfil' dato.id %}">Eliminar</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                         <tr style="text-align: center;">
                             <td>{{ dato.id }}</td>
                             <td><a href="{% url 'ver_perfil' dato.username %}" class="no-link-style"><img src="{{ dato.profile_pic.url }}" height="60" width="60" style="border-radius: 50%;"/></a></td>
@@ -48,12 +65,13 @@
                             <td>{{ dato.total_comentarios }}</td>
                             <td>{{ dato.total_publicaciones }}</td>
                             <td>
-                                {% if dato.is_superuser %}
+                                {% if dato.id == 1 %}
+                                No puedes deshacer este superusuario
+                                
+                                {% elif dato.is_superuser %}
                                 <a class="btn secondary-gradient" href="{% url 'hacer_superusuario' dato.id %}" role="button">
                                     <span>Deshacer superusuario</span>
                                 </a>
-                                {% elif dato.id == '1' %}
-                                <span>No puedes deshacer este superusuario</span>
                                 {% else %}
                                 <a class="btn comment-gradient" href="{% url 'hacer_superusuario' dato.id %}" role="button">
                                     <span>Hacer superusuario</span>
@@ -71,7 +89,7 @@
                                 </a>
                                 {% endif %}
                             </td>
-                            <td><a class="btn danger-gradient" href="{% url 'eliminar_perfil' dato.id %}" role="button"><span>Eliminar perfil</span></a></td>
+                            <td><a class="btn danger-gradient"  role="button" data-bs-toggle="modal" data-bs-target="#exampleModal{{ dato.id }}"><span>Eliminar perfil</span></a></td>
                         </tr>
                     {% endfor %}
                 </tbody>

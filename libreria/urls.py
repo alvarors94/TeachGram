@@ -29,6 +29,8 @@ urlpatterns = [
     path("eliminar_perfil/<int:id>", views.eliminar_perfil, name="eliminar_perfil"),
     path("bloquear_perfil/<int:id>", views.bloquear_perfil, name="bloquear_perfil"),
     path("hacer_superusuario/<int:id>", views.hacer_superusuario, name="hacer_superusuario"),
+    path("calendario", views.calendario, name="calendario"),
+
     
    
 

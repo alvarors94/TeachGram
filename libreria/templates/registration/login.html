@@ -11,67 +11,81 @@
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
   
-</head>
-<body>
+  <style>
+    
+    .card-login {
+      margin: 30px;
+      width: calc(100% - 100px);
+      border-radius: 12px;
+    }
 
-  <section class="login-block">
-    <div class="container-login">
-      <div class="row align-content-center align-items-center">
-        <div class="col-md-4 login-sec">
-          <h2 class="text-center">Acceda para continuar</h2>
+    .card {
+      height: 100%;
+      border: solid 2px;
+      color: #034e0f;
+      border-radius: 12px;
+    }
+
+    .card-body {
+      height: 100%;
+      border-radius: 12px;
+      padding: 0px;
+    }
+  </style>
+</head>
+<body class="body-login">
   
-          {% if form.errors %}
-            <p>Su nombre de usuario y contraseña no coinciden. Inténtalo de nuevo.</p>
-          {% endif %}
-  
-          {% if next %}
-            {% if user.is_authenticated %}
+  <div class="card-login">
+    <div class="card">
+      <div class="card-body">
+        <div class="container-fluid-login">
+          <div class="row align-items-center">
+            <div class="col-md-4 login-sec" style="margin-left: 20px;">
+              <h2 class="text-center">Acceda para continuar</h2>
+              {% if form.errors %}
+              <p>Su nombre de usuario y contraseña no coinciden. Inténtalo de nuevo.</p>
+              {% endif %}
+              {% if next %}
+              {% if user.is_authenticated %}
               <p>Su cuenta no tiene acceso a esta página. Para continuar, inicie sesión con una cuenta que tenga acceso.</p>
-            {% else %}
+              {% else %}
               <p>Por favor inicie sesión para ver esta página.</p>
-            {% endif %}
-          {% endif %}
-  
-          <form method="post" action="{% url 'login' %}">
-            {% csrf_token %}
-            <div class="form-group">
-                <div class="input">
-                  <label class="label_input" for="inputUsername" style="color: rgb(129, 137, 137);">Nombre de usuario</label>
-                    <input class="form-control" id="inputdefault" name="username" type="text" style="width: 100%; max-width: 100%; overflow-x: auto; border-color: #E36262;">
-                    
+              {% endif %}
+              {% endif %}
+              <form method="post" action="{% url 'login' %}">
+                {% csrf_token %}
+                <div class="form-group">
+                  <div class="input">
+                    <h6 class="label_input" for="inputUsername">Nombre de usuario</h6>
+                    <input class="form-control" id="inputdefault" name="username" type="text" style="width: 100%; max-width: 100%; overflow-x: auto; border-color: #000000;">
+                  </div>
                 </div>
-            </div>
-            <div class="input mt-3">
-              <label class="label_input" for="inputPassword" style="color: rgb(129, 137, 137);">Contraseña</label>
-                <input class="form-control" id="inputPassword" name="password" type="password"  style="width: 100%; max-width: 100%; overflow-x: auto; border-color: #E36262;">
-                
-            </div>
-            <div class="form-check">
-                <label class="form-check-label mt-3">
+                <div class="input">
+                  <h6 class="label_input" for="inputPassword">Contraseña</h6>
+                  <input class="form-control" id="inputPassword" name="password" type="password" style="width: 100%; max-width: 100%; overflow-x: auto; border-color: #000000;">
+                </div>
+                <div class="form-check">
+                  <label class="form-check-label mt-3">
                     <input type="checkbox" class="form-check-input">
                     <small>Recuérdame</small>
-                </label>
-            </div>
-            <div class="btn-group">
-                <button type="submit" class="btn btn-login float-right">
+                  </label>
+                </div>
+                <div class="btn-group">
+                  <button type="submit" class="btn btn-login float-right">
                     <img width="24" height="24" src="https://img.icons8.com/parakeet-line/48/ffffff/enter-2.png" alt="enter-2"/>
-                    Entrar
-                </button>
+                    <strong>Entrar</strong>
+                  </button>
+                </div>
+                <input type="hidden" name="next" value="{{ next }}">
+              </form>
             </div>
-            <input type="hidden" name="next" value="{{ next }}">
-        </form>
-        </div>
-  
-        <div class="col-md-8 order-md-2">
-          <img class="d-block img-fluid" src="{% static 'undraw_nature_on_screen_xkli.png' %}" alt="Imagen">
-          <div class="text-center">
-            <h2>This is Heaven</h2>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation</p>
+            <div class="col-md-7">
+              <img src="{% static 'undraw_nature_on_screen_xkli.png' %}" alt="Imagen" style="height: 100%; width: 100%;">
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </section>
-  
-  </body>
-  </html>
+  </div>
+</body>
+</html>

@@ -2,12 +2,51 @@
 .mi-navbar {
   width: 100%;
   background: linear-gradient(to top, #119969, #38ef7d); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-  margin-bottom: 20px; /* Aumenta el margen inferior */
+
 }
 
 body{
-     background: linear-gradient(to bottom, #f7f5f2, #f6ffdb); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+     background: linear-gradient(to bottom, #f7f5f2, #ffffff); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
       }
+
+
+/* Cambiar el color del fondo del widget */
+
+.menu-lateral {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 280px;
+  background: linear-gradient(to top, #119969, #38ef7d);
+  color: white;
+  z-index: 1000;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.menu-lateral.mostrar {
+  opacity: 1;
+  pointer-events: auto; /* Para habilitar interacciones con el menú mientras está visible */
+}
+
+
+.menu-lateral .nav-link {
+  color: rgb(7, 72, 17); /* Cambia el color de las letras en el menú lateral */
+  
+}
+
+.menu-lateral .nav-link:hover {
+  background-color: transparent; /* Evita que el color de fondo cambie al hacer hover */
+}
+
+
+/* Ajustar el color de fondo del menú desplegable si es necesario */
+
+.google {
+  background-color: blue !important;
+  color: white !important; /* Cambiar el color del texto dentro del widget a blanco */
+}
 
 .nav-item {
   font-size: 17px;
@@ -15,9 +54,11 @@ body{
   position: relative;
   transition: 0.5s ease;
   cursor: pointer;
-  border: none; /* Elimina el borde */
-  padding: 0; /* Elimina el relleno */
-  color: inherit; /* Usa el color de texto heredado */
+  border: none;
+  padding: 0;
+  color: inherit;
+  overflow: hidden;
+  z-index: 1;
 }
 
 .nav-item::before {
@@ -28,16 +69,15 @@ body{
   height: 2px;
   width: 0;
   background-color: #83e3a8;
-  transition: 0.5s ease;
+  transition: width 0.5s ease, left 0.5s ease;
 }
 
 .nav-item:hover {
-
   transition-delay: 0.5s;
 }
 
 .nav-item:hover::before {
-  width: 60%;
+  width: 80%;
   left: 50%;
   transform: translateX(-50%);
 }
@@ -49,19 +89,20 @@ body{
   bottom: 0;
   height: 0;
   width: 100%;
-  background-color: #83e3a8;
-  transform: translateY(5%);
-  transition: height 0.4s ease, opacity 0.4s ease; /* Ajusta la transición para la altura y la opacidad */
-  z-index: -1;
   border-radius: 12px;
+  background-color: #83e3a8cb;
+  transform: translateY(5%);
+  transition: height 0.4s ease, opacity 0.4s ease;
+  border-radius: 12px;
+  z-index: -1; /* Cambiado a -1 para asegurarse de que esté detrás de .nav-item */
 }
 
 .nav-item:hover::after {
   height: 100%;
   transition-delay: 0.4s;
+  transform: scaleY(1);
+  z-index: -1; /* Cambiado a -1 para asegurarse de que esté detrás de .nav-item */
 }
-
-
 .button-content {
   display: flex;
   align-items: center; /* Centra los elementos verticalmente */
@@ -76,13 +117,30 @@ body{
     text-decoration: none;
     color: inherit;
 }
+.no-link-style button {
+  color: rgb(7, 72, 17); /* Cambia el color de las letras en el botón "Salir" */
+}
 
+.no-link-style button:hover {
+  background-color: transparent; /* Evita que el color de fondo cambie al hacer hover */
+  color: rgb(7, 72, 17); /* Mantiene el color de las letras al hacer hover */
+}
 
-.profile{
-  border: 1px solid#008deb;
+.profile {
+  border: 1px solid #008deb;
   padding: 10px;
   border-radius: 12px;
-  background: linear-gradient(to bottom, #bdc3c700, #65a9ab73); }
+  background:  #00d8e012;
+  backdrop-filter: blur(50px); /* Ajusta el valor según lo deseado */
+}
+
+.perfil-card
+{
+  padding: 5px;
+  border-radius: 12px;
+  background:  #8fe24c89;
+  backdrop-filter: blur(50px); /* Ajusta el valor según lo deseado */
+}
 
 .fixed-bottom-right {
   position: fixed;
@@ -238,9 +296,15 @@ body{
 }
 
 
-  .my-dropdown-toggle::after {
-    content: none;
+.container-scroll{
+  scroll-snap-type: y mandatory;
 }
+
+.imagen-scroll{
+  scroll-snap-align: start;
+}
+
+
 
 .zoom-img {
   width: 50%; /* Ajusta la imagen al ancho del contenedor */
@@ -256,6 +320,11 @@ body{
 .dropdown-toggle::after {
   content: none;
 }
+.dropdown-menu .dropdown-item:hover {
+  background-color: #2ab55f4b; /* Cambia el color de fondo al pasar el mouse sobre el elemento */
+}
+
+
   
 .container .box_input {
   position: relative;
@@ -360,11 +429,7 @@ body{
   background-size: 24px; /* Tamaño del icono */
 }
 
-@import url("//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css");
-.login-block {
-  background: linear-gradient(to bottom, #38ef7d, #11998e);
-  height: 100vh; /* Ajusta la altura al 100% del viewport */
-}
+
 
 footer {
   text-align: center;
@@ -374,14 +439,18 @@ footer {
   color: #000;
 }
 
-.login-sec{padding: 50px 30px; position:relative;}
-.login-sec .copy-text{position:absolute; width:80%; bottom:20px; font-size:13px; text-align:center;}
-.login-sec .copy-text i{color:#38ef7d;}
-.login-sec .copy-text a{color:#38ef7d;}
+.body-login {
+  overflow-y: hidden;
+  background-image: url('/static/Aerial_view_of_Sierra_de_Mijas.jpg') ; /* Ruta relativa a la imagen */
+  background-position: center;
+  background-size: 100% 100%; /* Ajusta el tamaño de la imagen para que cubra todo el contenedor */
+  background-color: rgba(17, 153, 142, 0.5); /* Color verde con una opacidad del 50% */
+  background-blend-mode: overlay; /* Aplica el color verde como un filtro */
+}
+
+.container-fluid-login{background: linear-gradient(to top, #b8e9cf, #e0e6e1); border-radius: 12px;}
 .login-sec h2{margin-bottom:30px; font-weight:800; font-size:30px; color: #11998e;}
-.login-sec h2:after{content:" "; width:100px; height:5px; background:#38ef7d; display:block; margin-top:20px; border-radius:3px; margin-left:auto;margin-right:auto}
-.btn-login{background: #11998e; color:#fff; font-weight:600;}
-.banner-text{width:70%; position:absolute; bottom:40px; padding-left:20px;}
-.banner-text h2{color:#fff; font-weight:600;}
-.banner-text h2:after{content:" "; width:100px; height:5px; background:#FFF; display:block; margin-top:20px; border-radius:3px;}
-.banner-text p{color:#fff;}
+.login-sec h6{font-weight:800; color: #11998e;}
+.login-sec h2:after{content:" "; width:100px; height:5px; background:rgb(17, 153, 142); display:block; margin-top:20px; border-radius:3px; margin-left:auto;margin-right:auto}
+
+.btn-login{background: #11998e; color:#fff; font-weight:800; font-size:30px; }

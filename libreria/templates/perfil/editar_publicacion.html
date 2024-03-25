@@ -3,16 +3,14 @@
 {% block contenido %} 
 {% if request.user.perfil.is_blocked %}
 <div class="container mt-5">
-    <h5>No puedes acceder al contenido de esta página por que actualmente estás bloqueado.
-        Para solucionar el problema, póngase en contacto con el/la maestro/a de la clase
-    </h5>
+    <h5>No puedes acceder al contenido de esta página porque actualmente estás bloqueado. Para solucionar el problema, ponte en contacto con el/la maestro/a de la clase.</h5>
 </div>
 {% else %}
-<div class="card mt-5">
+<div class="card">
     <div class="card-header">Editar información</div>
     <div class="card-body">
         <h4 class="card-title"></h4>
-        <form enctype="multipart/form-data" method="post">
+        <form enctype="multipart/form-data" method="post" id="publicacionForm">
             {% csrf_token %} 
             <div class="grid-container">
                 {% for imagen in imagenes_publicacion %}
@@ -28,7 +26,7 @@
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn secondary-gradient" data-bs-dismiss="modal">Cancelar</button>
-                                <a class="btn danger-gradient" href="{% url 'eliminar_imagen' imagen.id %}" style="color: white;">Eliminar</a>
+                                <a class="btn danger-gradient" href="{% url 'eliminar_imagen' imagen.id %}">Eliminar</a>
                             </div>
                         </div>
                     </div>
@@ -46,26 +44,105 @@
                 {% endfor %}
                 <div class="bg-image hover-zoom">
                     <label for="file-upload" class="btn  btn-lg zoom-img" style="width: 408px; height: 408px; border-radius: 12px; background-color: #f1f1f1c7; color: black; border-style: dashed; border-color: gray;">
-                        Subir más imágenes
+                        Subir imágenes
                         <img width="300" height="300" src="https://img.icons8.com/parakeet/300/add-image.png" alt="add-image"/>
                     </label>
-                    <input id="file-upload" type="file" name="images" multiple style="display: none;" />
+                    <input type="file" name="images" id="file-upload" accept="image/*" multiple style="display: none;" onchange="previewImages(event)">
                 </div>
             </div>
-            <form action="{% url 'crear_publicacion' %}" method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-            {% for campo in form_publicacion %}
-            <div class="mb-3 mt-3">
-                <strong><label for="" class="form-label">{{campo.label}}:</label></strong>
-                <input type="{{campo.field.widget.input_type}}" class="form-control" name="{{campo.name}}" id="" aria-describedby="helpId" placeholder="{{campo.help_text}}" value="{{ campo.value | default_if_none:'' }}"/>
+            
+            <h3>Añadir estas nuevas imágenes:</h3>
+            <div class="grid-container" id="imagePreviews"> 
             </div>
-            <div class="col-12 help-text">{{campo.errors}}</div>
+            
+            {% for campo in form_publicacion %}
+            
+            {% if campo.name == 'descripcion' %}
+            <div class="mb-3">
+                <strong><label for="" class="form-label">{{ campo.label }}:</label></strong>
+                <textarea class="form-control" name="{{ campo.name }}" placeholder="{{ campo.help_text }}">{{ campo.value|default_if_none:'' }}</textarea>
+                <!-- Muestra el valor del campo para editarlo o por defecto '' -->            
+            </div>
+            {% else %}
+            <div class="mb-3">
+                <strong><label for="" class="form-label">{{ campo.label }}:</label></strong>
+                <input type="{{ campo.field.widget.input_type }}" class="form-control" name="{{ campo.name }}" value="{{ campo.value|default_if_none:'' }}" placeholder="{{campo.help_text}}">
+                <!-- Muestra el valor del campo para editarlo o por defecto '' -->            
+            </div>
+            {% endif %}
+            <div class="col-12 help-text">{{ campo.errors }}</div>
             {% endfor %}
-            <input class="btn comment-gradient" type="submit" value="Editar publicación"/>
+           
+            
+            <input class="btn comment-gradient" data-bs-toggle="modal" data-bs-target="#exampleModal{{ publicacion.id }}"  value="Guardar cambios"/>
             <a class="btn danger-gradient" href="{% url 'feed'%}" role="button">Cancelar</a>
+            <div class="modal fade" id="exampleModal{{ publicacion.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Editar publicación</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            ¿Quieres guardar los cambios realizados en la publicación?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn danger-gradient" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn comment-gradient" href="{% url 'editar_publicacion' publicacion.id %}">Guardar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         </form>
-    </div>
+       
+       
 </div>
 
 {%endif%}
+<script>
+    var images = []; // Lista para almacenar las imágenes seleccionadas
+
+    function previewImages(event) {
+        var files = event.target.files;
+        var imagePreviews = document.getElementById('imagePreviews');
+
+        // Limpiar las vistas previas anteriores
+        imagePreviews.innerHTML = '';
+
+        // Iterar sobre los archivos seleccionados
+        for (var i = 0; i < files.length; i++) {
+            var reader = new FileReader();
+            reader.onload = (function(file) {
+                return function(e) {
+                    var imgContainer = document.createElement('div');
+
+                    var img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.style.width = '408px'; // Ajusta el ancho máximo según sea necesario
+                    img.style.height = '408px'; // Ajusta la altura máxima según sea necesario
+                    img.style.borderRadius = '12px';
+
+                    imgContainer.appendChild(img);
+                    imagePreviews.appendChild(imgContainer);
+
+                    // Agregar la imagen a la lista de imágenes seleccionadas
+                    images.push({file: file, container: imgContainer});
+                };
+            })(files[i]);
+            reader.readAsDataURL(files[i]);
+        }
+    }
+
+    document.getElementById('publicacionForm').addEventListener('submit', function(event) {
+        // Adjuntar las imágenes seleccionadas al formulario antes de enviarlo
+        images.forEach(function(image) {
+            var input = document.createElement('input');
+            input.type = 'file';
+            input.name = 'images';
+            input.files = [image.file];
+            document.getElementById('publicacionForm').appendChild(input);
+        });
+    });
+</script>
 {% endblock %}

@@ -175,6 +175,9 @@ class IframeForm(forms.ModelForm):
         if descripcion and len(descripcion) > 400:
             self.add_error('descripcion', f'El límite de caracteres para este campo es de 400 y tiene {len(descripcion)}')
             
+        if not "<iframe " in codigo_iframe:
+            self.add_error('codigo_iframe', 'Este formato de código no es válido, debe empezar por <iframe ...')
+            
         return cleaned_data
 
     class Meta:

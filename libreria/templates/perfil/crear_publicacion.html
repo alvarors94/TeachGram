@@ -6,18 +6,25 @@
   <h5>No puedes acceder al contenido de esta página porque actualmente estás bloqueado. Para solucionar el problema, ponte en contacto con el maestro de la clase.</h5>
 </div>
 {% else %}
-<div class="card mt-5">
+<div class="card">
   <div class="card-header">Crear una publicación</div>
   <div class="card-body">
     
     <form enctype="multipart/form-data" method="post" id="form_publicacion">
       {% csrf_token %}
+      
       {% for campo in form_publicacion %}
       <div class="mb-3">
-        <label for="{{ campo.id }}" class="form-label">{{ campo.label }}:</label>
-        <input type="{{ campo.field.widget.input_type }}" class="form-control" name="{{ campo.name }}" id="{{ campo.id }}" aria-describedby="helpId" placeholder="{{ campo.help_text }}" value="{{ campo.value | default_if_none:'' }}" />
-        <div class="col-12 help-text">{{ campo.errors }}</div>
-      </div>
+        <strong><label for="" class="form-label">{{ campo.label }}:</label></strong>
+        {% if campo.name == 'descripcion' %}
+        <textarea class="form-control" name="{{ campo.name }}" placeholder="{{ campo.help_text }}">{{ campo.value|default_if_none:'' }}</textarea>
+        <!-- Muestra el valor del campo para editarlo o por defecto '' -->            
+        {% else %}
+        <input type="{{ campo.field.widget.input_type }}" class="form-control" name="{{ campo.name }}" value="{{ campo.value|default_if_none:'' }}" placeholder="{{campo.help_text}}">
+        <!-- Muestra el valor del campo para editarlo o por defecto '' -->            
+    </div>
+    {% endif %}
+                        <div class="col-12 help-text">{{ campo.errors }}</div>
       {% endfor %}
 
       <div class="mb-3 hover-zoom" id="imagePreviews" style="display: flex; flex-wrap: wrap;"> 
@@ -31,10 +38,32 @@
         <input type="file" name="images" id="file-upload" accept="image/*" multiple style="display: none;" onchange="previewImages(event)">
     </div>
 
-      <div class="mb-3 mt-3">
-        <button type="submit" class="btn comment-gradient">Subir publicación</button>
+    <div class="mb-3 mt-3">
+        <button type="button" class="btn comment-gradient" data-bs-toggle="modal" data-bs-target="#subirPublicacionModal">
+            Subir publicación
+        </button>
         <a class="btn danger-gradient" href="{% url 'feed' %}" role="button">Cancelar</a>
+    </div>
+  <div class="modal fade" id="subirPublicacionModal" tabindex="-1" aria-labelledby="subirPublicacionModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title" id="subirPublicacionModalModalLabel">Subir publicación</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <form action="{% url 'crear_publicacion' %}" method="POST" enctype="multipart/form-data">
+                  {% csrf_token %}
+                  <div class="modal-body">
+                      ¿Quieres subir esta publicación?
+                  </div>
+                  <div class="modal-footer">
+                      <button type="button" class="btn danger-gradient" data-bs-dismiss="modal">Cancelar</button>
+                      <button type="submit" class="btn comment-gradient">Guardar</button>
+                  </div>
+              </form>
+          </div>
       </div>
+  </div>
     </form>
    
   </div>

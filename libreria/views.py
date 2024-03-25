@@ -123,7 +123,7 @@ def editar_publicacion(request, id):
 
             return redirect(reverse('ver_perfil', kwargs={'username': publicacion.user.username}))
             
-    return render(request, "perfil/editar_publicacion.html", {"form_publicacion": form_publicacion, 'perfiles': perfiles, "imagenes_publicacion": imagenes_publicacion})
+    return render(request, "perfil/editar_publicacion.html", {"form_publicacion": form_publicacion, "publicacion": publicacion, "imagenes_publicacion": imagenes_publicacion})
 
         
     
@@ -260,6 +260,7 @@ def ver_perfil(request, username):
     comentarios = Comentario.objects.all()
     imagenes = Imagen.objects.all()
     for publicacion in publicaciones:
+        publicacion.numero_de_comentarios = publicacion.comentarios.count()
         publicacion.fecha_publicacion=publicacion.fecha_publicacion.strftime("%d de %B de %Y")
         
     for comentario in comentarios:
@@ -388,10 +389,9 @@ def recursos(request):
                 if match:
                     src_value = match.group(1)
                     iframe.codigo_iframe = src_value  # Actualiza el código del iframe
-                else:
-                    print("No hay coincidencias")
+               
     
-    return render(request, "perfil/recursos.html", {"recursos": recursos, "perfiles": perfiles, "iframes": iframes, "src_value": src_value})
+    return render(request, "perfil/recursos.html", {"recursos": recursos, "iframes": iframes, "src_value": src_value})
 
 def agregar_recurso(request):
     recursos = Recursos.objects.all()
@@ -439,7 +439,7 @@ def editar_recurso(request,id):
     if form_recurso.is_valid() and request.POST:
         form_recurso.save()
         return redirect("agregar_recurso")
-    return render(request, "perfil/editar_recurso.html", {"form_recurso": form_recurso,'perfiles': perfiles, "recurso": recurso})
+    return render(request, "perfil/editar_recurso.html", {"form_recurso": form_recurso, "recurso": recurso})
 
 def editar_recurso_externo(request,id):
     recurso_externo = Iframe.objects.get(id = id)
@@ -450,3 +450,6 @@ def editar_recurso_externo(request,id):
     return render(request, "perfil/editar_recurso_externo.html", {"form_recurso_externo": form_recurso_externo, "recurso_externo": recurso_externo})
 
 
+def calendario(request):
+    user = request.user
+    return render(request, "perfil/calendario.html", {"user": user})

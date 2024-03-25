@@ -8,30 +8,30 @@
     </h5>
 </div>
 {% else %}
-<div class="card mt-5" style="border-radius: 20px; background-color: rgb(255, 255, 255)"> <!-- Agregando margen superior a la tarjeta y borde rojo -->
-    <div class="card-header"><strong>Clase</strong></div>
+<div class="card" style="border-radius: 20px; background-color: rgb(255, 255, 255);"> <!-- Agregando margen superior a la tarjeta y borde rojo -->
+    <div class="card-header">Clase</div>
     <input type="text" id="searchInput" placeholder="Buscar perfil" class="search_box mb-3 mt-3" style="margin: 10px;">
     <br>
     <div class="row" style="margin: 10px;">
         {% for dato in datos_de_user %}
-        <div class="col-md-3 mb-4 perfil-card">
+        <div class="col-md-3 mb-4 me-3 perfil-card" style="width: 300px;">
             <a href="{% url 'ver_perfil' dato.username %}" class="no-link-style" style="font-size: 14px;">
                 <div class="card hover-bg">
-                    <div class="card-body">
-                        <img src="{{ dato.profile_pic.url }}" height="100" width="100" style="border-radius: 50%;"/>
-                        {% if dato.is_superuser %}
+                    <div class="card-body" style="display: flex; align-items: center;">
+                        <img src="{{ dato.profile_pic.url }}" height="100" width="100" style="border-radius: 50%; margin-right: 10px;"/>
+                        <div class="notranslate">
                             <strong>{{ dato.username }}</strong>
-                            <span class="badge edit-gradient" style="color: black; font-size:smaller;">Docente</span>
-                        {% else %}
-                            <strong>{{ dato.username }}</strong>
-                        {% endif %}
+                            {% if dato.is_superuser %}
+                                <span class="badge edit-gradient" style="color: black; font-size: smaller; display: block;">Docente</span>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
             </a>
         </div>
         {% endfor %}
     </div>
-    <div id="noResults" class="text-danger" style="display: none;">
+    <div id="noResults" class="text-danger" style="display: none; text-align: center;">
         <strong>No se encontraron resultados</strong>
     </div>
 </div>
