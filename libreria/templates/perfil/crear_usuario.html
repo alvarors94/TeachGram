@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block titulo %} Crear usuario {% endblock %}
 {% block contenido %} 
-{% if  user.is_superuser %}
+{% if  request.user.is_superuser %}
 
         <div class="card">
             <div class="card-header">Crear usuario</div>

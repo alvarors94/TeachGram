@@ -1,11 +1,8 @@
 {% extends "base.html" %}
 {% block titulo %} Editar publicaciones {% endblock %}
 {% block contenido %} 
-{% if request.user.perfil.is_blocked %}
-<div class="container mt-5">
-    <h5>No puedes acceder al contenido de esta página porque actualmente estás bloqueado. Para solucionar el problema, ponte en contacto con el/la maestro/a de la clase.</h5>
-</div>
-{% else %}
+{% if request.user.is_superuser or request.user.id == publicacion.user_id%}
+
 <div class="card">
     <div class="card-header">Editar información</div>
     <div class="card-body">
@@ -99,7 +96,7 @@
        
 </div>
 
-{%endif%}
+
 <script>
     var images = []; // Lista para almacenar las imágenes seleccionadas
 
@@ -145,4 +142,6 @@
         });
     });
 </script>
+{%endif%}
+</div>
 {% endblock %}

@@ -3,19 +3,17 @@ from .models import Publicacion, Comentario, Perfil, Recursos, Imagen, Iframe
 from django.contrib.auth.models import User
 import re
 
-
 class PublicacionForm(forms.ModelForm):
-    descripcion = forms.CharField(required=False, help_text = 'Añada una descripción... (máx. 200 caracteres)')
+    descripcion = forms.CharField(required=False, help_text='Añada una descripción... (máx. 200 caracteres)')
 
     def clean(self):
         cleaned_data = super().clean()
         descripcion = cleaned_data.get('descripcion')
 
-        if not descripcion:
-            self.add_error('descripcion', 'Este campo no puede estar vacío')
-            
         if descripcion and len(descripcion) > 200:
             self.add_error('descripcion', f'El límite de caracteres para este campo es de 200 y tiene {len(descripcion)}')
+        elif not descripcion:
+            self.add_error('descripcion', 'Este campo no puede estar vacío')
 
         return cleaned_data
     

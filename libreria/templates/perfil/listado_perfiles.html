@@ -2,7 +2,7 @@
 {% block titulo %} Perfiles {% endblock %}
 {% block contenido %} 
 
-{% if user.is_superuser %}
+{% if request.user.is_superuser %}
 <div class="container"> <!-- Agregando margen superior a la tarjeta -->
     <div class="card">
         <div class="card-header mb-3">Listado de perfiles</div>

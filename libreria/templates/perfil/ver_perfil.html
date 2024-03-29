@@ -1,44 +1,46 @@
 {% extends "base.html" %}
 {% block titulo %} Tu perfil {% endblock %}
 {% block contenido %} 
-{% if request.user.perfil.is_blocked %}
-<div class="container mt-5">
-    <h5>No puedes acceder al contenido de esta página por que actualmente estás bloqueado.
-        Para solucionar el problema, póngase en contacto con el/la maestro/a de la clase
-    </h5>
-</div>
-{% else %}
+
 
 <body>
     <header>
-        <div class="card profile">
-            <div class="container " style="margin: 10px; min-height: 180px; display: flex; align-items: center;">
-                <img src="{{ foto_de_perfil.url }}" height="150" width="150" style="border-radius: 50%; margin-right: 10px;">
-                <div>
-                    <h2 class="notranslate">{{ user.first_name }} {{ user.last_name }}</h2> 
-                    <small style="color:rgb(93, 93, 93); font-size: medium;" class="notranslate">{{ user.username }}</small>
-                </div>
-                <div style="margin-left: auto; margin-top: -135px; margin-right: 10px;">
-                    {% if request.user.id == user.id %}
-                    <a class="btn edit-gradient" href="{% url 'editar_perfil' %}" role="button" style="display: flex; align-items: center;">
-                        <img width="24" height="24" src="https://img.icons8.com/parakeet-line/48/settings.png" alt="settings" style="margin-right: 5px;">
-                        <span style="margin-left: 5px;">Editar perfil</span>
-                    </a>
-                   {% endif %}
-                </div>
+      <div class="card profile">
+    <div class="container-profile">
+        <div class="container" style="margin: 10px; min-height: 180px; display: flex; align-items: center;">
+            <img src="{{ foto_de_perfil.url }}" height="150" width="150" style="border-radius: 50%; margin-right: 10px;">
+            <div>
+                <h2 class="notranslate">{{ user.first_name }} {{ user.last_name }}</h2>
+                <h5 style="color:rgb(93, 93, 93); font-size: medium;" class="notranslate">{{ user.username }}</h5>
+            </div>
+            <div style="margin-left: auto; margin-top: -135px; margin-right: 10px;">
+                {% if request.user.id == user.id %}
+                <a class="btn edit-gradient" href="{% url 'editar_perfil' %}" role="button" style="display: flex; align-items: center;">
+                    <img width="24" height="24" src="https://img.icons8.com/parakeet-line/48/settings.png" alt="settings" style="margin-right: 5px;">
+                    <span style="margin-left: 5px;">Editar perfil</span>
+                </a>
+                {% endif %}
             </div>
         </div>
-        
+    </div>
+</div>
     </header>
     <main>
         <br>
         <div class="main-nav" style="display: flex; justify-content: center; align-items: center;">
-            <h3>PUBLICACIONES</h3>
+            <h3 style="margin-bottom:30px; font-weight:800; font-size:30px; color: #0b5d56;">PUBLICACIONES</h3>
         </div>
         <hr class="divider">
+        {% if not publicaciones %}
+                <!-- Si no hay publicaciones, mostrar un mensaje -->
+                <div style="display: flex; flex-direction: column; align-items: center; text-align: center;">
+                    <h2 style="margin-bottom:30px; font-weight:800; font-size:30px; color: #11998e;">Aún no hay publicaciones</h2>
+                    <img width="480" height="480" src="https://img.icons8.com/parakeet/480/medium-icons.png" alt="medium-icons"/>
+                </div>
+            {% else %}
         <div class="grid-container">
-            <!-- Contenido de tu cuadrícula aquí -->
-        
+            
+            
             {% for publicacion in publicaciones %}
             <div class="modal fade" id="exampleModal{{ publicacion.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-xl">
@@ -99,7 +101,7 @@
                                         </div>
                                         <br>
                                         <br>
-                                        <small style="float: right;">Fecha de publicación: {{ publicacion.fecha_publicacion }}</small>
+                                        <h5><small style="float: right; color: grey;">Fecha de publicación: {{ publicacion.fecha_publicacion }}</small></h5>
                                     </div>
                                     <br>
                                     <hr class="card-divider"/>
@@ -257,10 +259,12 @@
                         </a>
                     </div>
                 {% endif %}
+                
             {% endfor %}
+            {% endif %}
         </div>
     </main>
 </body>
-{%endif%}
+
 
 {% endblock %}

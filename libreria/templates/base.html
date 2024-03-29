@@ -8,6 +8,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 
+     <!-- jQuery primero, luego Popper.js, luego Bootstrap JS -->
+     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
     <!-- Bootstrap CSS v5.2.1 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
@@ -19,11 +24,6 @@
     <link rel="stylesheet" href="{% static 'main.css' %}">
     <link rel="icon" href="{% static 'icono_teachgram.ico' %}" type="image/x-icon" style="border-radius: 50%;">
 
-    <!-- jQuery primero, luego Popper.js, luego Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-
     <!-- Incluir DataTables -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
@@ -32,18 +32,25 @@
         integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
         crossorigin="anonymous"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
         integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
         crossorigin="anonymous"></script>
+
 </head>
 
 <body>
-
+    {% if request.user.perfil.is_blocked %}
+    <div class="container mt-5">
+        <h5>No puedes acceder al contenido de esta página por que actualmente estás bloqueado.
+            Para solucionar el problema, póngase en contacto con el/la maestro/a de la clase
+        </h5>
+    </div>
+    {%else%}
     <nav class="navbar navbar-expand-lg mi-navbar">
         <div class="container-fluid">
-            <a href="/" class="d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto">
-                <img src="{% static 'teachgram2.png' %}" height="50px" width="120px" class="me-2">
-            </a>
+            <a href="/" class="d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto ">
+                <img src="{% static 'teachgram2.png' %}" height="50px" width="120px" class="me-2" alt="Logo">
+                            </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -97,10 +104,10 @@
                 </ul>
                     <ul class="navbar-nav ml-auto mb-2 mb-lg-0">
                         <div id="google_translate_element" class="google" style="margin: 10px;"></div> <!-- Widget de traducción -->
-                        <li class="nav-item notranslate">
+                        <li class="nav-item ">
                             <div style="display: flex; align-items: center;">
                                 <img src="{{ foto_perfil }}" href="{% url 'ver_perfil' request.user.username %}" height="40" width="40" style="border-radius: 50%; margin-right: 10px; margin-top: 3px;" />
-                                <a class="nav-link me-3" href="{% url 'ver_perfil' request.user.username %}"><strong>{{ request.user }}</strong></a>
+                                <a class="nav-link me-3" href="{% url 'ver_perfil' request.user.username %}"><strong>¡Bienvenid@, </strong><strong class="notranslate">{{ request.user }}!</strong></a>
                             </div>
                         </li> 
                         <li class="nav-item">
@@ -188,5 +195,5 @@
     </footer>
     
 </body>
-
+{%endif%}
 </html>

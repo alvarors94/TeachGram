@@ -1,9 +1,16 @@
 {% extends "base.html" %}
 {% block titulo %} Calendario {% endblock %}
 {% block contenido %}
+{% if request.user.perfil.is_blocked %}
+<div class="container mt-5">
+    <h5>No puedes acceder al contenido de esta página por que actualmente estás bloqueado.
+        Para solucionar el problema, póngase en contacto con el/la maestro/a de la clase
+    </h5>
+</div>
+{% else %}
 
 
     <script src="https://static.elfsight.com/platform/platform.js" data-use-service-core defer></script>
     <div class="elfsight-app-ba352301-e5d8-40bf-ab57-edf360504b22" data-elfsight-app-lazy></div>
-
+{%endif%}
 {% endblock %}

@@ -1,13 +1,7 @@
 {% extends "base.html" %}
 {% block titulo %} Editar perfil {% endblock %}
 {% block contenido %} 
-{% if request.user.perfil.is_blocked %}
-<div class="container mt-5">
-    <h5>No puedes acceder al contenido de esta página porque actualmente estás bloqueado.
-        Para solucionar el problema, póngase en contacto con el/la maestro/a de la clase
-    </h5>
-</div>
-{% else %}
+
 
 <div class="container">
     <header>
@@ -54,5 +48,5 @@
         </div>
     </header>
 </div>
-{% endif %}
+
 {% endblock %}

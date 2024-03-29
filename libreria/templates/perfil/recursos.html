@@ -2,18 +2,14 @@
 {% block titulo %} Recursos {% endblock %}
 {% block contenido %} 
 
-{% if request.user.perfil.is_blocked %}
-<div class="container mt-5">
-    <h5>No puedes acceder al contenido de esta página porque actualmente estás bloqueado/a. Para solucionar el problema, póngase en contacto con el/la maestro/a de la clase.</h5>
-</div>
-{% else %}
+
 </div>
 
-<div class="container mt-3">
+<div class="container">
     <div class="row">
         <div class="col-md-6">
             {% if user.is_superuser == True %}
-            <div class="mt-5" style="top: 20px; right: 20px;">
+            <div style="top: 20px; right: 20px;">
                 <div>
                     <a class="btn btn-lg comment-gradient" href="{% url 'agregar_recurso' %}" role="button">Subir recurso</a>
                 </div>
@@ -65,7 +61,7 @@
         
         <div class="col-md-6">
             {% if user.is_superuser == True %}
-            <div class="mt-5 ms-3" style="top: 20px; right: 20px;">
+            <div class=" ms-3" style="top: 20px; right: 20px;">
                 <div>
                     <a class="btn btn-lg comment-gradient" href="{% url 'agregar_recurso_externo' %}" role="button">Añadir recurso externo</a>
                 </div>
@@ -113,5 +109,5 @@
 
     
 </div>
-{% endif %}
+
 {% endblock %}

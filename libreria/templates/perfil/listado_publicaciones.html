@@ -1,7 +1,7 @@
 {% extends "base.html"%}
 {% block titulo %} Ver publicaciones {% endblock %}
 {% block contenido %} 
-{%if user.is_superuser%}
+{%if request.user.is_superuser%}
 <div class="container"> <!-- Agregando margen superior a la tarjeta -->
     <div class="card">
         <div class="card-header mb-3">Listado de publicaciones</div>
@@ -96,8 +96,17 @@
                                 </div>
                                 {% endif %}
                                 <div class="{% if publicacion.imagenes.count > 0 %}col-md-6{% else %}col-md-12{% endif %}">
+                                    <a href="{% url 'ver_perfil' publicacion.user %}" class="no-link-style">
+                                       
+                                        <img src="{{publicacion.user.perfil.profile_pic.url }}" style="border-radius: 50%; height: 60px; width: 60px;"  />
+                                        
+                                    </a>
+                                    <h5>
+                                        <a href="{% url 'ver_perfil' publicacion.user %}" class="no-link-style notranslate">{{publicacion.user}}</a> 
+                
+                                    </h5>
                                     <div>
-                                        <strong>{{ usuario.username }}</strong>
+                                       
                                         <br>
                                         {{ publicacion.descripcion }}
                                         <br>

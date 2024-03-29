@@ -2,13 +2,7 @@
 {% block titulo %} Feed {% endblock %}
 {% block contenido %} 
 {% load static %}
-{% if request.user.perfil.is_blocked %}
-<div class="container mt-5">
-    <h5>No puedes acceder al contenido de esta página por que actualmente estás bloqueado.
-        Para solucionar el problema, póngase en contacto con el/la maestro/a de la clase
-    </h5>
-</div>
-{% else %}
+
 <div class="menu-lateral" id="menu-lateral">
     <div class="d-flex flex-column flex-shrink-0 p-3 no-link-style" style="width: 280px; height: 100%;" bis_skin_checked="1">
         <a href="/" class="d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto">
@@ -147,17 +141,22 @@
                             {% endfor %}
                             {% endif %}
                             <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <a href="{% url 'ver_perfil' publicacion.user %}" class="no-link-style me-2">
+                                        <img src="{{ publicacion.user.perfil.profile_pic.url }}" height="60" width="60" style="border-radius: 50%;" />
+                                    </a>
+                                    <div>
+                                        <h4 class="mb-0">
+                                            <a href="{% url 'ver_perfil' publicacion.user %}" class="no-link-style notranslate">{{ publicacion.user }}</a>
+                                            <small class="text-body-secondary ml-2"> · {{ publicacion.fecha_publicacion }}</small>
+                                        </h4>
+                                    </div>
+                                </div>
                                
-                                <a href="{% url 'ver_perfil' publicacion.user %}" class="no-link-style"><img src="{{ publicacion.user.perfil.profile_pic.url }}" height="60" width="60" style="border-radius: 50%;"/></a>
-                                
-                                <h5>
-                                    <a href="{% url 'ver_perfil' publicacion.user %}" class="no-link-style notranslate">{{publicacion.user}}</a> · 
-                                    <small class="text-body-secondary">{{publicacion.fecha_publicacion }}</small>
-                                </h5>
-                                <p class="card-text">{{ publicacion.descripcion }}</p>
+                                <h4 class="card-text mt-3" style="color: black; font-weight: 500;">{{ publicacion.descripcion }}</h4>
                                 <hr class="card-divider">
                                 <ul class="list-group list-group-flush" style="max-height: 320px; overflow-y: auto;">
-                                    <strong class="card-text">Comentarios ({{publicacion.numero_de_comentarios}})</strong>
+                                    <h4 class="card-text">Comentarios ({{publicacion.numero_de_comentarios}})</h4>
                                     {% for comentario in comentarios %}
                                     <div class="modal fade" id="exampleModal{{ comentario.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                         <div class="modal-dialog">
@@ -177,7 +176,7 @@
                                         </div>
                                     </div>
                                     {% if comentario.publicacion_id == publicacion.id %}
-                                    <li class="list-group-item list-group-item-action hover-bg rounded-4 mt-2">
+                                    <li class="list-group-item comentarios_container hover-bg-comentarios rounded-4 mt-2">
                                         <div class="d-flex align-items-start hovered">
                                             <div class="mr-3">
                                                 
@@ -299,7 +298,7 @@
 </div>
         
                 
-{%endif%}
+
 <script>
     // Variable para controlar si se ha realizado el scroll
     var scrollRealizado = false;
