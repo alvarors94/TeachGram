@@ -15,22 +15,22 @@
             {% csrf_token %} 
             
             {% for campo in form_recurso %}
-            <div class="mb-3">
-                <strong><label for="" class="form-label">{{campo.label}}:</label></strong>
-                <input
-                    type="{{campo.field.widget.input_type}}" 
-                    class="form-control"
-                    name="{{campo.name}}"
-                    value="{{campo.value}}"
-                    placeholder="{{campo.help_text}}"/>
-                    <!-- Muestra el valor del campo para editarlo o por defecto ''-->            
-            </div>
-            <div class="col-12 help-text">{{campo.errors}}</div>
-            {% endfor %}
+      <div class="mb-3">
+        <strong><label for="" class="form-label">{{ campo.label }}:</label></strong>
+        {% if campo.name == 'descripcion' %}
+        <textarea class="form-control" name="{{ campo.name }}" placeholder="{{ campo.help_text }}">{{ campo.value|default_if_none:'' }}</textarea>
+        <!-- Muestra el valor del campo para editarlo o por defecto '' -->            
+        {% else %}
+        <input type="{{ campo.field.widget.input_type }}" class="form-control" name="{{ campo.name }}" value="{{ campo.value|default_if_none:'' }}" placeholder="{{campo.help_text}}">
+        <!-- Muestra el valor del campo para editarlo o por defecto '' -->            
+    </div>
+    {% endif %}
+                        <div class="col-12 help-text">{{ campo.errors }}</div>
+      {% endfor %}
 
         
-        <input class="btn comment-gradient" type="submit" value="Actualizar información"/>
-        <a class="btn danger-gradient" href="{% url 'recursos' %}" role="button" >Cancelar</a>
+        <input class="btn comment-gradient mt-2" type="submit" value="Actualizar información"/>
+        <a class="btn danger-gradient mt-2" href="{% url 'recursos' %}" role="button" >Cancelar</a>
     </form>
 
 

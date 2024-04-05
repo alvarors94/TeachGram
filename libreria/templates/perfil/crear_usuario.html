@@ -18,11 +18,7 @@
                             </div>
                         </div>
                         
-                    {% endfor %}
-                    <div class="mb-3">
-                        <strong><label for="id_password" class="form-label">Contraseña:</label></strong>
-                        <input type="password" class="form-control" name="password" id="id_password" aria-describedby="passwordHelp" placeholder="Contraseña" />
-                        <div class="help" id="passwordHelp">
+                            {% endfor %}
                             <ul><strong>Para mayor seguridad, recomendamos que la contraseña contenga lo siguiente:</strong>
                                 <li>La contraseña debe tener al menos 8 caracteres.</li>
                                 <li>La contraseña debe contener al menos una letra, un número y una mayúscula.</li>
@@ -33,7 +29,7 @@
                     
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" id="superusuario" name="superusuario">
-                        <label class="form-check-label" for="superusuario">¿Es superusuario?</label>
+                        <strong class="form-check-label" for="superusuario">¿Es superusuario?</strong>
                     </div>
                    <div class="container mt-3">
                         <button type="submit" class="btn comment-gradient">Añadir usuario</button>

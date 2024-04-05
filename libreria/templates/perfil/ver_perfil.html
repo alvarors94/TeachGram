@@ -92,9 +92,20 @@
                                     {% endif %}
                                 </div>
                                 {% endif %}
+                                
                                 <div class="{% if publicacion.imagenes.count > 0 %}col-md-6{% else %}col-md-12{% endif %}">
                                     <div>
-                                        <strong class="notranslate">{{ user.username }}</strong>
+                                        
+                                        <div class="d-flex align-items-center">
+                                            <a href="{% url 'ver_perfil' publicacion.user %}" class="no-link-style">
+                                                <img src="{{ publicacion.user.perfil.profile_pic.url }}" style="border-radius: 50%; height: 60px; width: 60px;">
+                                            </a>
+                                            <div class="ml-3">
+                                                <h5>
+                                                    <a href="{% url 'ver_perfil' publicacion.user %}" class="no-link-style notranslate ms-2">{{ publicacion.user }}</a> 
+                                                </h5>
+                                            </div>
+                                        </div>
                                         <br>
                                         <div style="max-width: 1080px; overflow-x: auto; word-wrap: break-word;">
                                             <p class="card-text">{{ publicacion.descripcion }}</p>
@@ -103,6 +114,7 @@
                                         <br>
                                         <h5><small style="float: right; color: grey;">Fecha de publicación: {{ publicacion.fecha_publicacion }}</small></h5>
                                     </div>
+                                   
                                     <br>
                                     <hr class="card-divider"/>
                                     <h4>Comentarios ({{publicacion.numero_de_comentarios}}):</h4>
@@ -240,7 +252,7 @@
                     </div>
                 {% else %}
                     <!-- Si no hay imágenes, mostrar la tarjeta especial -->
-                    <div class="grid-item" style="position: relative; border-radius: 20px;">
+                    <div class="grid-item" style="position: relative; border-radius: 12px;">
                         <a href="#" data-bs-toggle="modal" data-bs-target="#exampleModal{{ publicacion.id }}" style="position: absolute; top: 0; left: 0; width: 420px; height: 420px; border-radius: 20px; z-index: 1;">
                             <div class="card border-danger mb-3" style="width: 420px; height: 420px; border-radius: inherit;">
                                 <div class="card-body">

@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy, reverse
 from django.views import View
 from .models import  Publicacion, Comentario, Perfil, Recursos, Imagen, Iframe #Importamos las clases
-from .forms import PublicacionForm, ComentarioForm, PerfilForm, UserForm, CambiarPasswordForm, RecursosForm, forms, IframeForm
+from .forms import PublicacionForm, ComentarioForm, PerfilForm, UserForm, CambiarPasswordForm, RecursosForm, IframeForm, EditarPerfilForm
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
@@ -17,14 +17,12 @@ perfiles = Perfil.objects.all()
 @login_required
 def base(request):
     user = User.objects.get(id=request.user.id)
-    foto_perfil = user.perfil.profile_pic
-    return render(request, 'base.html', {"foto_perfil":foto_perfil})
+    return render(request, 'base.html')
 
 @login_required
 def inicio(request):
     user = User.objects.get(id=request.user.id)
-    foto_perfil = user.perfil.profile_pic
-    return render(request, "paginas/inicio.html",{ "foto_perfil":foto_perfil})
+    return render(request, "paginas/inicio.html")
 
 @login_required
 def crear_usuario(request):
@@ -51,6 +49,11 @@ def crear_usuario(request):
             if 'superusuario' in request.POST:
                 usuario.is_superuser = True  # O False si deseas desactivarlo
                 usuario.save()
+            
+            # Verificar si el usuario ya tiene un perfil asociado
+            if not Perfil.objects.filter(username_id=usuario.id).exists():
+                nuevo_perfil = Perfil(username_id=usuario.id)
+                nuevo_perfil.save()
                 
             return redirect("feed")
     else:
@@ -59,21 +62,6 @@ def crear_usuario(request):
     
     return render(request, "perfil/crear_usuario.html", {"form_usuario": form_usuario, "form_perfil": form_perfil})
 
-class UserForm(forms.ModelForm):
-    class Meta:
-        model = User
-        fields = ['username', 'first_name', 'last_name']  # Excluir 'password' del formulario
-        labels = {
-            'username': 'Nombre de usuario',
-            'first_name': 'Nombre',
-            'last_name': 'Apellido',
-        }
-        
-        widgets = {
-            'username': forms.TextInput(attrs={'class': 'form-control'}),
-            'first_name': forms.TextInput(attrs={'class': 'form-control'}),
-            'last_name': forms.TextInput(attrs={'class': 'form-control'}),
-        }
 
 @login_required
 def listado_perfiles(request, template_name='perfil/listado_perfiles.html'):
@@ -84,7 +72,7 @@ def listado_perfiles(request, template_name='perfil/listado_perfiles.html'):
 
     users = User.objects.all()
     for user in users:
-        perfil = Perfil.objects.get(id=user.id)
+        perfil = Perfil.objects.get(username_id=user.id)
         last_login = user.last_login
         if last_login is not None:
             last_login = last_login + timedelta(hours=1)  # Sumar una hora al tiempo de inicio de sesión
@@ -102,6 +90,7 @@ def listado_perfiles(request, template_name='perfil/listado_perfiles.html'):
             'is_superuser': user.is_superuser,
             'is_active': user.is_active,
             'is_blocked': perfil.is_blocked,  # Accede al campo is_blocked a través del objeto Perfil
+            'is_staff': perfil.is_staff, 
             'total_comentarios': Comentario.objects.filter(user_id=user.id).count(),
             'total_publicaciones': Publicacion.objects.filter(user_id=user.id).count(),
         }
@@ -247,6 +236,14 @@ def eliminar_publicacion(request, id):
 @login_required
 def eliminar_perfil(request, id):
     usuario = User.objects.get(id=id)
+    
+    foto_perfil = usuario.perfil.profile_pic
+    foto_perfil_path = foto_perfil.path
+    
+    if os.path.exists(foto_perfil_path):
+        os.remove(foto_perfil_path)
+    
+    foto_perfil.delete()
     usuario.delete()
     return redirect('listado_perfiles')
 
@@ -359,19 +356,34 @@ def agregar_comentario(request, id):
 @login_required
 def editar_perfil(request):
     perfil_usuario = Perfil.objects.get(username=request.user)
-
+    usuario = User.objects.get(username=request.user)
     if request.method == 'POST':
-        form_user = UserForm(request.POST, instance=request.user)
+        form_user = EditarPerfilForm(request.POST, instance=usuario)  # Corregir aquí
         form_perfil = PerfilForm(request.POST, request.FILES, instance=perfil_usuario)
-        if form_user.is_valid() and form_perfil.is_valid():
-            form_user.save()
-            form_perfil.save()
-            return redirect('feed')  # Redirigir a la página de perfil
+       
+        if form_user.is_valid():
+            if form_perfil.is_valid():
+                usuario = form_user.save(commit=False)
+                usuario.save()
+
+                # Verificar si se ha subido una nueva imagen de perfil
+                if 'profile_pic' in request.FILES:
+                    nueva_imagen = request.FILES['profile_pic']
+                    perfil_usuario.profile_pic = nueva_imagen
+                    perfil_usuario.save()
+                else:
+                    # Si no se ha subido una nueva imagen de perfil, simplemente guardar el formulario
+                    form_perfil.save()
+
+                # Redirigir a la página de perfil del usuario después de editar el perfil
+                return redirect(reverse('ver_perfil', kwargs={'username': request.POST['username']}))
     else:
-        form_user = UserForm(instance=request.user)
+        form_user = EditarPerfilForm(instance=usuario)  # Corregir aquí
         form_perfil = PerfilForm(instance=perfil_usuario)
 
     return render(request, "perfil/editar_perfil.html", {"form_user": form_user, "form_perfil": form_perfil})
+
+
 
 @login_required
 def recursos(request):
@@ -405,22 +417,19 @@ def recursos(request):
 
 @login_required
 def agregar_recurso(request):
-    recursos = Recursos.objects.all()
-   
-    form_recurso = RecursosForm()
-    
     if request.method == 'POST':
         form_recurso = RecursosForm(request.POST, request.FILES)
-        
         if form_recurso.is_valid():
-            recurso = form_recurso.save(commit=False)
-            recurso.save()
-        
+            form_recurso.save()
+            return redirect('recursos')  # Redirige a la página de recursos después de agregar un recurso
+    else:
+        form_recurso = RecursosForm()
     
+    recursos = Recursos.objects.all()
     for recurso in recursos:
         recurso.fecha_publicacion_recurso = recurso.fecha_publicacion_recurso.strftime("%d de %B de %Y")
     
-    return render(request, 'perfil/agregar_recurso.html', {"form_recurso": form_recurso,"recursos": recursos})
+    return render(request, 'perfil/agregar_recurso.html', {"form_recurso": form_recurso, "recursos": recursos})
 
 @login_required
 def agregar_recurso_externo(request):
@@ -429,11 +438,11 @@ def agregar_recurso_externo(request):
         form_recurso_externo = IframeForm(request.POST)
         if form_recurso_externo.is_valid():
             form_recurso_externo.save()
-            return redirect('recursos')
+            return redirect('recursos')  # Redirige a la página de recursos después de guardar el recurso externo
     else:
         form_recurso_externo = IframeForm()
-
-    return render(request, 'perfil/agregar_recurso_externo.html', {"form_recurso_externo": form_recurso_externo, "recursos_externos":recursos_externos})
+    
+    return render(request, 'perfil/agregar_recurso_externo.html', {"form_recurso_externo": form_recurso_externo, "recursos_externos": recursos_externos})
 
 @login_required
 def eliminar_recurso_externo(request,id):
@@ -442,9 +451,19 @@ def eliminar_recurso_externo(request,id):
     return redirect("recursos")
 
 @login_required
-def eliminar_recurso(request,id):
-    recurso = Recursos.objects.get(id = id)
+def eliminar_recurso(request, id):
+    recurso = Recursos.objects.get(id=id)
+    
+    # Obtener la ruta del archivo asociado al recurso
+    archivo_ruta = recurso.archivo_recurso.path
+    
+    # Eliminar el recurso de la base de datos
     recurso.delete()
+    
+    # Eliminar el archivo del sistema de archivos
+    if os.path.exists(archivo_ruta):
+        os.remove(archivo_ruta)
+    
     return redirect("recursos")
 
 @login_required

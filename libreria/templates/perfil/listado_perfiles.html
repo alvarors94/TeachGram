@@ -65,7 +65,7 @@
                             <td>{{ dato.total_comentarios }}</td>
                             <td>{{ dato.total_publicaciones }}</td>
                             <td>
-                                {% if dato.id == 1 %}
+                                {% if dato.is_superuser and  dato.is_staff %}
                                 No puedes deshacer este superusuario
                                 
                                 {% elif dato.is_superuser %}

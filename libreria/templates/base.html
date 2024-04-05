@@ -40,10 +40,14 @@
 
 <body>
     {% if request.user.perfil.is_blocked %}
-    <div class="container mt-5">
-        <h5>No puedes acceder al contenido de esta página por que actualmente estás bloqueado.
-            Para solucionar el problema, póngase en contacto con el/la maestro/a de la clase
-        </h5>
+    <div style="text-align: center;">
+        <img src="https://img.icons8.com/parakeet-line/192/private.png" alt="private"/>
+        <div style="max-width: 80%; margin: 0 auto;">
+            <h2>
+                No puedes acceder al contenido de esta página porque actualmente estás bloqueado.
+                Para solucionar el problema, póngase en contacto con el/la maestro/a de la clase
+            </h2>
+        </div>
     </div>
     {%else%}
     <nav class="navbar navbar-expand-lg mi-navbar">
@@ -106,8 +110,8 @@
                         <div id="google_translate_element" class="google" style="margin: 10px;"></div> <!-- Widget de traducción -->
                         <li class="nav-item ">
                             <div style="display: flex; align-items: center;">
-                                <img src="{{ foto_perfil }}" href="{% url 'ver_perfil' request.user.username %}" height="40" width="40" style="border-radius: 50%; margin-right: 10px; margin-top: 3px;" />
-                                <a class="nav-link me-3" href="{% url 'ver_perfil' request.user.username %}"><strong>¡Bienvenid@, </strong><strong class="notranslate">{{ request.user }}!</strong></a>
+                                <img src="{{ request.user.perfil.profile_pic.url }}" href="{% url 'ver_perfil' request.user.username %}" height="40" width="40" style="border-radius: 50%; margin-right: 10px; margin-top: 3px;" />
+                                <a class="nav-link" href="{% url 'ver_perfil' request.user.username %}"><strong>¡Bienvenid@, </strong><strong class="notranslate">{{ request.user }}!</strong></a>
                             </div>
                         </li> 
                         <li class="nav-item">

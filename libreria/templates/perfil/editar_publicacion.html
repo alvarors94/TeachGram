@@ -71,13 +71,14 @@
             {% endfor %}
            
             
-            <input class="btn comment-gradient" data-bs-toggle="modal" data-bs-target="#exampleModal{{ publicacion.id }}"  value="Guardar cambios"/>
+            <input class="btn comment-gradient" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal{{ publicacion.id }}" value="Guardar cambios"/>           
             <a class="btn danger-gradient" href="{% url 'feed'%}" role="button">Cancelar</a>
-            <div class="modal fade" id="exampleModal{{ publicacion.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+       
+            <div class="modal fade" id="exampleModal{{ publicacion.id }}" tabindex="-1" aria-labelledby="exampleModalLabel2" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Editar publicación</h5>
+                            <h5 class="modal-title" id="exampleModalLabel2">Editar publicación</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
@@ -91,7 +92,7 @@
                 </div>
             </div>
         </div>
-        </form>
+    </form>
        
        
 </div>

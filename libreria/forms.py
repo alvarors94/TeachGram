@@ -49,28 +49,25 @@ class PerfilForm(forms.ModelForm):
         model = Perfil
         fields = ['profile_pic']  
 
-
 class UserForm(forms.ModelForm):
     username = forms.CharField(required=False, label="Nombre de usuario")
     password = forms.CharField(widget=forms.PasswordInput, required=False, label="Contraseña")
+
 
     def clean(self):
         cleaned_data = super().clean()
         username = cleaned_data.get('username')
         password = cleaned_data.get('password')
+        if User.objects.filter(username=username).exists():
+            self.add_error('username','Este nombre de usuario ya está en uso')
 
         if not username:
             self.add_error('username', 'El nombre de usuario no puede estar vacío')
-
+            
         if not password:
             self.add_error('password', 'La contraseña no puede estar vacía')
-
-        # Llamar al método para verificar si el nombre de usuario ya existe
-       
         return cleaned_data
     
-
-
     class Meta:
         model = User
         fields = ['username', 'first_name', 'last_name', 'password']
@@ -85,8 +82,8 @@ class UserForm(forms.ModelForm):
             'first_name': forms.TextInput(attrs={'class': 'form-control'}),
             'last_name': forms.TextInput(attrs={'class': 'form-control'}),
             'password': forms.PasswordInput(attrs={'class': 'form-control'})
-        }
 
+        }
 class CambiarPasswordForm(forms.Form):
     password1 = forms.CharField(label="Nueva contraseña", 
                                 widget=forms.PasswordInput(attrs={'class': 'form-control',
@@ -122,7 +119,14 @@ class CambiarPasswordForm(forms.Form):
             raise forms.ValidationError(errors)
 
         return cleaned_data
-    
+ 
+ 
+class EditarPerfilForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['username', 'first_name', 'last_name'] 
+        
+          
 class RecursosForm(forms.ModelForm):
     archivo_recurso = forms.FileField(required=False, label="Archivo", help_text = "Puedes subir cualquier archivo, como 'pdf', 'word', imágenes ... ")
     nombre = forms.CharField(required=False)

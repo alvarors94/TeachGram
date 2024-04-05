@@ -24,11 +24,7 @@
             {% for publicacion in publicaciones %}
             <tr style="text-align: center;">
                 <td>{{ publicacion.id }}</a></td>
-                {% for perfil in perfiles %}
-                    {% if perfil.username_id == publicacion.user_id %}
-                        <td><a href="{% url 'ver_perfil' publicacion.user %}" class="no-link-style"><img src="{{ perfil.profile_pic.url }}" height="60" width="60" style="border-radius: 50%;"/></a></td>
-                    {% endif %}
-                {% endfor %}
+                <td><a href="{% url 'ver_perfil' publicacion.user %}" class="no-link-style"><img src="{{ publicacion.user.perfil.profile_pic.url }}" height="60" width="60" style="border-radius: 50%;"/></a></td>
                 <td><a href="{% url 'ver_perfil' publicacion.user %}" class="no-link-style">{{ publicacion.user }}</a></td>
                 <td>{{ publicacion.user_id }}</td>
                 <td>{{ publicacion.descripcion }}</td>
@@ -95,23 +91,26 @@
                                     {% endif %}
                                 </div>
                                 {% endif %}
-                                <div class="{% if publicacion.imagenes.count > 0 %}col-md-6{% else %}col-md-12{% endif %}">
-                                    <a href="{% url 'ver_perfil' publicacion.user %}" class="no-link-style">
-                                       
-                                        <img src="{{publicacion.user.perfil.profile_pic.url }}" style="border-radius: 50%; height: 60px; width: 60px;"  />
-                                        
-                                    </a>
-                                    <h5>
-                                        <a href="{% url 'ver_perfil' publicacion.user %}" class="no-link-style notranslate">{{publicacion.user}}</a> 
-                
-                                    </h5>
+                                <div class="{% if publicacion.imagenes.count > 0 %}col-md-6{% else %}col-md-12{% endif %}">                                    
                                     <div>
+                                        <div class="{% if publicacion.imagenes.count > 0 %}col-md-6{% else %}col-md-12{% endif %}">
+                                            <div class="d-flex align-items-center">
+                                                <a href="{% url 'ver_perfil' publicacion.user %}" class="no-link-style">
+                                                    <img src="{{ publicacion.user.perfil.profile_pic.url }}" style="border-radius: 50%; height: 60px; width: 60px;">
+                                                </a>
+                                                <div class="ml-3">
+                                                    <h5>
+                                                        <a href="{% url 'ver_perfil' publicacion.user %}" class="no-link-style notranslate ms-1">{{ publicacion.user }}</a> 
+                                                    </h5>
+                                                </div>
+                                            </div>
+                                        </div>
                                        
                                         <br>
                                         {{ publicacion.descripcion }}
                                         <br>
                                         <br>
-                                        <small style="float: right;">Fecha de publicación: {{ publicacion.fecha_publicacion }}</small>
+                                        <h5><small class="text-body-secondary" style="float: right;">Fecha de publicación: {{ publicacion.fecha_publicacion }}</small></h5>
                                     </div>
                                     <br>
                                     <hr class="card-divider"/>

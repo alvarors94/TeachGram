@@ -56,7 +56,7 @@
             <div id="google_translate_element" class="google" style="margin: 10px;"></div> <!-- Widget de traducción -->
             <li class="nav-item notranslate">
                 <div style="display: flex; align-items: center;">
-                    <img src="{{ foto_perfil }}" href="{% url 'ver_perfil' request.user.username %}" height="40" width="40" style="border-radius: 50%; margin-right: 10px; margin-top: 3px;" />
+                    <img src="{{ request.user.perfil.profile_pic.url }}" href="{% url 'ver_perfil' request.user.username %}" height="40" width="40" style="border-radius: 50%; margin-right: 10px; margin-top: 3px;" />
                     <a class="nav-link me-3" href="{% url 'ver_perfil' request.user.username %}"><strong>{{ request.user }}</strong></a>
                 </div>
             </li> 
@@ -120,7 +120,7 @@
                                 <div class="carousel-inner">
                                     {% for imagen in publicacion.imagenes.all %}
                                     <div class="carousel-item imagen-scroll {% if forloop.first %} active {% endif %}">
-                                        <img class="d-block w-100 imagen-scroll" src="{{ imagen.imagen.url }}" style=" border-radius: 12px">
+                                        <img class="d-block w-100 imagen-scroll" src="{{ imagen.imagen.url }}" style=" border-radius: 12px; max-height: 600px;">
                                     </div>
                                     {% endfor %}
                                 </div>
@@ -136,7 +136,7 @@
                             {% else %}
                             {% for imagen in publicacion.imagenes.all %}
                             {% if forloop.first %}
-                            <img class="d-block w-100" src="{{ imagen.imagen.url }}" alt="Slide " style="border-radius: 12px">
+                            <img class="d-block w-100" src="{{ imagen.imagen.url }}" alt="Slide " style="border-radius: 12px; max-height: 800px">
                             {% endif %}
                             {% endfor %}
                             {% endif %}

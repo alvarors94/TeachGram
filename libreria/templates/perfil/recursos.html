@@ -16,6 +16,23 @@
             </div>
             {% endif %}
             {% for recurso in recursos %}
+            <div class="modal fade" id="exampleModal{{ recurso.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Eliminar recurso</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            ¿Seguro que desea eliminar este recurso?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn secondary-gradient" data-bs-dismiss="modal">Cancelar</button>
+                            <a class="btn danger-gradient" href="{% url 'eliminar_recurso' recurso.id %}">Eliminar</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="card mt-3 mb-3" style="width: 100%; border-radius: 12px;">
                 <div class="d-flex align-items-center">
                     {% if recurso.extension == 'pdf' %}
@@ -29,7 +46,7 @@
                     {% endif %}
                     <div class="card-body justify-content-between"> 
                         <div>
-                            <h5 class="card-title ml-3"><a href="{{ recurso.archivo_recurso.url }}" style="font-weight: bold; text-decoration: underline;">{{ recurso.nombre }}</a></h5>
+                            <h4 class="card-title ml-3"><a href="{{ recurso.archivo_recurso.url }}" style="font-weight: bold; text-decoration: underline;">{{ recurso.nombre }}</a></h4>
                             <small class="text-body-secondary">{{ recurso.fecha_publicacion_recurso }}</small>
                             <hr class="card-divider">
                             <div class="mb-3">
@@ -48,7 +65,13 @@
                                     <li><h6 class="dropdown-header">Opciones</h6></li>
                                     <li><hr class="dropdown-divider"></li>
                                     <li><a class="dropdown-item" href="{% url 'editar_recurso' recurso.id %}">Editar recurso</a></li>
-                                    <li><a class="dropdown-item" href="{% url 'eliminar_recurso' recurso.id %}" style="color: red;">Eliminar recurso</a></li>
+                                    <li>
+                                        
+                                    <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#exampleModal{{ recurso.id }}">
+                                        <a  class ="no-link-style"  style="color: red;">Eliminar recurso</a>
+                                    </button>
+                                </li>
+                                    
                                 </ul>
                             </div>
                         </div>

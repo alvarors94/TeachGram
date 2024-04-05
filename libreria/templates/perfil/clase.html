@@ -14,7 +14,7 @@
                         <img src="{{ dato.profile_pic.url }}" height="100" width="100" style="border-radius: 50%; margin-bottom: 10px;"/>
                         <div class="notranslate">
                             <strong>{{ dato.username }}</strong>
-                            {% if dato.is_superuser %}
+                            {% if dato.is_superuser and  dato.is_staff %}
                                 <span class="badge edit-gradient" style="color: black; font-size: smaller;">Docente</span>
                             {% endif %}
                         </div>
