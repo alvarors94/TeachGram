@@ -1,0 +1,43 @@
+{% extends "base.html"%}
+{% block titulo %} Editar recurso externo {% endblock %}
+{% block contenido %} 
+
+
+{%if request.user.is_superuser %}
+<div class="container"> 
+    <div class="card">
+        <div class="card-header mb-3">Editar recurso externo</div>
+
+
+    <div class="card-body">
+       
+        <form enctype="multipart/form-data" method="post" action="{% url 'editar_recurso_externo' recurso_externo.id%}">
+            {% csrf_token %} 
+            
+            {% for campo in form_recurso_externo %}
+            <div class="mb-3">
+              <strong><label for="" class="form-label">{{ campo.label }}:</label></strong>
+              {% if campo.name == 'descripcion' %}
+              <textarea class="form-control" name="{{ campo.name }}" placeholder="{{ campo.help_text }}">{{ campo.value|default_if_none:'' }}</textarea>
+                        
+              {% else %}
+              <input type="{{ campo.field.widget.input_type }}" class="form-control" name="{{ campo.name }}" value="{{ campo.value|default_if_none:'' }}" placeholder="{{campo.help_text}}">
+                        
+          </div>
+          {% endif %}
+                              <div class="col-12 help-text">{{ campo.errors }}</div>
+            {% endfor %}
+
+        
+        <input class="btn comment-gradient mt-2" type="submit" value="Actualizar información"/>
+        <a class="btn danger-gradient mt-2" href="{% url 'recursos' %}" role="button" >Cancelar</a>
+    </form>
+
+
+    
+        
+    </div>
+</div>
+</div>
+{%endif%}
+{% endblock %}

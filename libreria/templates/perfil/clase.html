@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block titulo %} Perfiles {% endblock %}
+{% block contenido %} 
+<div class="card" style="border-radius: 20px; background-color: rgb(255, 255, 255);"> 
+    <div class="card-header">Clase</div>
+    <input type="text" id="searchInput" placeholder="Buscar perfil" class="search_box mb-3 mt-3" style="margin: 10px;">
+    <br>
+    <div class="row justify-content-center ms-1">
+        {% for dato in datos_de_user %}
+        <div class="col-md-3 mb-4 me-3 perfil-card" style="width: 300px;">
+            <a href="{% url 'ver_perfil' dato.username %}" class="no-link-style" style="font-size: 14px;">
+                <div class="card hover-bg">
+                    <div class="card-body text-center">
+                        <img src="{{ dato.profile_pic.url }}" height="100" width="100" style="border-radius: 50%; margin-bottom: 10px;"/>
+                        <div class="notranslate">
+                            <strong>{{ dato.username }}</strong>
+                            {% if dato.is_superuser and  dato.is_staff %}
+                                <span class="badge edit-gradient" style="color: black; font-size: smaller;">Docente</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+    <div id="noResults" class="text-danger" style="display: none; text-align: center;">
+        <strong>No se encontraron resultados</strong>
+    </div>
+</div>
+
+
+
+<script>
+    $(document).ready(function() {
+        $('#searchInput').on('keyup', function() {
+            var searchText = $(this).val().toLowerCase();
+            var found = false;
+            $('.perfil-card').each(function() {
+                var text = $(this).text().toLowerCase();
+                if (text.includes(searchText)) {
+                    $(this).show();
+                    found = true;
+                } else {
+                    $(this).hide();
+                }
+            });
+            if (!found) {
+                $('#noResults').show();
+            } else {
+                $('#noResults').hide();
+            }
+        });
+    });
+</script>
+
+{% endblock %}

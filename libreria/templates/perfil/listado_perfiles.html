@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% block titulo %} Perfiles {% endblock %}
+{% block contenido %} 
+
+{% if request.user.is_superuser %}
+<div class="container"> 
+    <div class="card">
+        <div class="card-header mb-3">Listado de perfiles</div>
+        <div class="table-responsive"> 
+            <table id="miTabla" class="table table-striped table-bordered table-hover">
+                <input type="text" id="searchInput" placeholder="Buscar perfil" class="search_box mb-3 mt-3" style="margin: 10px;">
+                <thead class="table-dark">
+                    <tr style="text-align: center;">
+                        <th scope="col">Foto Perfil</th>
+                        <th scope="col">Nombre Usuario</th>
+                        <th scope="col">Último Acceso</th>
+                        <th scope="col">¿Es superusuario?</th>
+                        <th scope="col">¿Está bloqueado?</th>
+                        <th scope="col">Nº de coment.</th>
+                        <th scope="col">Nº de publicac.</th>
+                        <th scope="col">Hacer superusuario</th>
+                        <th scope="col">Bloquear perfil</th>
+                        <th scope="col">Eliminar perfil</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for dato in datos_de_user %}
+                    <div class="modal fade" id="exampleModal{{ dato.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Eliminar usuario</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    ¿Seguro que desea eliminar al usuario <strong>{{dato.username}}</strong>?
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn secondary-gradient" data-bs-dismiss="modal">Cancelar</button>
+                                    <a class="btn danger-gradient" href="{% url 'eliminar_perfil' dato.id %}">Eliminar</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                        <tr style="text-align: center;">
+                            <td><a href="{% url 'ver_perfil' dato.username %}" class="no-link-style"><img src="{{ dato.profile_pic.url }}" height="60" width="60" style="border-radius: 50%;"/></a></td>
+                            <td><a href="{% url 'ver_perfil' dato.username %}" class="no-link-style">{{ dato.username }}</a></td>
+                            <td>{{ dato.last_login }}</td>
+                            <td>
+                                {% if dato.is_superuser %}
+                                <img width="60" height="60" src="https://img.icons8.com/parakeet/60/checked-checkbox.png" alt="checked-checkbox"/> 
+                                {% else %}
+                                <img width="60" height="60" src="https://img.icons8.com/parakeet/60/close-window.png" alt="close-window"/>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if dato.is_blocked %}
+                                <img width="60" height="60" src="https://img.icons8.com/parakeet/96/checked-checkbox.png" alt="checked-checkbox"/>
+                                {% else %}
+                                <img width="60" height="60" src="https://img.icons8.com/parakeet/96/close-window.png" alt="close-window"/>
+                                {% endif %}
+                            </td>
+                            <td>{{ dato.total_comentarios }}</td>
+                            <td>{{ dato.total_publicaciones }}</td>
+                            <td>
+                                {% if dato.is_superuser and  dato.is_staff %}
+                                No puedes deshacer este superusuario
+                                
+                                {% elif dato.is_superuser %}
+                                <a class="btn secondary-gradient" href="{% url 'hacer_superusuario' dato.id %}" role="button">
+                                    <span>Deshacer superusuario</span>
+                                </a>
+                                {% else %}
+                                <a class="btn comment-gradient" href="{% url 'hacer_superusuario' dato.id %}" role="button">
+                                    <span>Hacer superusuario</span>
+                                </a>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if dato.is_superuser and  dato.is_staff %}
+                                No puedes bloquear este usuario
+                                
+                                {% elif dato.is_blocked %}
+                                <a class="btn secondary-gradient" href="{% url 'bloquear_perfil' dato.id %}" role="button">
+                                    <span>Desbloquear perfil</span>
+                                </a>
+                                {% else %}
+                                <a class="btn edit-gradient" href="{% url 'bloquear_perfil' dato.id %}" role="button">
+                                    <span>Bloquear perfil</span>
+                                </a>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if dato.is_superuser and  dato.is_staff %}
+                                No puedes eliminar este usuario
+                                
+                                {% else %}
+                                <a class="btn danger-gradient"  role="button" data-bs-toggle="modal" data-bs-target="#exampleModal{{ dato.id }}"><span>Eliminar perfil</span></a></td>
+                                {% endif %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+    </div>
+</div>
+<script>
+    $(document).ready(function() {
+           $('#miTabla').DataTable({
+               "paging": false, // Desactiva la paginación
+               "searching": false, // Desactiva la búsqueda
+               "info": false // Desactiva la información de entradas y resultados
+           });
+           $('#searchInput').on('keyup', function() {
+               var value = $(this).val().toLowerCase();
+               $('#miTabla tbody tr').filter(function() {
+                   $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+               });
+           });
+       });
+   </script>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,69 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Acceso</title>
+  <link rel="stylesheet" type="text/css" href="{% static 'main.css' %}">
+  <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+  <link rel="icon" href="{% static 'icono_teachgram.ico' %}" type="image/x-icon" style="border-radius: 50%;">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+</head>
+<body class="body-login">
+  <div class="card-login">
+      <div class="card-login-body mb-3">
+        <div class="container-fluid-login">
+          <div class="row align-items-center">
+            <div class="col-md-4 login-sec" style="margin-left: 20px;">
+              <h2 class="text-center" style="font-weight:800; font-size:30px; color: #0a544e;">Acceda para continuar</h2>
+              {% if form.errors %}
+              <strong>Su nombre de usuario y contraseña no coinciden. Inténtalo de nuevo.</strong>
+              {% endif %}
+              {% if next %}
+              {% if user.is_authenticated %}
+              <strong>Su cuenta no tiene acceso a esta página. Para continuar, inicie sesión con una cuenta que tenga acceso.</strong>
+              {% else %}
+              <strong>Por favor inicie sesión para ver esta página.</strong>
+              {% endif %}
+              {% endif %}
+              <form method="post" action="{% url 'login' %}">
+                {% csrf_token %}
+                <div class="form-group">
+                  <div class="input">
+                    <h4 class="label_input" for="inputUsername" style="font-weight:800; font-size:15px; color: #11998e;">Nombre de usuario</h4>
+                    <input class="form-control" id="inputdefault" name="username" type="text" style="width: 100%; max-width: 100%; overflow-x: auto; border-color: #000000;">
+                  </div>
+                </div>
+                <div class="input">
+                  <h4 class="label_input" for="inputPassword" style="font-weight:800; font-size:15px; color: #11998e;">Contraseña</h4>
+                  <input class="form-control" id="inputPassword" name="password" type="password" style="width: 100%; max-width: 100%; overflow-x: auto; border-color: #000000;">
+                </div>
+                <div class="form-check">
+                  <label class="form-check-label mt-3">
+                    <input type="checkbox" class="form-check-input">
+                    <small>Recuérdame</small>
+                  </label>
+                </div>
+                <div class="btn-group">
+                  <button type="submit" class="btn btn-login float-right">
+                    <img width="24" height="24" src="https://img.icons8.com/parakeet-line/48/ffffff/enter-2.png" alt="enter-2"/>
+                    <strong>Entrar</strong>
+                  </button>
+                </div>
+                <input type="hidden" name="next" value="{{ next }}">
+              </form>
+            </div>
+            <div class="col-md-7">
+              <img src="{% static 'undraw_nature_on_screen_xkli.png' %}" alt="Imagen" style="height: 100%; width: 100%;">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
