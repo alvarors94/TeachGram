@@ -4,7 +4,7 @@
 
 
 {%if request.user.is_superuser %}
-<div class="container"> <!-- Agregando margen superior a la tarjeta -->
+<div class="container"> 
     <div class="card">
         <div class="card-header mb-3">Editar recurso</div>
 
@@ -19,10 +19,10 @@
         <strong><label for="" class="form-label">{{ campo.label }}:</label></strong>
         {% if campo.name == 'descripcion' %}
         <textarea class="form-control" name="{{ campo.name }}" placeholder="{{ campo.help_text }}">{{ campo.value|default_if_none:'' }}</textarea>
-        <!-- Muestra el valor del campo para editarlo o por defecto '' -->            
+                  
         {% else %}
         <input type="{{ campo.field.widget.input_type }}" class="form-control" name="{{ campo.name }}" value="{{ campo.value|default_if_none:'' }}" placeholder="{{campo.help_text}}">
-        <!-- Muestra el valor del campo para editarlo o por defecto '' -->            
+                  
     </div>
     {% endif %}
                         <div class="col-12 help-text">{{ campo.errors }}</div>

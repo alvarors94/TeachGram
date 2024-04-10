@@ -2,10 +2,10 @@
 {% block titulo %} Ver publicaciones {% endblock %}
 {% block contenido %} 
 {%if request.user.is_superuser%}
-<div class="container"> <!-- Agregando margen superior a la tarjeta -->
+<div class="container"> 
     <div class="card">
         <div class="card-header mb-3">Listado de publicaciones</div>
-        <div class="table-responsive"> <!-- Ajustando margen superior aquí -->
+        <div class="table-responsive"> 
             <table id = "miTabla" class="table table-striped table-bordered table-hover">
                 <input type="text" id="searchInput" placeholder="Buscar perfil" class="search_box mb-3 mt-3" style="margin: 10px;">
                 <thead class="table-dark">
@@ -62,7 +62,6 @@
                             <div class="row">
                                 {% if publicacion.imagenes.count > 0 %}
                                 <div class="col-md-6">
-                                    <!-- Columna para la imagen -->
                                     {% if publicacion.imagenes.count > 1 %}
                                     <div id="carouselExampleControls_{{ publicacion.id }}" class="carousel slide" data-bs-ride="false">
                                         <div class="carousel-indicators">

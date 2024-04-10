@@ -3,15 +3,14 @@
 {% block contenido %} 
 
 {% if request.user.is_superuser %}
-<div class="container"> <!-- Agregando margen superior a la tarjeta -->
+<div class="container"> 
     <div class="card">
         <div class="card-header mb-3">Listado de perfiles</div>
-        <div class="table-responsive"> <!-- Ajustando margen superior aquí -->
+        <div class="table-responsive"> 
             <table id="miTabla" class="table table-striped table-bordered table-hover">
                 <input type="text" id="searchInput" placeholder="Buscar perfil" class="search_box mb-3 mt-3" style="margin: 10px;">
                 <thead class="table-dark">
                     <tr style="text-align: center;">
-                        <th scope="col">ID Usuario</th>
                         <th scope="col">Foto Perfil</th>
                         <th scope="col">Nombre Usuario</th>
                         <th scope="col">Último Acceso</th>
@@ -44,7 +43,6 @@
                         </div>
                     </div>
                         <tr style="text-align: center;">
-                            <td>{{ dato.id }}</td>
                             <td><a href="{% url 'ver_perfil' dato.username %}" class="no-link-style"><img src="{{ dato.profile_pic.url }}" height="60" width="60" style="border-radius: 50%;"/></a></td>
                             <td><a href="{% url 'ver_perfil' dato.username %}" class="no-link-style">{{ dato.username }}</a></td>
                             <td>{{ dato.last_login }}</td>
@@ -79,7 +77,10 @@
                                 {% endif %}
                             </td>
                             <td>
-                                {% if dato.is_blocked %}
+                                {% if dato.is_superuser and  dato.is_staff %}
+                                No puedes bloquear este usuario
+                                
+                                {% elif dato.is_blocked %}
                                 <a class="btn secondary-gradient" href="{% url 'bloquear_perfil' dato.id %}" role="button">
                                     <span>Desbloquear perfil</span>
                                 </a>
@@ -89,7 +90,13 @@
                                 </a>
                                 {% endif %}
                             </td>
-                            <td><a class="btn danger-gradient"  role="button" data-bs-toggle="modal" data-bs-target="#exampleModal{{ dato.id }}"><span>Eliminar perfil</span></a></td>
+                            <td>
+                                {% if dato.is_superuser and  dato.is_staff %}
+                                No puedes eliminar este usuario
+                                
+                                {% else %}
+                                <a class="btn danger-gradient"  role="button" data-bs-toggle="modal" data-bs-target="#exampleModal{{ dato.id }}"><span>Eliminar perfil</span></a></td>
+                                {% endif %}
                         </tr>
                     {% endfor %}
                 </tbody>

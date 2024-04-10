@@ -32,7 +32,6 @@
         </div>
         <hr class="divider">
         {% if not publicaciones %}
-                <!-- Si no hay publicaciones, mostrar un mensaje -->
                 <div style="display: flex; flex-direction: column; align-items: center; text-align: center;">
                     <h2 style="margin-bottom:30px; font-weight:800; font-size:30px; color: #11998e;">Aún no hay publicaciones</h2>
                     <img width="480" height="480" src="https://img.icons8.com/parakeet/480/medium-icons.png" alt="medium-icons"/>
@@ -63,7 +62,6 @@
                             <div class="row">
                                 {% if publicacion.imagenes.count > 0 %}
                                 <div class="col-md-6">
-                                    <!-- Columna para la imagen -->
                                     {% if publicacion.imagenes.count > 1 %}
                                     <div id="carouselExampleControls_{{ publicacion.id }}" class="carousel slide" data-bs-ride="false">
                                         <div class="carousel-indicators">
@@ -238,20 +236,17 @@
                     </div>
                 </div>
                 {% if publicacion.imagenes.all %}
-                    <!-- Si hay al menos una imagen, mostrar la imagen y otra información -->
                     <div class="grid-item" style="position: relative;">
                         <a href="#" data-bs-toggle="modal" data-bs-target="#exampleModal{{ publicacion.id }}">
                             <div class="bg-image hover-zoom">
                                 <img src="{{ publicacion.imagenes.first.imagen.url }}" style="width: 420px; height: 420px; border-radius: 12px" class="zoom-img"/>
                                 {% if publicacion.imagenes.count > 1 %}
-                                    <!-- Si hay más de una imagen, mostrar el símbolo especial como superposición -->
                                     <div class="special-overlay" style="position: absolute; top: 0; right: 0; background-color: rgba(255, 255, 255, 0.8); border-radius: 12px; width: 30px; height: 30px; text-align: center; font-size: 20px; line-height: 30px;"><img width="48" height="48" src="https://img.icons8.com/parakeet/48/stack-of-photos.png" alt="stack-of-photos"/></div>
                                 {% endif %}
                             </div>
                         </a>
                     </div>
                 {% else %}
-                    <!-- Si no hay imágenes, mostrar la tarjeta especial -->
                     <div class="grid-item" style="position: relative; border-radius: 12px;">
                         <a href="#" data-bs-toggle="modal" data-bs-target="#exampleModal{{ publicacion.id }}" style="position: absolute; top: 0; left: 0; width: 420px; height: 420px; border-radius: 20px; z-index: 1;">
                             <div class="card border-danger mb-3" style="width: 420px; height: 420px; border-radius: inherit;">

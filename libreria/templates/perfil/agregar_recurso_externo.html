@@ -22,10 +22,10 @@
         <strong><label for="" class="form-label">{{ campo.label }}:</label></strong>
         {% if campo.name == 'descripcion' %}
         <textarea class="form-control" name="{{ campo.name }}" placeholder="{{ campo.help_text }}">{{ campo.value|default_if_none:'' }}</textarea>
-        <!-- Muestra el valor del campo para editarlo o por defecto '' -->            
+                  
         {% else %}
         <input type="{{ campo.field.widget.input_type }}" class="form-control" name="{{ campo.name }}" value="{{ campo.value|default_if_none:'' }}" placeholder="{{campo.help_text}}">
-        <!-- Muestra el valor del campo para editarlo o por defecto '' -->            
+                  
     </div>
     {% endif %}
                         <div class="col-12 help-text">{{ campo.errors }}</div>
@@ -41,10 +41,10 @@
         </div>
 
 </div>
-<div class="container mt-5"> <!-- Agregando margen superior a la tarjeta -->
+<div class="container mt-5"> 
     <div class="card">
         <div class="card-header mb-3">Listado de recursos</div>
-        <div class="table-responsive"> <!-- Ajustando margen superior aquí -->
+        <div class="table-responsive"> 
             <table id="miTabla" class="table table-striped table-bordered table-hover">
                 <input type="text" id="searchInput" placeholder="Buscar recurso" class="search_box mb-3 mt-3" style="margin: 10px;">
                 <thead class="table-dark">
@@ -63,10 +63,10 @@
                         <td>{{ recurso.codigo_iframe|default_if_none:'' }}</td>
                         <td>{{ recurso.descripcion|default_if_none:'' }}</td>
                         
-                        <td class="align-middle"> <!-- Alineando verticalmente el contenido -->
+                        <td class="align-middle"> 
                             <a class="btn edit-gradient btn-sm" href="{% url 'editar_recurso_externo' recurso.id %}" role="button">Editar Recurso</a>
                         </td>
-                        <td class="align-middle"> <!-- Alineando verticalmente el contenido -->
+                        <td class="align-middle"> 
                             <a class="btn danger-gradient btn-sm" href="{% url 'eliminar_recurso_externo' recurso.id %}" role="button">Eliminar Recurso</a>
                         </td>
                     </tr>

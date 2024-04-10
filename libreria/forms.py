@@ -42,7 +42,7 @@ class ComentarioForm(forms.ModelForm):
 
     class Meta:
         model = Comentario
-        fields = ['comentario']  # Campos del formulario
+        fields = ['comentario']  
         
 class PerfilForm(forms.ModelForm):
     class Meta:

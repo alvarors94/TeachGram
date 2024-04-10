@@ -8,4 +8,3 @@ admin.site.register(Imagen)
 admin.site.register(Recursos)
 
 # Register your models here.
-# En la consola tenemos que escribir python manage.py createsuperuser para que nos pida los datos del superusuario
